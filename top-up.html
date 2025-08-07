@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top-Up Balance - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-light-gray: #999999;
+            --esimphony-card-bg: #FFFFFF;
+            --esimphony-border: #E5E5E5;
+            --esimphony-success: #00D26A;
+            --esimphony-error: #FF3B30;
+            --esimphony-shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+            padding-bottom: 120px; /* Space for fixed buttons */
+        }
+        
+        .topup-container {
+            min-height: 100vh;
+            background-color: var(--esimphony-black);
+        }
+        
+        /* Header Section */
+        .header-section {
+            padding: 1rem 1rem 2rem 1rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .back-button:hover {
+            opacity: 0.7;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 1rem;
+        }
+        
+        /* Current Balance Display */
+        .balance-display {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .balance-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        /* Amount Section */
+        .amount-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .amount-input-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--esimphony-gray);
+            z-index: 2;
+        }
+        
+        .amount-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background-color: var(--esimphony-card-bg);
+            border: 2px solid var(--esimphony-border);
+            border-radius: 16px;
+            color: var(--esimphony-black);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .amount-input:focus {
+            outline: none;
+            border-color: var(--esimphony-red);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+        }
+        
+        .amount-input.is-invalid {
+            border-color: var(--esimphony-error);
+        }
+        
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .quick-amount-btn {
+            background-color: var(--esimphony-card-bg);
+            border: 2px solid var(--esimphony-border);
+            color: var(--esimphony-black);
+            font-weight: 600;
+            padding: 0.75rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+        
+        .quick-amount-btn:hover {
+            border-color: var(--esimphony-red);
+        }
+        
+        .quick-amount-btn.selected {
+            border-color: var(--esimphony-red);
+            background-color: #FFEAEA;
+        }
+        
+        /* Payment Method Section */
+        .payment-section {
+            margin-bottom: 2rem;
+        }
+        
+        .payment-form {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .security-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+            color: var(--esimphony-gray);
+            font-size: 0.875rem;
+        }
+        
+        .lock-icon {
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            background-color: var(--esimphony-white);
+            border: 2px solid var(--esimphony-border);
+            border-radius: 12px;
+            color: var(--esimphony-black);
+            transition: all 0.2s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--esimphony-red);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: var(--esimphony-light-gray);
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--esimphony-error);
+        }
+        
+        .form-control.is-valid {
+            border-color: var(--esimphony-success);
+        }
+        
+        .invalid-feedback {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--esimphony-error);
+            margin-top: 0.5rem;
+        }
+        
+        .card-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .card-icons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--esimphony-border);
+        }
+        
+        .card-icon {
+            width: 32px;
+            height: 24px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.6;
+        }
+        
+        .visa { background-color: #1A1F71; border-radius: 4px; }
+        .mastercard { background-color: #EB001B; border-radius: 4px; }
+        .amex { background-color: #006FCF; border-radius: 4px; }
+        
+        /* Fixed Action Buttons */
+        .fixed-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--esimphony-card-bg);
+            border-top: 1px solid var(--esimphony-border);
+            padding: 1rem;
+            z-index: 1000;
+        }
+        
+        .actions-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .btn-topup {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-bottom: 0.75rem;
+        }
+        
+        .btn-topup:hover,
+        .btn-topup:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .btn-topup:disabled {
+            background-color: var(--esimphony-light-gray);
+            border-color: var(--esimphony-light-gray);
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-cancel {
+            background: none;
+            border: none;
+            color: var(--esimphony-gray);
+            font-weight: 500;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .btn-cancel:hover {
+            opacity: 0.7;
+        }
+        
+        /* Loading state */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid transparent;
+            border-top-color: var(--esimphony-white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .success-modal.show {
+            display: flex;
+        }
+        
+        .success-content {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            max-width: 320px;
+            margin: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--esimphony-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            font-size: 2rem;
+            color: var(--esimphony-white);
+        }
+        
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-message {
+            font-size: 1rem;
+            color: var(--esimphony-gray);
+            line-height: 1.5;
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .main-content {
+                padding: 0 2rem;
+            }
+            
+            .header-section {
+                padding: 2rem 2rem 2rem 2rem;
+            }
+            
+            .quick-amounts {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-topup:hover,
+            .quick-amount-btn:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-topup:active {
+                background-color: #CC0000;
+            }
+        }
+        
+        /* Focus states for accessibility */
+        .btn-topup:focus-visible,
+        .btn-cancel:focus-visible,
+        .form-control:focus-visible,
+        .amount-input:focus-visible {
+            outline: 3px solid rgba(255, 0, 0, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Input formatting helpers */
+        .input-hint {
+            font-size: 0.75rem;
+            color: var(--esimphony-light-gray);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="topup-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <button class="back-button" onclick="goBack()" aria-label="Go back">
+                ←
+            </button>
+            <div class="header-title">Top-Up Balance</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Current Balance -->
+            <div class="balance-display">
+                <div class="balance-label">Current Balance</div>
+                <div class="balance-amount" id="currentBalance">$0.00</div>
+            </div>
+            
+            <!-- Amount Section -->
+            <div class="amount-section">
+                <h2 class="section-title">Top-Up Amount</h2>
+                
+                <div class="amount-input-container">
+                    <div class="currency-symbol">$</div>
+                    <input 
+                        type="number" 
+                        class="amount-input" 
+                        id="topupAmount" 
+                        placeholder="0.00"
+                        min="1"
+                        max="500"
+                        step="0.01"
+                    >
+                    <div class="invalid-feedback" id="amountError"></div>
+                </div>
+                
+                <div class="quick-amounts">
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(10)">$10</button>
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(25)">$25</button>
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(50)">$50</button>
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(100)">$100</button>
+                </div>
+            </div>
+            
+            <!-- Payment Method Section -->
+            <div class="payment-section">
+                <h2 class="section-title">Payment Method</h2>
+                
+                <div class="payment-form">
+                    <div class="security-header">
+                        <span class="lock-icon">🔒</span>
+                        Secured by SSL encryption
+                    </div>
+                    
+                    <form id="paymentForm" novalidate>
+                        <div class="form-group">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="cardNumber" 
+                                name="cardNumber"
+                                placeholder="1234 5678 9012 3456"
+                                maxlength="19"
+                                autocomplete="cc-number"
+                                required
+                            >
+                            <div class="invalid-feedback" id="cardNumberError"></div>
+                        </div>
+                        
+                        <div class="card-row">
+                            <div class="form-group">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="expiryDate" 
+                                    name="expiryDate"
+                                    placeholder="MM/YY"
+                                    maxlength="5"
+                                    autocomplete="cc-exp"
+                                    required
+                                >
+                                <div class="invalid-feedback" id="expiryError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cvc" class="form-label">CVC</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="cvc" 
+                                    name="cvc"
+                                    placeholder="123"
+                                    maxlength="4"
+                                    autocomplete="cc-csc"
+                                    required
+                                >
+                                <div class="invalid-feedback" id="cvcError"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cardholderName" class="form-label">Cardholder Name</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="cardholderName" 
+                                name="cardholderName"
+                                placeholder="John Doe"
+                                autocomplete="cc-name"
+                                required
+                            >
+                            <div class="invalid-feedback" id="nameError"></div>
+                        </div>
+                        
+                        <div class="card-icons">
+                            <div class="card-icon visa"></div>
+                            <div class="card-icon mastercard"></div>
+                            <div class="card-icon amex"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fixed Action Buttons -->
+    <div class="fixed-actions">
+        <div class="actions-content">
+            <button class="btn btn-topup" id="topupBtn" onclick="processPayment()">
+                <span id="topupBtnText">Top-Up $0.00</span>
+            </button>
+            <button class="btn-cancel" onclick="goBack()">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">✓</div>
+            <h3 class="success-title">Payment Successful!</h3>
+            <p class="success-message">Your balance has been topped up successfully.</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBalance = 0.00;
+        let topupAmount = 0.00;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentBalance();
+            setupEventListeners();
+            loadPrefilledAmount();
+        });
+        
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'tariff-details.html';
+            }
+        }
+        
+        function loadCurrentBalance() {
+            const storedBalance = localStorage.getItem('userBalance') || '0.00';
+            currentBalance = parseFloat(storedBalance);
+            document.getElementById('currentBalance').textContent = `$${currentBalance.toFixed(2)}`;
+        }
+        
+        function loadPrefilledAmount() {
+            // Get plan price from URL params or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const planPrice = urlParams.get('amount') || localStorage.getItem('selectedPlanPrice') || '15.00';
+            
+            if (planPrice) {
+                selectQuickAmount(parseFloat(planPrice));
+            }
+        }
+        
+        function selectQuickAmount(amount) {
+            // Clear previous selections
+            document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Select clicked button
+            event.target?.classList.add('selected');
+            
+            // Update amount input and button
+            document.getElementById('topupAmount').value = amount.toFixed(2);
+            topupAmount = amount;
+            updateTopupButton();
+            validateAmount();
+        }
+        
+        function setupEventListeners() {
+            const amountInput = document.getElementById('topupAmount');
+            const cardNumberInput = document.getElementById('cardNumber');
+            const expiryInput = document.getElementById('expiryDate');
+            const cvcInput = document.getElementById('cvc');
+            
+            // Amount input
+            amountInput.addEventListener('input', function() {
+                topupAmount = parseFloat(this.value) || 0;
+                updateTopupButton();
+                validateAmount();
+                
+                // Clear quick amount selections when typing
+                document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            });
+            
+            // Card number formatting
+            cardNumberInput.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                this.value = value;
+                validateCardNumber();
+            });
+            
+            // Expiry date formatting
+            expiryInput.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                this.value = value;
+                validateExpiryDate();
+            });
+            
+            // CVC input
+            cvcInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                validateCVC();
+            });
+            
+            // Cardholder name
+            document.getElementById('cardholderName').addEventListener('blur', function() {
+                validateCardholderName();
+            });
+        }
+        
+        function updateTopupButton() {
+            const topupBtn = document.getElementById('topupBtn');
+            const btnText = document.getElementById('topupBtnText');
+            
+            if (topupAmount > 0) {
+                btnText.textContent = `Top-Up $${topupAmount.toFixed(2)}`;
+                topupBtn.disabled = false;
+            } else {
+                btnText.textContent = 'Enter amount to continue';
+                topupBtn.disabled = true;
+            }
+        }
+        
+        function validateAmount() {
+            const amountInput = document.getElementById('topupAmount');
+            const errorElement = document.getElementById('amountError');
+            const amount = parseFloat(amountInput.value);
+            
+            clearFieldError('topupAmount');
+            
+            if (amountInput.value && (isNaN(amount) || amount < 1)) {
+                showFieldError('topupAmount', 'Minimum top-up amount is $1.00');
+                return false;
+            }
+            
+            if (amount > 500) {
+                showFieldError('topupAmount', 'Maximum top-up amount is $500.00');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function validateCardNumber() {
+            const cardInput = document.getElementById('cardNumber');
+            const cardNumber = cardInput.value.replace(/\s/g, '');
+            
+            clearFieldError('cardNumber');
+            
+            if (cardInput.value && cardNumber.length < 13) {
+                showFieldError('cardNumber', 'Please enter a valid card number');
+                return false;
+            }
+            
+            if (cardInput.value && !luhnCheck(cardNumber)) {
+                showFieldError('cardNumber', 'Please enter a valid card number');
+                return false;
+            }
+            
+            if (cardInput.value && cardNumber.length >= 13) {
+                cardInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function validateExpiryDate() {
+            const expiryInput = document.getElementById('expiryDate');
+            const expiry = expiryInput.value;
+            
+            clearFieldError('expiryDate');
+            
+            if (expiry && expiry.length === 5) {
+                const [month, year] = expiry.split('/');
+                const currentDate = new Date();
+                const currentYear = currentDate.getFullYear() % 100;
+                const currentMonth = currentDate.getMonth() + 1;
+                
+                const expMonth = parseInt(month);
+                const expYear = parseInt(year);
+                
+                if (expMonth < 1 || expMonth > 12) {
+                    showFieldError('expiryDate', 'Invalid month');
+                    return false;
+                }
+                
+                if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+                    showFieldError('expiryDate', 'Card has expired');
+                    return false;
+                }
+                
+                expiryInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function validateCVC() {
+            const cvcInput = document.getElementById('cvc');
+            const cvc = cvcInput.value;
+            
+            clearFieldError('cvc');
+            
+            if (cvc && (cvc.length < 3 || cvc.length > 4)) {
+                showFieldError('cvc', 'Invalid CVC');
+                return false;
+            }
+            
+            if (cvc && cvc.length >= 3) {
+                cvcInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function validateCardholderName() {
+            const nameInput = document.getElementById('cardholderName');
+            const name = nameInput.value.trim();
+            
+            clearFieldError('cardholderName');
+            
+            if (name && name.length < 2) {
+                showFieldError('cardholderName', 'Please enter a valid name');
+                return false;
+            }
+            
+            if (name && name.length >= 2) {
+                nameInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function luhnCheck(cardNumber) {
+            let sum = 0;
+            let isEven = false;
+            
+            for (let i = cardNumber.length - 1; i >= 0; i--) {
+                let digit = parseInt(cardNumber[i]);
+                
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) {
+                        digit -= 9;
+                    }
+                }
+                
+                sum += digit;
+                isEven = !isEven;
+            }
+            
+            return sum % 10 === 0;
+        }
+        
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId.replace('topupAmount', 'amount') + 'Error');
+            
+            field.classList.remove('is-invalid', 'is-valid');
+            if (errorElement) errorElement.textContent = '';
+        }
+        
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId.replace('topupAmount', 'amount') + 'Error');
+            
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+            if (errorElement) errorElement.textContent = message;
+        }
+        
+        function validateForm() {
+            const amountValid = validateAmount();
+            const cardValid = validateCardNumber();
+            const expiryValid = validateExpiryDate();
+            const cvcValid = validateCVC();
+            const nameValid = validateCardholderName();
+            
+            // Check if all required fields have values
+            const hasAmount = parseFloat(document.getElementById('topupAmount').value) > 0;
+            const hasCard = document.getElementById('cardNumber').value.replace(/\s/g, '').length >= 13;
+            const hasExpiry = document.getElementById('expiryDate').value.length === 5;
+            const hasCVC = document.getElementById('cvc').value.length >= 3;
+            const hasName = document.getElementById('cardholderName').value.trim().length >= 2;
+            
+            return amountValid && cardValid && expiryValid && cvcValid && nameValid &&
+                   hasAmount && hasCard && hasExpiry && hasCVC && hasName;
+        }
+        
+        function processPayment() {
+            if (!validateForm()) {
+                alert('Please fill in all required fields correctly');
+                return;
+            }
+            
+            const topupBtn = document.getElementById('topupBtn');
+            const btnText = document.getElementById('topupBtnText');
+            
+            // Show loading state
+            topupBtn.classList.add('btn-loading');
+            btnText.style.opacity = '0';
+            topupBtn.disabled = true;
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Update balance
+                currentBalance += topupAmount;
+                localStorage.setItem('userBalance', currentBalance.toFixed(2));
+                
+                // Show success modal
+                document.getElementById('successModal').classList.add('show');
+                
+                // Reset button state
+                topupBtn.classList.remove('btn-loading');
+                btnText.style.opacity = '1';
+                
+                // Auto-close success modal and redirect
+                setTimeout(() => {
+                    document.getElementById('successModal').classList.remove('show');
+                    
+                    // Redirect back to previous screen
+                    setTimeout(() => {
+                        const referrer = document.referrer;
+                        if (referrer.includes('tariff-details')) {
+                            window.location.href = 'tariff-details.html';
+                        } else {
+                            window.location.href = 'home-dashboard.html';
+                        }
+                    }, 500);
+                }, 2000);
+                
+            }, 3000);
+        }
+        
+        // Handle success modal click to close
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+                goBack();
+            }
+        });
+    </script>
+</body>
+</html>
