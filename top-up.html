@@ -175,6 +175,34 @@
             margin-bottom: 2rem;
         }
         
+        /* Error Message Section */
+        .error-message {
+            background-color: #FFEBEE;
+            border: 1px solid var(--esimphony-error);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .error-text {
+            color: var(--esimphony-error);
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin: 0;
+        }
+        
+        .error-icon {
+            color: var(--esimphony-error);
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        
         .payment-form {
             background-color: var(--esimphony-card-bg);
             border-radius: 16px;
@@ -303,8 +331,24 @@
             margin-bottom: 0.75rem;
         }
         
+        .btn-retry {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-bottom: 0.75rem;
+        }
+        
         .btn-topup:hover,
-        .btn-topup:focus {
+        .btn-topup:focus,
+        .btn-retry:hover,
+        .btn-retry:focus {
             background-color: #E60000;
             border-color: #E60000;
             color: var(--esimphony-white);
@@ -312,7 +356,8 @@
             box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
         }
         
-        .btn-topup:disabled {
+        .btn-topup:disabled,
+        .btn-retry:disabled {
             background-color: var(--esimphony-light-gray);
             border-color: var(--esimphony-light-gray);
             opacity: 0.6;
@@ -333,6 +378,28 @@
         }
         
         .btn-cancel:hover {
+            opacity: 0.7;
+        }
+        
+        .btn-different-card {
+            background: none;
+            border: none;
+            color: var(--esimphony-red);
+            font-weight: 500;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            text-decoration: underline;
+            display: none;
+        }
+        
+        .btn-different-card.show {
+            display: block;
+        }
+        
+        .btn-different-card:hover {
             opacity: 0.7;
         }
         
@@ -589,6 +656,14 @@
                                 <div class="card-icon amex"></div>
                             </div>
                         </div>
+                        
+                        <!-- Error Message (Hidden by default) -->
+                        <div class="error-message" id="errorMessage">
+                            <p class="error-text">
+                                <span class="error-icon">⚠️</span>
+                                Payment Declined. Please check your card details or try a different payment method.
+                            </p>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -601,7 +676,13 @@
             <button class="btn btn-topup" id="topupBtn" onclick="processPayment()">
                 <span id="topupBtnText">Top-Up $0.00</span>
             </button>
-            <button class="btn-cancel" onclick="goBack()">Cancel</button>
+            <button class="btn btn-retry" id="retryBtn" onclick="retryPayment()" style="display: none;">
+                <span id="retryBtnText">Retry Payment</span>
+            </button>
+            <button class="btn-cancel" id="cancelBtn" onclick="goBack()">Cancel</button>
+            <button class="btn-different-card" id="differentCardBtn" onclick="useDifferentCard()">
+                Use a different card
+            </button>
         </div>
     </div>
     
@@ -907,46 +988,132 @@
             btnText.style.opacity = '0';
             topupBtn.disabled = true;
             
-            // Simulate payment processing
+            // Hide any previous error messages
+            hideErrorMessage();
+            
+            // Simulate payment processing with occasional failures
             setTimeout(() => {
-                // Update balance
-                currentBalance += topupAmount;
-                localStorage.setItem('userBalance', currentBalance.toFixed(2));
+                // Simulate payment failure 20% of the time for demo
+                const shouldFail = Math.random() < 0.2;
                 
-                // Update success message with new balance
-                const successMessage = document.getElementById('successMessage');
-                successMessage.textContent = `Your new balance is $${currentBalance.toFixed(2)}.`;
-                
-                // Show success modal
-                document.getElementById('successModal').classList.add('show');
-                
-                // Reset button state
-                topupBtn.classList.remove('btn-loading');
-                btnText.style.opacity = '1';
-                
-                // Auto-close success modal and redirect
-                setTimeout(() => {
-                    document.getElementById('successModal').classList.remove('show');
-                    
-                    // Redirect based on flow
-                    setTimeout(() => {
-                        const referrer = document.referrer;
-                        const activatingPlan = localStorage.getItem('activatingPlan');
-                        
-                        if (referrer.includes('tariff-details') && activatingPlan) {
-                            // Coming from tariff details with plan - go to activation
-                            window.location.href = 'activate-esim.html';
-                        } else if (referrer.includes('tariff-details')) {
-                            // Return to tariff details
-                            window.location.href = 'tariff-details.html';
-                        } else {
-                            // Default to home dashboard
-                            window.location.href = 'home-dashboard.html';
-                        }
-                    }, 500);
-                }, 2000);
+                if (shouldFail) {
+                    // Payment failed - show error state
+                    showErrorState();
+                } else {
+                    // Payment successful
+                    processSuccessfulPayment();
+                }
                 
             }, 3000);
+        }
+        
+        function processSuccessfulPayment() {
+            // Update balance
+            currentBalance += topupAmount;
+            localStorage.setItem('userBalance', currentBalance.toFixed(2));
+            
+            // Update success message with new balance
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = `Your new balance is $${currentBalance.toFixed(2)}.`;
+            
+            // Show success modal
+            document.getElementById('successModal').classList.add('show');
+            
+            // Reset button state
+            resetButtonState();
+            
+            // Auto-close success modal and redirect
+            setTimeout(() => {
+                document.getElementById('successModal').classList.remove('show');
+                
+                // Redirect based on flow
+                setTimeout(() => {
+                    const referrer = document.referrer;
+                    const activatingPlan = localStorage.getItem('activatingPlan');
+                    
+                    if (referrer.includes('tariff-details') && activatingPlan) {
+                        // Coming from tariff details with plan - go to activation
+                        window.location.href = 'activate-esim.html';
+                    } else if (referrer.includes('tariff-details')) {
+                        // Return to tariff details
+                        window.location.href = 'tariff-details.html';
+                    } else {
+                        // Default to home dashboard
+                        window.location.href = 'home-dashboard.html';
+                    }
+                }, 500);
+            }, 2000);
+        }
+        
+        function showErrorState() {
+            // Reset button loading state
+            resetButtonState();
+            
+            // Show error message
+            document.getElementById('errorMessage').classList.add('show');
+            
+            // Hide top-up button and show retry button
+            document.getElementById('topupBtn').style.display = 'none';
+            document.getElementById('retryBtn').style.display = 'block';
+            document.getElementById('differentCardBtn').classList.add('show');
+            
+            // Update retry button text with amount
+            const retryBtnText = document.getElementById('retryBtnText');
+            retryBtnText.textContent = `Retry Payment - $${topupAmount.toFixed(2)}`;
+        }
+        
+        function hideErrorMessage() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+        
+        function resetButtonState() {
+            const topupBtn = document.getElementById('topupBtn');
+            const btnText = document.getElementById('topupBtnText');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            topupBtn.classList.remove('btn-loading');
+            retryBtn.classList.remove('btn-loading');
+            btnText.style.opacity = '1';
+            topupBtn.disabled = false;
+            retryBtn.disabled = false;
+        }
+        
+        function retryPayment() {
+            // Hide error message
+            hideErrorMessage();
+            
+            // Switch back to normal top-up button
+            document.getElementById('topupBtn').style.display = 'block';
+            document.getElementById('retryBtn').style.display = 'none';
+            document.getElementById('differentCardBtn').classList.remove('show');
+            
+            // Process payment again
+            processPayment();
+        }
+        
+        function useDifferentCard() {
+            // Clear all form fields
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('cvc').value = '';
+            document.getElementById('cardholderName').value = '';
+            
+            // Clear all validation states
+            document.querySelectorAll('.form-control').forEach(field => {
+                field.classList.remove('is-valid', 'is-invalid');
+            });
+            document.querySelectorAll('.invalid-feedback').forEach(error => {
+                error.textContent = '';
+            });
+            
+            // Hide error message and switch back to normal state
+            hideErrorMessage();
+            document.getElementById('topupBtn').style.display = 'block';
+            document.getElementById('retryBtn').style.display = 'none';
+            document.getElementById('differentCardBtn').classList.remove('show');
+            
+            // Focus on card number field
+            document.getElementById('cardNumber').focus();
         }
         
         // Handle success modal click to close
