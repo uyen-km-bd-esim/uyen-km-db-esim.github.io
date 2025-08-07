@@ -407,13 +407,14 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--esimphony-black);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
         
         .success-message {
-            font-size: 1rem;
-            color: var(--esimphony-gray);
+            font-size: 1.125rem;
+            color: var(--esimphony-black);
             line-height: 1.5;
+            font-weight: 500;
         }
         
         /* Responsive Design */
@@ -476,7 +477,7 @@
             <!-- Current Balance -->
             <div class="balance-display">
                 <div class="balance-label">Current Balance</div>
-                <div class="balance-amount" id="currentBalance">$0.00</div>
+                <div class="balance-amount" id="currentBalance">$8.50</div>
             </div>
             
             <!-- Amount Section -->
@@ -578,9 +579,15 @@
                         </div>
                         
                         <div class="card-icons">
-                            <div class="card-icon visa"></div>
-                            <div class="card-icon mastercard"></div>
-                            <div class="card-icon amex"></div>
+                            <div class="stripe-logo">
+                                <span style="font-size: 0.875rem; font-weight: 600; color: var(--esimphony-gray);">Powered by</span>
+                                <span style="font-size: 1.125rem; font-weight: 700; color: #635BFF; margin-left: 0.5rem;">Stripe</span>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                <div class="card-icon visa"></div>
+                                <div class="card-icon mastercard"></div>
+                                <div class="card-icon amex"></div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -602,8 +609,8 @@
     <div class="success-modal" id="successModal">
         <div class="success-content">
             <div class="success-icon">✓</div>
-            <h3 class="success-title">Payment Successful!</h3>
-            <p class="success-message">Your balance has been topped up successfully.</p>
+            <h3 class="success-title">Top-Up Successful!</h3>
+            <p class="success-message" id="successMessage">Your new balance is $8.50.</p>
         </div>
     </div>
     
@@ -628,7 +635,7 @@
         }
         
         function loadCurrentBalance() {
-            const storedBalance = localStorage.getItem('userBalance') || '0.00';
+            const storedBalance = localStorage.getItem('userBalance') || '8.50';
             currentBalance = parseFloat(storedBalance);
             document.getElementById('currentBalance').textContent = `$${currentBalance.toFixed(2)}`;
         }
@@ -905,6 +912,10 @@
                 // Update balance
                 currentBalance += topupAmount;
                 localStorage.setItem('userBalance', currentBalance.toFixed(2));
+                
+                // Update success message with new balance
+                const successMessage = document.getElementById('successMessage');
+                successMessage.textContent = `Your new balance is $${currentBalance.toFixed(2)}.`;
                 
                 // Show success modal
                 document.getElementById('successModal').classList.add('show');
