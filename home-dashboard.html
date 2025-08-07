@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-light-gray: #999999;
+            --esimphony-card-bg: #FFFFFF;
+            --esimphony-shadow: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        .dashboard-container {
+            min-height: 100vh;
+            background-color: var(--esimphony-black);
+        }
+        
+        /* Header Section */
+        .header-section {
+            padding: 1rem 1rem 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .greeting {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--esimphony-white);
+        }
+        
+        .greeting-user {
+            color: var(--esimphony-red);
+        }
+        
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .notification-btn:hover {
+            opacity: 0.7;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 8px;
+            height: 8px;
+            background-color: var(--esimphony-red);
+            border-radius: 50%;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 1rem 2rem 1rem;
+        }
+        
+        /* Balance Section */
+        .balance-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .balance-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--esimphony-gray);
+        }
+        
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .btn-topup {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .btn-topup:hover,
+        .btn-topup:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+        
+        /* Plans Section */
+        .plans-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .plans-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr;
+        }
+        
+        .plan-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            transition: transform 0.2s ease;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-type {
+            background-color: #F5F5F5;
+            color: var(--esimphony-gray);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        
+        .plan-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .plan-details {
+            margin-bottom: 1.5rem;
+        }
+        
+        .plan-data {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .plan-duration {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .plan-features {
+            margin-bottom: 1.5rem;
+        }
+        
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .plan-features li {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            margin-bottom: 0.25rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00D26A;
+            font-weight: 600;
+        }
+        
+        .btn-select-plan {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-select-plan:hover,
+        .btn-select-plan:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--esimphony-card-bg);
+            border-top: 1px solid #E5E5E5;
+            padding: 0.75rem 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--esimphony-gray);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            color: var(--esimphony-red);
+        }
+        
+        .nav-item:hover {
+            color: var(--esimphony-red);
+            text-decoration: none;
+        }
+        
+        .nav-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .header-section {
+                padding: 2rem 2rem 0 2rem;
+            }
+            
+            .main-content {
+                padding: 0 2rem 2rem 2rem;
+            }
+            
+            .greeting {
+                font-size: 1.75rem;
+            }
+            
+            .plans-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .balance-card {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .balance-header {
+                margin-bottom: 0;
+            }
+            
+            .balance-info {
+                flex: 1;
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-topup:hover,
+            .btn-select-plan:hover,
+            .plan-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-topup:active {
+                background-color: #CC0000;
+            }
+            
+            .btn-select-plan:active {
+                background-color: #CC0000;
+            }
+        }
+        
+        /* Focus states for accessibility */
+        .btn-topup:focus-visible,
+        .btn-select-plan:focus-visible,
+        .notification-btn:focus-visible,
+        .nav-item:focus-visible {
+            outline: 3px solid rgba(255, 0, 0, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Loading states */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="greeting">
+                Welcome, <span class="greeting-user" id="userName">John</span>!
+            </div>
+            <button class="notification-btn" aria-label="Notifications">
+                🔔
+                <div class="notification-badge"></div>
+            </button>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Balance Section -->
+            <div class="balance-card">
+                <div class="balance-info">
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-amount" id="currentBalance">$0.00</div>
+                </div>
+                <button class="btn btn-topup">Top-Up Balance</button>
+            </div>
+            
+            <!-- Plans Section -->
+            <div class="plans-section">
+                <h2 class="section-title">Plans for Your Location</h2>
+                <div class="plans-grid" id="plansGrid">
+                    <!-- Plan cards will be dynamically generated -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="home-dashboard.html" class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <span>Home</span>
+            </a>
+            <a href="#plans" class="nav-item">
+                <div class="nav-icon">📋</div>
+                <span>Plans</span>
+            </a>
+            <a href="#usage" class="nav-item">
+                <div class="nav-icon">📊</div>
+                <span>Usage</span>
+            </a>
+            <a href="#profile" class="nav-item">
+                <div class="nav-icon">👤</div>
+                <span>Profile</span>
+            </a>
+        </div>
+    </nav>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data for available plans
+        const availablePlans = [
+            {
+                id: 1,
+                type: "Prepaid",
+                data: "10 GB",
+                duration: "30 Days",
+                price: "$15.00",
+                features: [
+                    "High-speed data",
+                    "Global coverage",
+                    "No activation fees",
+                    "24/7 support"
+                ]
+            },
+            {
+                id: 2,
+                type: "Prepaid",
+                data: "25 GB",
+                duration: "30 Days",
+                price: "$25.00",
+                features: [
+                    "High-speed data",
+                    "Global coverage",
+                    "No activation fees",
+                    "24/7 support",
+                    "Data rollover"
+                ]
+            },
+            {
+                id: 3,
+                type: "Prepaid",
+                data: "50 GB",
+                duration: "30 Days",
+                price: "$40.00",
+                features: [
+                    "High-speed data",
+                    "Global coverage",
+                    "No activation fees",
+                    "24/7 support",
+                    "Data rollover",
+                    "International calling"
+                ]
+            },
+            {
+                id: 4,
+                type: "Postpaid",
+                data: "Unlimited",
+                duration: "Monthly",
+                price: "$60.00",
+                features: [
+                    "Unlimited data",
+                    "Global coverage",
+                    "No activation fees",
+                    "24/7 support",
+                    "International calling",
+                    "Premium support"
+                ]
+            }
+        ];
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            renderPlans();
+            setupEventListeners();
+        });
+        
+        function loadUserData() {
+            // Simulate loading user data from localStorage or API
+            const userData = {
+                firstName: localStorage.getItem('userFirstName') || 'John',
+                balance: localStorage.getItem('userBalance') || '0.00'
+            };
+            
+            document.getElementById('userName').textContent = userData.firstName;
+            document.getElementById('currentBalance').textContent = `$${userData.balance}`;
+        }
+        
+        function renderPlans() {
+            const plansGrid = document.getElementById('plansGrid');
+            
+            // Show loading skeleton
+            plansGrid.innerHTML = createLoadingSkeletons();
+            
+            // Simulate API delay
+            setTimeout(() => {
+                plansGrid.innerHTML = availablePlans.map(plan => createPlanCard(plan)).join('');
+            }, 1000);
+        }
+        
+        function createLoadingSkeletons() {
+            return Array(3).fill(0).map(() => `
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <div class="loading-skeleton" style="width: 80px; height: 20px;"></div>
+                        <div class="loading-skeleton" style="width: 60px; height: 30px;"></div>
+                    </div>
+                    <div class="plan-details">
+                        <div class="loading-skeleton" style="width: 120px; height: 24px; margin-bottom: 8px;"></div>
+                        <div class="loading-skeleton" style="width: 80px; height: 16px;"></div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="loading-skeleton" style="width: 100%; height: 16px; margin-bottom: 4px;"></div>
+                        <div class="loading-skeleton" style="width: 80%; height: 16px; margin-bottom: 4px;"></div>
+                        <div class="loading-skeleton" style="width: 90%; height: 16px;"></div>
+                    </div>
+                    <div class="loading-skeleton" style="width: 100%; height: 44px; margin-top: 16px;"></div>
+                </div>
+            `).join('');
+        }
+        
+        function createPlanCard(plan) {
+            return `
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <span class="plan-type">${plan.type}</span>
+                        <div class="plan-price">${plan.price}</div>
+                    </div>
+                    <div class="plan-details">
+                        <div class="plan-data">${plan.data}</div>
+                        <div class="plan-duration">${plan.duration}</div>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            ${plan.features.map(feature => `<li>${feature}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <button class="btn btn-select-plan" onclick="selectPlan(${plan.id})">
+                        Select Plan
+                    </button>
+                </div>
+            `;
+        }
+        
+        function setupEventListeners() {
+            // Top-up button
+            document.querySelector('.btn-topup').addEventListener('click', function() {
+                // Simulate top-up action
+                alert('Top-up functionality would open here');
+            });
+            
+            // Notification button
+            document.querySelector('.notification-btn').addEventListener('click', function() {
+                // Remove notification badge
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+                alert('Notifications panel would open here');
+            });
+            
+            // Bottom navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        alert(`${this.querySelector('span').textContent} section would open here`);
+                    }
+                });
+            });
+        }
+        
+        function selectPlan(planId) {
+            const selectedPlan = availablePlans.find(plan => plan.id === planId);
+            if (selectedPlan) {
+                // Show confirmation
+                const confirmed = confirm(
+                    `Select ${selectedPlan.data} ${selectedPlan.type} plan for ${selectedPlan.price}?\n\nDuration: ${selectedPlan.duration}`
+                );
+                
+                if (confirmed) {
+                    // Simulate plan selection
+                    alert('Plan selection would proceed to checkout');
+                    // In real app, this would navigate to plan details or checkout
+                }
+            }
+        }
+        
+        // Handle navigation active state
+        function updateNavigationState() {
+            const currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href').includes(currentPage) || 
+                    (currentPage === 'home-dashboard.html' && item.querySelector('span').textContent === 'Home')) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        // Call on load
+        updateNavigationState();
+        
+        // Simulate real-time balance updates
+        function simulateBalanceUpdate() {
+            const balanceElement = document.getElementById('currentBalance');
+            const currentBalance = parseFloat(balanceElement.textContent.replace('$', ''));
+            
+            // Simulate small random changes (for demo purposes)
+            if (Math.random() > 0.98) {
+                const newBalance = Math.max(0, currentBalance + (Math.random() - 0.5) * 10);
+                balanceElement.textContent = `$${newBalance.toFixed(2)}`;
+                localStorage.setItem('userBalance', newBalance.toFixed(2));
+            }
+        }
+        
+        // Update balance every 30 seconds (for demo)
+        setInterval(simulateBalanceUpdate, 30000);
+    </script>
+</body>
+</html>
