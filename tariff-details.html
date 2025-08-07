@@ -43,6 +43,103 @@
             margin-bottom: 1.5rem;
         }
         
+        /* Current Active Plan Section */
+        .current-plan-section {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 0 1rem 2rem 1rem;
+            border: 2px solid var(--esimphony-red);
+        }
+        
+        .current-plan-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .current-plan-badge {
+            background-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        
+        .current-plan-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-info-item {
+            text-align: center;
+        }
+        
+        .plan-info-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            margin-bottom: 0.25rem;
+        }
+        
+        .plan-info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+        }
+        
+        .plan-expiry-warning {
+            background-color: #FFF3E0;
+            border: 1px solid var(--esimphony-warning);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .plan-expiry-warning .warning-icon {
+            color: var(--esimphony-warning);
+            font-size: 1.2rem;
+        }
+        
+        .plan-expiry-warning .warning-text {
+            font-size: 0.875rem;
+            color: var(--esimphony-black);
+        }
+        
+        .auto-renew-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .auto-renew-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+        }
+        
+        .section-header {
+            padding: 0 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin: 0;
+        }
+        
         .header-nav {
             display: flex;
             align-items: center;
@@ -544,6 +641,32 @@
             </div>
         </div>
         
+        <!-- Current Active Plan Section (only shown in change mode) -->
+        <div class="current-plan-section" id="currentPlanSection" style="display: none;">
+            <div class="current-plan-title">
+                Current Active Plan
+                <span class="current-plan-badge">Active</span>
+            </div>
+            <div class="current-plan-info" id="currentPlanInfo">
+                <!-- Current plan details will be populated here -->
+            </div>
+            <div class="plan-expiry-warning" id="expiryWarning">
+                <span class="warning-icon">⚠️</span>
+                <span class="warning-text" id="expiryText">Expires on Aug 28, 2025</span>
+            </div>
+            <div class="auto-renew-section" id="autoRenewCurrentSection">
+                <span class="auto-renew-label">Auto-Renew</span>
+                <div class="toggle-switch" id="currentAutoRenewToggle" onclick="toggleCurrentAutoRenew()">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section Header for Available Plans -->
+        <div class="section-header" id="availablePlansHeader">
+            <h3 id="availablePlansTitle">Select Plan</h3>
+        </div>
+        
         <!-- Main Content -->
         <div class="main-content">
             <!-- Plan Type Tabs -->
@@ -696,18 +819,24 @@
         
         let currentTab = 'prepaid';
         let selectedPlan = null;
-        let userBalance = 25.00; // Sample balance
+        let userBalance = 35.00; // Sample balance
         let autoRenewEnabled = false;
+        let isChangeMode = false;
+        let currentAutoRenewEnabled = false;
         
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             loadCountryInfo();
+            checkPlanChangeMode();
             renderPlanOptions();
             updateBalance();
         });
         
         function goBack() {
-            if (document.referrer) {
+            if (isChangeMode) {
+                // Return to home dashboard when in change mode
+                window.location.href = 'home-dashboard.html';
+            } else if (document.referrer) {
                 window.history.back();
             } else {
                 window.location.href = 'home-dashboard.html';
@@ -724,6 +853,65 @@
             document.getElementById('countryName').textContent = country;
             document.getElementById('countryRegion').textContent = region;
             document.getElementById('countryFlag').textContent = flag;
+        }
+        
+        function checkPlanChangeMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            if (mode === 'change') {
+                isChangeMode = true;
+                showCurrentActivePlan();
+                document.getElementById('availablePlansTitle').textContent = 'Choose a New Plan';
+                document.querySelector('.header-title').textContent = 'Change Plan';
+            }
+        }
+        
+        function showCurrentActivePlan() {
+            const currentPlanSection = document.getElementById('currentPlanSection');
+            currentPlanSection.style.display = 'block';
+            
+            // Mock current active plan data
+            const currentPlan = {
+                name: 'Global Traveler Prepaid',
+                status: 'Active',
+                expiryDate: 'Aug 28, 2025',
+                dataTotal: '10 GB',
+                duration: '30 Days'
+            };
+            
+            const currentPlanInfo = document.getElementById('currentPlanInfo');
+            currentPlanInfo.innerHTML = `
+                <div class="plan-info-item">
+                    <div class="plan-info-label">Plan Name</div>
+                    <div class="plan-info-value">${currentPlan.name}</div>
+                </div>
+                <div class="plan-info-item">
+                    <div class="plan-info-label">Data Allowance</div>
+                    <div class="plan-info-value">${currentPlan.dataTotal}</div>
+                </div>
+                <div class="plan-info-item">
+                    <div class="plan-info-label">Status</div>
+                    <div class="plan-info-value">${currentPlan.status}</div>
+                </div>
+                <div class="plan-info-item">
+                    <div class="plan-info-label">Duration</div>
+                    <div class="plan-info-value">${currentPlan.duration}</div>
+                </div>
+            `;
+            
+            document.getElementById('expiryText').textContent = `Expires on ${currentPlan.expiryDate}`;
+        }
+        
+        function toggleCurrentAutoRenew() {
+            const toggle = document.getElementById('currentAutoRenewToggle');
+            currentAutoRenewEnabled = !currentAutoRenewEnabled;
+            
+            if (currentAutoRenewEnabled) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
         }
         
         function switchTab(tabName) {
@@ -785,6 +973,32 @@
             // Update summary and CTA
             updatePlanSummary();
             updateOrderButton();
+            
+            // Handle plan change mode
+            if (isChangeMode) {
+                handlePlanChange();
+            }
+        }
+        
+        function handlePlanChange() {
+            if (!selectedPlan) return;
+            
+            const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
+            const hasEnoughBalance = userBalance >= planPrice;
+            
+            if (hasEnoughBalance) {
+                // Check if it's an early prepaid switch
+                if (currentTab === 'prepaid') {
+                    showWarningModal();
+                } else {
+                    showConfirmationModal();
+                }
+            } else {
+                // Navigate to top-up for insufficient balance
+                localStorage.setItem('topUpSource', 'tariff-details-change');
+                localStorage.setItem('planChangeData', JSON.stringify(selectedPlan));
+                window.location.href = `top-up.html?amount=${selectedPlan.price.replace('$', '')}`;
+            }
         }
         
         function updatePlanSummary() {
@@ -808,7 +1022,11 @@
             const topupBtn = document.getElementById('topupBtn');
             
             if (!selectedPlan) {
-                orderBtn.textContent = 'Select a plan to continue';
+                if (isChangeMode) {
+                    orderBtn.textContent = 'Select a new plan to continue';
+                } else {
+                    orderBtn.textContent = 'Select a plan to continue';
+                }
                 orderBtn.disabled = true;
                 topupBtn.style.display = 'none';
                 return;
@@ -818,7 +1036,11 @@
             const hasEnoughBalance = userBalance >= planPrice;
             
             if (hasEnoughBalance) {
-                orderBtn.textContent = 'Order and Activate eSIM';
+                if (isChangeMode) {
+                    orderBtn.textContent = 'Select Plan';
+                } else {
+                    orderBtn.textContent = 'Order and Activate eSIM';
+                }
                 orderBtn.disabled = false;
                 topupBtn.style.display = 'none';
             } else {
@@ -860,6 +1082,11 @@
         }
         
         function orderPlan() {
+            if (isChangeMode) {
+                handlePlanChange();
+                return;
+            }
+            
             if (!selectedPlan) {
                 alert('Please select a plan first');
                 return;
@@ -903,8 +1130,14 @@
         }
         
         function topUpBalance() {
-            // Set source for navigation tracking - this is for insufficient balance, not plan purchase
-            localStorage.setItem('topUpSource', 'tariff-details-balance');
+            if (isChangeMode) {
+                // Set source for plan change navigation
+                localStorage.setItem('topUpSource', 'tariff-details-change');
+                localStorage.setItem('planChangeData', JSON.stringify(selectedPlan));
+            } else {
+                // Set source for navigation tracking - this is for insufficient balance, not plan purchase
+                localStorage.setItem('topUpSource', 'tariff-details-balance');
+            }
             // Navigate to top-up screen with pre-filled amount
             const planPrice = selectedPlan ? selectedPlan.price.replace('$', '') : '15.00';
             window.location.href = `top-up.html?amount=${planPrice}`;
@@ -932,6 +1165,139 @@
             attributes: true,
             attributeFilter: ['class']
         });
+        
+        // Modal functions for plan change
+        function showWarningModal() {
+            const modalHtml = `
+                <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="border-radius: 16px; border: none;">
+                            <div class="modal-body text-center" style="padding: 2rem;">
+                                <div style="font-size: 3rem; color: var(--esimphony-warning); margin-bottom: 1rem;">⚠️</div>
+                                <h5 class="modal-title" style="font-weight: 700; color: var(--esimphony-black); margin-bottom: 1rem;">Are You Sure You Want to Switch?</h5>
+                                <p style="color: var(--esimphony-gray); margin-bottom: 2rem; line-height: 1.4;">Your current plan is still active. If you switch now, the new plan will start immediately and your remaining 'Global Traveler Prepaid' data will be lost.</p>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn" onclick="cancelPlanChange()" style="flex: 1; background: var(--esimphony-white); border: 2px solid var(--esimphony-black); color: var(--esimphony-black); font-weight: 600; padding: 0.75rem; border-radius: 12px;">Cancel</button>
+                                    <button type="button" class="btn" onclick="confirmPlanSwitch()" style="flex: 1; background: var(--esimphony-red); border: 2px solid var(--esimphony-red); color: var(--esimphony-white); font-weight: 600; padding: 0.75rem; border-radius: 12px;">Confirm Switch</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('warningModal'));
+            modal.show();
+        }
+        
+        function showConfirmationModal() {
+            if (!selectedPlan) return;
+            
+            const modalHtml = `
+                <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="border-radius: 16px; border: none;">
+                            <div class="modal-body text-center" style="padding: 2rem;">
+                                <h5 class="modal-title" style="font-weight: 700; color: var(--esimphony-black); margin-bottom: 1.5rem;">Confirm New Plan</h5>
+                                <div style="text-align: left; background: #F8F8F8; padding: 1rem; border-radius: 12px; margin-bottom: 2rem;">
+                                    <div style="margin-bottom: 0.5rem;"><strong>New Plan:</strong> ${selectedPlan.data} ${selectedPlan.duration}</div>
+                                    <div style="margin-bottom: 0.5rem;"><strong>Price:</strong> ${selectedPlan.price}</div>
+                                    <div style="color: var(--esimphony-gray); font-size: 0.875rem;">This amount will be deducted from your available balance.</div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn" onclick="cancelPlanChange()" style="flex: 1; background: var(--esimphony-white); border: 2px solid var(--esimphony-black); color: var(--esimphony-black); font-weight: 600; padding: 0.75rem; border-radius: 12px;">Cancel</button>
+                                    <button type="button" class="btn" onclick="activateNewPlan()" style="flex: 1; background: var(--esimphony-red); border: 2px solid var(--esimphony-red); color: var(--esimphony-white); font-weight: 600; padding: 0.75rem; border-radius: 12px;">Activate Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            modal.show();
+        }
+        
+        function cancelPlanChange() {
+            // Close any open modal
+            const warningModal = document.getElementById('warningModal');
+            const confirmationModal = document.getElementById('confirmationModal');
+            
+            if (warningModal) {
+                bootstrap.Modal.getInstance(warningModal).hide();
+                warningModal.remove();
+            }
+            
+            if (confirmationModal) {
+                bootstrap.Modal.getInstance(confirmationModal).hide();
+                confirmationModal.remove();
+            }
+            
+            // Clear selection
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            selectedPlan = null;
+            updatePlanSummary();
+            updateOrderButton();
+        }
+        
+        function confirmPlanSwitch() {
+            // Close warning modal and show confirmation modal
+            const warningModal = document.getElementById('warningModal');
+            if (warningModal) {
+                bootstrap.Modal.getInstance(warningModal).hide();
+                warningModal.remove();
+            }
+            
+            showConfirmationModal();
+        }
+        
+        function activateNewPlan() {
+            if (!selectedPlan) return;
+            
+            const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
+            
+            // Update balance
+            userBalance -= planPrice;
+            localStorage.setItem('userBalance', userBalance.toFixed(2));
+            
+            // Update active plan in localStorage
+            const newActivePlan = {
+                name: selectedPlan.data + ' Plan',
+                dataTotal: parseInt(selectedPlan.data),
+                dataUsed: 0,
+                dataRemaining: parseInt(selectedPlan.data),
+                expiryDays: 30,
+                renewalPrice: selectedPlan.price
+            };
+            
+            localStorage.setItem('userActivePlan', JSON.stringify(newActivePlan));
+            
+            // Close modal
+            const confirmationModal = document.getElementById('confirmationModal');
+            if (confirmationModal) {
+                bootstrap.Modal.getInstance(confirmationModal).hide();
+                confirmationModal.remove();
+            }
+            
+            // Show success message and update current plan section
+            setTimeout(() => {
+                alert('Plan activated successfully!');
+                // Refresh the current plan section
+                showCurrentActivePlan();
+                // Clear selection
+                document.querySelectorAll('.option-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                selectedPlan = null;
+                updatePlanSummary();
+                updateOrderButton();
+                updateBalance();
+            }, 100);
+        }
     </script>
 </body>
 </html>

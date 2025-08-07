@@ -541,7 +541,7 @@
             <div class="balance-card">
                 <div class="balance-info">
                     <div class="balance-label">Current Balance</div>
-                    <div class="balance-amount" id="currentBalance">$8.50</div>
+                    <div class="balance-amount" id="currentBalance">$35.00</div>
                 </div>
                 <button class="btn btn-topup">Top-Up Balance</button>
             </div>
@@ -661,7 +661,7 @@
             // Simulate loading user data from localStorage or API
             const userData = {
                 firstName: localStorage.getItem('userFirstName') || 'John',
-                balance: localStorage.getItem('userBalance') || '8.50'
+                balance: localStorage.getItem('userBalance') || '35.00'
             };
             
             document.getElementById('userName').textContent = userData.firstName;
@@ -685,9 +685,9 @@
                 const mockActivePlan = {
                     name: 'Global Traveler Prepaid',
                     dataTotal: 10,
-                    dataUsed: 5.8,
-                    dataRemaining: 4.2,
-                    expiryDays: 15,
+                    dataUsed: 6.5,
+                    dataRemaining: 3.5,
+                    expiryDays: 22,
                     renewalPrice: '$15.00'
                 };
                 renderActivePlan(mockActivePlan);
@@ -722,7 +722,7 @@
                 </div>
                 
                 <div class="plan-actions">
-                    <button class="btn btn-renew" onclick="renewPlan()">Renew Plan</button>
+                    <button class="btn btn-renew" onclick="changePlan()">Change Plan</button>
                     <button class="btn btn-manage" onclick="managePlan()">Manage</button>
                 </div>
             `;
@@ -844,9 +844,11 @@
         // Call on load
         updateNavigationState();
         
-        function renewPlan() {
-            // Navigate to plan renewal/purchase flow
-            window.location.href = 'tariff-details.html?country=United%20States&region=North%20America&flag=🇺🇸';
+        function changePlan() {
+            // Set source for Use Case 3 navigation
+            localStorage.setItem('planChangeSource', 'home-dashboard');
+            // Navigate to plan change flow
+            window.location.href = 'tariff-details.html?country=United%20States&region=North%20America&flag=🇺🇸&mode=change';
         }
         
         function managePlan() {

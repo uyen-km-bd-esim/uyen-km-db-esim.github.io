@@ -1037,6 +1037,12 @@
                         // Coming from tariff details with plan - continue to eSIM activation
                         window.location.href = 'activate-esim.html';
                     } 
+                    // Use Case 3: Plan change flow - return to tariff details with change mode
+                    else if (topUpSource === 'tariff-details-change') {
+                        localStorage.removeItem('topUpSource');
+                        localStorage.removeItem('planChangeData');
+                        window.location.href = 'tariff-details.html?country=United%20States&region=North%20America&flag=🇺🇸&mode=change';
+                    }
                     // Use Case 2: Existing customer direct top-up from home dashboard
                     else if (topUpSource === 'home-dashboard') {
                         // Return to home dashboard after successful top-up
@@ -1148,6 +1154,12 @@
                 if (referrer.includes('tariff-details') && activatingPlan) {
                     window.location.href = 'activate-esim.html';
                 } 
+                // Use Case 3: Plan change flow
+                else if (topUpSource === 'tariff-details-change') {
+                    localStorage.removeItem('topUpSource');
+                    localStorage.removeItem('planChangeData');
+                    window.location.href = 'tariff-details.html?country=United%20States&region=North%20America&flag=🇺🇸&mode=change';
+                }
                 // Use Case 2: Coming from home dashboard
                 else if (topUpSource === 'home-dashboard' || referrer.includes('home-dashboard')) {
                     localStorage.removeItem('topUpSource');
