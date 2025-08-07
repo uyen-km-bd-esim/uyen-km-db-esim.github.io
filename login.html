@@ -363,8 +363,12 @@
                     loginBtnText.style.opacity = '1';
                     loginBtn.disabled = false;
                     
-                    // Redirect to dashboard or show success
-                    alert('Login successful! (This would redirect to dashboard)');
+                    // Store user data and redirect to dashboard
+                    localStorage.setItem('userEmail', email.value);
+                    alert('Login successful! Welcome back to eSimphony.');
+                    
+                    // Redirect to home dashboard
+                    window.location.href = 'home-dashboard.html';
                 }, 2000);
             }
         });

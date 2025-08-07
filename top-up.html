@@ -917,12 +917,19 @@
                 setTimeout(() => {
                     document.getElementById('successModal').classList.remove('show');
                     
-                    // Redirect back to previous screen
+                    // Redirect based on flow
                     setTimeout(() => {
                         const referrer = document.referrer;
-                        if (referrer.includes('tariff-details')) {
+                        const activatingPlan = localStorage.getItem('activatingPlan');
+                        
+                        if (referrer.includes('tariff-details') && activatingPlan) {
+                            // Coming from tariff details with plan - go to activation
+                            window.location.href = 'activate-esim.html';
+                        } else if (referrer.includes('tariff-details')) {
+                            // Return to tariff details
                             window.location.href = 'tariff-details.html';
                         } else {
+                            // Default to home dashboard
                             window.location.href = 'home-dashboard.html';
                         }
                     }, 500);
@@ -935,7 +942,16 @@
         document.getElementById('successModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.classList.remove('show');
-                goBack();
+                
+                // Check if we should go to activation or back
+                const referrer = document.referrer;
+                const activatingPlan = localStorage.getItem('activatingPlan');
+                
+                if (referrer.includes('tariff-details') && activatingPlan) {
+                    window.location.href = 'activate-esim.html';
+                } else {
+                    goBack();
+                }
             }
         });
     </script>

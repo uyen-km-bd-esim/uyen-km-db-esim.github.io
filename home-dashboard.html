@@ -573,8 +573,8 @@
         function setupEventListeners() {
             // Top-up button
             document.querySelector('.btn-topup').addEventListener('click', function() {
-                // Simulate top-up action
-                alert('Top-up functionality would open here');
+                // Navigate to top-up screen
+                window.location.href = 'top-up.html';
             });
             
             // Notification button
@@ -601,16 +601,15 @@
         function selectPlan(planId) {
             const selectedPlan = availablePlans.find(plan => plan.id === planId);
             if (selectedPlan) {
-                // Show confirmation
-                const confirmed = confirm(
-                    `Select ${selectedPlan.data} ${selectedPlan.type} plan for ${selectedPlan.price}?\n\nDuration: ${selectedPlan.duration}`
-                );
+                // Store selected plan data for next screen
+                localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
                 
-                if (confirmed) {
-                    // Simulate plan selection
-                    alert('Plan selection would proceed to checkout');
-                    // In real app, this would navigate to plan details or checkout
-                }
+                // Navigate to tariff details screen
+                const country = 'United States';
+                const region = 'North America'; 
+                const flag = '🇺🇸';
+                
+                window.location.href = `tariff-details.html?country=${encodeURIComponent(country)}&region=${encodeURIComponent(region)}&flag=${encodeURIComponent(flag)}`;
             }
         }
         

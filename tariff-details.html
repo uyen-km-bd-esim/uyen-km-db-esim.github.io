@@ -890,26 +890,22 @@
                 userBalance -= planPrice;
                 localStorage.setItem('userBalance', userBalance.toFixed(2));
                 
-                alert('eSIM order successful! Activation instructions will be sent to your email.');
+                // Store plan details for activation
+                localStorage.setItem('activatingPlan', JSON.stringify({
+                    ...selectedPlan,
+                    country: document.getElementById('countryName').textContent,
+                    autoRenew: orderDetails.autoRenew
+                }));
                 
-                // In a real app, this would navigate to order confirmation
-                window.location.href = 'home-dashboard.html';
+                // Navigate to eSIM activation
+                window.location.href = 'activate-esim.html';
             }
         }
         
         function topUpBalance() {
-            // Simulate top-up process
-            const topUpAmount = prompt('Enter top-up amount (e.g., 20):');
-            
-            if (topUpAmount && !isNaN(topUpAmount)) {
-                const amount = parseFloat(topUpAmount);
-                if (amount > 0) {
-                    userBalance += amount;
-                    localStorage.setItem('userBalance', userBalance.toFixed(2));
-                    updateBalance();
-                    alert(`Successfully topped up $${amount.toFixed(2)}`);
-                }
-            }
+            // Navigate to top-up screen with pre-filled amount
+            const planPrice = selectedPlan ? selectedPlan.price.replace('$', '') : '15.00';
+            window.location.href = `top-up.html?amount=${planPrice}`;
         }
         
         // Load balance from localStorage

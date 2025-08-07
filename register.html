@@ -541,8 +541,15 @@
                     registerBtnText.style.opacity = '1';
                     registerBtn.disabled = false;
                     
-                    // Show success or redirect
-                    alert('Account created successfully! (This would redirect to onboarding)');
+                    // Show success and redirect to home dashboard
+                    alert('Account created successfully! Welcome to eSimphony.');
+                    
+                    // Store user data for personalization
+                    localStorage.setItem('userFirstName', formData.get('fullName').split(' ')[0]);
+                    localStorage.setItem('userEmail', formData.get('email'));
+                    
+                    // Redirect to home dashboard
+                    window.location.href = 'home-dashboard.html';
                 }, 2000);
             }
         });
