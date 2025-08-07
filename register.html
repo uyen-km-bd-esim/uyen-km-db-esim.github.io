@@ -545,8 +545,24 @@
                     alert('Account created successfully! Welcome to eSimphony.');
                     
                     // Store user data for personalization
-                    localStorage.setItem('userFirstName', formData.get('fullName').split(' ')[0]);
-                    localStorage.setItem('userEmail', formData.get('email'));
+                    const firstName = formData.get('fullName').split(' ')[0];
+                    const email = formData.get('email');
+                    
+                    // Create new user profile with zero balance and no active plan
+                    const userProfile = {
+                        firstName: firstName,
+                        email: email,
+                        balance: '0.00',
+                        activePlan: null,
+                        accountType: 'new'
+                    };
+                    
+                    localStorage.setItem('userFirstName', firstName);
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userBalance', '0.00');
+                    localStorage.setItem('userProfile', JSON.stringify(userProfile));
+                    // Clear any existing active plan
+                    localStorage.removeItem('userActivePlan');
                     
                     // Redirect to home dashboard
                     window.location.href = 'home-dashboard.html';
