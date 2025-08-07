@@ -263,6 +263,14 @@
             <h1 class="form-title">Welcome back</h1>
             <p class="form-subtitle">Sign in to your eSimphony account</p>
             
+            <!-- Demo Credentials -->
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px; margin-bottom: 2rem; font-size: 0.875rem;">
+                <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--esimphony-white);">Demo Accounts (Password: 123456)</div>
+                <div style="margin-bottom: 0.25rem; color: #ccc;">📧 <strong>nobalance@esim.demo</strong> - No balance, no plan</div>
+                <div style="margin-bottom: 0.25rem; color: #ccc;">💰 <strong>exist-topup@esim.demo</strong> - Has balance ($25), no plan</div>
+                <div style="color: #ccc;">📱 <strong>exist-plan@esim.demo</strong> - Has balance ($45) + active plan</div>
+            </div>
+            
             <form id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="email" class="form-label">Email</label>
@@ -363,9 +371,79 @@
                     loginBtnText.style.opacity = '1';
                     loginBtn.disabled = false;
                     
-                    // Store user data and redirect to dashboard
-                    localStorage.setItem('userEmail', email.value);
-                    alert('Login successful! Welcome back to eSimphony.');
+                    // Handle different demo account types
+                    const loginEmail = email.value.toLowerCase();
+                    let userProfile = {};
+                    
+                    if (loginEmail === 'nobalance@esim.demo') {
+                        // No balance, no active plan
+                        userProfile = {
+                            firstName: 'Alex',
+                            email: loginEmail,
+                            balance: '0.00',
+                            activePlan: null,
+                            accountType: 'no-balance'
+                        };
+                        localStorage.setItem('userFirstName', 'Alex');
+                        localStorage.setItem('userBalance', '0.00');
+                        localStorage.removeItem('userActivePlan');
+                        alert('Welcome back, Alex! Your account has no balance.');
+                    } 
+                    else if (loginEmail === 'exist-topup@esim.demo') {
+                        // Has balance, no active plan
+                        userProfile = {
+                            firstName: 'Sarah',
+                            email: loginEmail,
+                            balance: '25.00',
+                            activePlan: null,
+                            accountType: 'has-balance'
+                        };
+                        localStorage.setItem('userFirstName', 'Sarah');
+                        localStorage.setItem('userBalance', '25.00');
+                        localStorage.removeItem('userActivePlan');
+                        alert('Welcome back, Sarah! Your balance: $25.00');
+                    } 
+                    else if (loginEmail === 'exist-plan@esim.demo') {
+                        // Has balance and active plan
+                        const activePlan = {
+                            name: 'Euro Data Pass',
+                            dataTotal: 20,
+                            dataUsed: 8.5,
+                            dataRemaining: 11.5,
+                            expiryDays: 18,
+                            renewalPrice: '$25.00'
+                        };
+                        
+                        userProfile = {
+                            firstName: 'Michael',
+                            email: loginEmail,
+                            balance: '45.00',
+                            activePlan: activePlan,
+                            accountType: 'has-plan'
+                        };
+                        localStorage.setItem('userFirstName', 'Michael');
+                        localStorage.setItem('userBalance', '45.00');
+                        localStorage.setItem('userActivePlan', JSON.stringify(activePlan));
+                        alert('Welcome back, Michael! Your balance: $45.00, Active plan: Euro Data Pass');
+                    } 
+                    else {
+                        // Default/regular user login
+                        userProfile = {
+                            firstName: 'User',
+                            email: loginEmail,
+                            balance: '10.00',
+                            activePlan: null,
+                            accountType: 'regular'
+                        };
+                        localStorage.setItem('userFirstName', 'User');
+                        localStorage.setItem('userBalance', '10.00');
+                        localStorage.removeItem('userActivePlan');
+                        alert('Login successful! Welcome back to eSimphony.');
+                    }
+                    
+                    // Store common user data
+                    localStorage.setItem('userEmail', loginEmail);
+                    localStorage.setItem('userProfile', JSON.stringify(userProfile));
                     
                     // Redirect to home dashboard
                     window.location.href = 'home-dashboard.html';
