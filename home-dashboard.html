@@ -15,6 +15,7 @@
             --esimphony-light-gray: #999999;
             --esimphony-card-bg: #FFFFFF;
             --esimphony-shadow: rgba(255, 255, 255, 0.1);
+            --esimphony-warning: #FFA500;
         }
         
         * {
@@ -132,9 +133,153 @@
             box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
         }
         
+        /* Active Plan Section */
+        .active-plan-section {
+            margin-bottom: 2rem;
+        }
+        
+        .active-plan-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            border: 2px solid var(--esimphony-red);
+        }
+        
+        .plan-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 1rem;
+        }
+        
+        .data-usage-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .data-usage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .data-usage-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .data-usage-amount {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #E5E5E5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--esimphony-red);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .data-remaining {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .plan-expiry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #F8F8F8;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .expiry-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .expiry-icon {
+            color: var(--esimphony-warning);
+            font-size: 1rem;
+        }
+        
+        .expiry-text {
+            font-size: 0.875rem;
+            color: var(--esimphony-black);
+        }
+        
+        .expiry-days {
+            font-weight: 600;
+            color: var(--esimphony-red);
+        }
+        
+        .plan-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn-renew {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        
+        .btn-renew:hover,
+        .btn-renew:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+        
+        .btn-manage {
+            background-color: transparent;
+            border: 2px solid var(--esimphony-gray);
+            color: var(--esimphony-gray);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        
+        .btn-manage:hover,
+        .btn-manage:focus {
+            background-color: var(--esimphony-gray);
+            color: var(--esimphony-white);
+        }
+        
         /* Plans Section */
         .plans-section {
             margin-bottom: 2rem;
+        }
+        
+        .plans-section.hidden {
+            display: none;
         }
         
         .section-title {
@@ -396,14 +541,22 @@
             <div class="balance-card">
                 <div class="balance-info">
                     <div class="balance-label">Current Balance</div>
-                    <div class="balance-amount" id="currentBalance">$0.00</div>
+                    <div class="balance-amount" id="currentBalance">$8.50</div>
                 </div>
                 <button class="btn btn-topup">Top-Up Balance</button>
             </div>
             
-            <!-- Plans Section -->
-            <div class="plans-section">
-                <h2 class="section-title">Plans for Your Location</h2>
+            <!-- Active Plan Section -->
+            <div class="active-plan-section" id="activePlanSection">
+                <h2 class="section-title">Your Active Plan</h2>
+                <div class="active-plan-card" id="activePlanCard">
+                    <!-- Active plan details will be shown here -->
+                </div>
+            </div>
+            
+            <!-- Available Plans Section -->
+            <div class="plans-section" id="availablePlansSection">
+                <h2 class="section-title">Available Plans</h2>
                 <div class="plans-grid" id="plansGrid">
                     <!-- Plan cards will be dynamically generated -->
                 </div>
@@ -499,6 +652,7 @@
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             loadUserData();
+            checkActivePlan();
             renderPlans();
             setupEventListeners();
         });
@@ -507,11 +661,71 @@
             // Simulate loading user data from localStorage or API
             const userData = {
                 firstName: localStorage.getItem('userFirstName') || 'John',
-                balance: localStorage.getItem('userBalance') || '0.00'
+                balance: localStorage.getItem('userBalance') || '8.50'
             };
             
             document.getElementById('userName').textContent = userData.firstName;
             document.getElementById('currentBalance').textContent = `$${userData.balance}`;
+        }
+        
+        function checkActivePlan() {
+            // Check if user has an active plan
+            const activePlan = localStorage.getItem('userActivePlan');
+            const activePlanSection = document.getElementById('activePlanSection');
+            const availablePlansSection = document.getElementById('availablePlansSection');
+            
+            if (activePlan) {
+                // User has active plan, show it
+                const planData = JSON.parse(activePlan);
+                renderActivePlan(planData);
+                activePlanSection.style.display = 'block';
+                availablePlansSection.querySelector('.section-title').textContent = 'Upgrade Your Plan';
+            } else {
+                // No active plan, simulate one for registered user
+                const mockActivePlan = {
+                    name: 'Global Traveler Prepaid',
+                    dataTotal: 10,
+                    dataUsed: 5.8,
+                    dataRemaining: 4.2,
+                    expiryDays: 15,
+                    renewalPrice: '$15.00'
+                };
+                renderActivePlan(mockActivePlan);
+                activePlanSection.style.display = 'block';
+                availablePlansSection.querySelector('.section-title').textContent = 'Upgrade Your Plan';
+            }
+        }
+        
+        function renderActivePlan(planData) {
+            const activePlanCard = document.getElementById('activePlanCard');
+            const dataUsedPercent = (planData.dataUsed / planData.dataTotal) * 100;
+            
+            activePlanCard.innerHTML = `
+                <div class="plan-name">${planData.name}</div>
+                
+                <div class="data-usage-container">
+                    <div class="data-usage-header">
+                        <span class="data-usage-label">Data Usage</span>
+                        <span class="data-usage-amount">${planData.dataUsed} GB / ${planData.dataTotal} GB</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${dataUsedPercent}%"></div>
+                    </div>
+                    <div class="data-remaining">${planData.dataRemaining} GB Remaining</div>
+                </div>
+                
+                <div class="plan-expiry">
+                    <div class="expiry-info">
+                        <span class="expiry-icon">⏰</span>
+                        <span class="expiry-text">Expires in <span class="expiry-days">${planData.expiryDays} days</span></span>
+                    </div>
+                </div>
+                
+                <div class="plan-actions">
+                    <button class="btn btn-renew" onclick="renewPlan()">Renew Plan</button>
+                    <button class="btn btn-manage" onclick="managePlan()">Manage</button>
+                </div>
+            `;
         }
         
         function renderPlans() {
@@ -627,6 +841,16 @@
         
         // Call on load
         updateNavigationState();
+        
+        function renewPlan() {
+            // Navigate to plan renewal/purchase flow
+            window.location.href = 'tariff-details.html?country=United%20States&region=North%20America&flag=🇺🇸';
+        }
+        
+        function managePlan() {
+            // Show plan management options
+            alert('Plan management features:\n• View usage details\n• Change plan settings\n• Cancel plan\n• View billing history');
+        }
         
         // Simulate real-time balance updates
         function simulateBalanceUpdate() {
