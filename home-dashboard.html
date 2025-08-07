@@ -787,6 +787,8 @@
         function setupEventListeners() {
             // Top-up button
             document.querySelector('.btn-topup').addEventListener('click', function() {
+                // Set source for navigation tracking (Use Case 2)
+                localStorage.setItem('topUpSource', 'home-dashboard');
                 // Navigate to top-up screen
                 window.location.href = 'top-up.html';
             });

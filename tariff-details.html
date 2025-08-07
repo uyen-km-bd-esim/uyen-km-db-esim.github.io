@@ -903,6 +903,8 @@
         }
         
         function topUpBalance() {
+            // Set source for navigation tracking - this is for insufficient balance, not plan purchase
+            localStorage.setItem('topUpSource', 'tariff-details-balance');
             // Navigate to top-up screen with pre-filled amount
             const planPrice = selectedPlan ? selectedPlan.price.replace('$', '') : '15.00';
             window.location.href = `top-up.html?amount=${planPrice}`;

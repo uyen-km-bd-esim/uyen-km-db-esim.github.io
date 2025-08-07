@@ -1026,19 +1026,37 @@
             setTimeout(() => {
                 document.getElementById('successModal').classList.remove('show');
                 
-                // Redirect based on flow
+                // Redirect based on flow - supports both Use Case 1 and Use Case 2
                 setTimeout(() => {
                     const referrer = document.referrer;
                     const activatingPlan = localStorage.getItem('activatingPlan');
+                    const topUpSource = localStorage.getItem('topUpSource');
                     
+                    // Use Case 1: New customer onboarding flow (tariff → top-up → activation)
                     if (referrer.includes('tariff-details') && activatingPlan) {
-                        // Coming from tariff details with plan - go to activation
+                        // Coming from tariff details with plan - continue to eSIM activation
                         window.location.href = 'activate-esim.html';
-                    } else if (referrer.includes('tariff-details')) {
-                        // Return to tariff details
+                    } 
+                    // Use Case 2: Existing customer direct top-up from home dashboard
+                    else if (topUpSource === 'home-dashboard') {
+                        // Return to home dashboard after successful top-up
+                        localStorage.removeItem('topUpSource');
+                        window.location.href = 'home-dashboard.html';
+                    }
+                    // Insufficient balance top-up: return to tariff details to continue purchase
+                    else if (topUpSource === 'tariff-details-balance') {
+                        localStorage.removeItem('topUpSource');
                         window.location.href = 'tariff-details.html';
-                    } else {
-                        // Default to home dashboard
+                    }
+                    // Fallback navigation based on referrer
+                    else if (referrer.includes('home-dashboard')) {
+                        window.location.href = 'home-dashboard.html';
+                    }
+                    else if (referrer.includes('tariff-details')) {
+                        window.location.href = 'tariff-details.html';
+                    } 
+                    // Default fallback
+                    else {
                         window.location.href = 'home-dashboard.html';
                     }
                 }, 500);
@@ -1121,13 +1139,27 @@
             if (e.target === this) {
                 this.classList.remove('show');
                 
-                // Check if we should go to activation or back
+                // Check navigation flow
                 const referrer = document.referrer;
                 const activatingPlan = localStorage.getItem('activatingPlan');
+                const topUpSource = localStorage.getItem('topUpSource');
                 
+                // Use Case 1: Coming from tariff details with plan
                 if (referrer.includes('tariff-details') && activatingPlan) {
                     window.location.href = 'activate-esim.html';
-                } else {
+                } 
+                // Use Case 2: Coming from home dashboard
+                else if (topUpSource === 'home-dashboard' || referrer.includes('home-dashboard')) {
+                    localStorage.removeItem('topUpSource');
+                    window.location.href = 'home-dashboard.html';
+                } 
+                // Tariff details balance top-up
+                else if (topUpSource === 'tariff-details-balance') {
+                    localStorage.removeItem('topUpSource');
+                    window.location.href = 'tariff-details.html';
+                }
+                // Default fallback
+                else {
                     goBack();
                 }
             }
