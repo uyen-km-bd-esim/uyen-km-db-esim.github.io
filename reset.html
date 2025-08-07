@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-success: #00D26A;
+            --esimphony-warning: #FFA500;
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .reset-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            background-color: var(--esimphony-black);
+        }
+        
+        .reset-content {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .reset-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .reset-subtitle {
+            font-size: 1.125rem;
+            color: var(--esimphony-gray);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        
+        .reset-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+        
+        .reset-icon.loading {
+            animation: spin 1s linear infinite;
+        }
+        
+        .reset-icon.success {
+            color: var(--esimphony-success);
+        }
+        
+        .reset-icon.warning {
+            color: var(--esimphony-warning);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--esimphony-red);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .status-text {
+            font-size: 1rem;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .details-list {
+            text-align: left;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .details-list h4 {
+            color: var(--esimphony-white);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .details-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            gap: 0.75rem;
+        }
+        
+        .details-item .status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .details-item .status.pending {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--esimphony-white);
+        }
+        
+        .details-item .status.loading {
+            background-color: var(--esimphony-warning);
+            color: var(--esimphony-black);
+            animation: pulse 1s infinite;
+        }
+        
+        .details-item .status.complete {
+            background-color: var(--esimphony-success);
+            color: var(--esimphony-white);
+        }
+        
+        .countdown {
+            font-size: 1.125rem;
+            color: var(--esimphony-red);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-cancel {
+            background-color: transparent;
+            border: 2px solid var(--esimphony-gray);
+            color: var(--esimphony-gray);
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-cancel:hover {
+            background-color: var(--esimphony-gray);
+            color: var(--esimphony-white);
+            text-decoration: none;
+        }
+        
+        /* Animations */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .reset-title {
+                font-size: 1.75rem;
+            }
+            
+            .reset-subtitle {
+                font-size: 1rem;
+            }
+            
+            .reset-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-container">
+        <div class="reset-content">
+            <div class="logo">eSimphony</div>
+            
+            <div class="reset-icon loading" id="resetIcon">🔄</div>
+            
+            <h1 class="reset-title" id="resetTitle">Resetting Application</h1>
+            <p class="reset-subtitle" id="resetSubtitle">Clearing all cached data and preparing fresh start...</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="status-text" id="statusText">Initializing reset process...</div>
+            
+            <div class="details-list">
+                <h4>🗂️ Clearing Data</h4>
+                
+                <div class="details-item">
+                    <span class="status pending" id="status-userProfile">⏳</span>
+                    <span>User Profile & Settings</span>
+                </div>
+                
+                <div class="details-item">
+                    <span class="status pending" id="status-balance">⏳</span>
+                    <span>Account Balance</span>
+                </div>
+                
+                <div class="details-item">
+                    <span class="status pending" id="status-activePlan">⏳</span>
+                    <span>Active Plan Data</span>
+                </div>
+                
+                <div class="details-item">
+                    <span class="status pending" id="status-navigation">⏳</span>
+                    <span>Navigation State</span>
+                </div>
+                
+                <div class="details-item">
+                    <span class="status pending" id="status-cache">⏳</span>
+                    <span>Application Cache</span>
+                </div>
+            </div>
+            
+            <div class="countdown" id="countdown" style="display: none;"></div>
+            
+            <a href="index.html" class="btn-cancel" id="cancelBtn">Cancel Reset</a>
+        </div>
+    </div>
+
+    <script>
+        // Reset process configuration
+        const resetSteps = [
+            {
+                id: 'userProfile',
+                label: 'User Profile & Settings',
+                keys: ['userProfile', 'userFirstName', 'userEmail'],
+                delay: 500
+            },
+            {
+                id: 'balance',
+                label: 'Account Balance',
+                keys: ['userBalance'],
+                delay: 300
+            },
+            {
+                id: 'activePlan',
+                label: 'Active Plan Data',
+                keys: ['userActivePlan', 'activatingPlan'],
+                delay: 400
+            },
+            {
+                id: 'navigation',
+                label: 'Navigation State',
+                keys: ['topUpSource', 'planChangeSource', 'planChangeData'],
+                delay: 300
+            },
+            {
+                id: 'cache',
+                label: 'Application Cache',
+                keys: ['selectedPlan'],
+                delay: 600
+            }
+        ];
+        
+        let currentStep = 0;
+        let countdownValue = 3;
+        let countdownInterval;
+        let userCancelled = false;
+        
+        // Start reset process after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to show the UI
+            setTimeout(() => {
+                startResetProcess();
+            }, 1000);
+        });
+        
+        function startResetProcess() {
+            updateProgress(0);
+            executeNextStep();
+        }
+        
+        function executeNextStep() {
+            if (userCancelled) return;
+            
+            if (currentStep >= resetSteps.length) {
+                completeReset();
+                return;
+            }
+            
+            const step = resetSteps[currentStep];
+            const statusElement = document.getElementById(`status-${step.id}`);
+            const statusText = document.getElementById('statusText');
+            
+            // Update status to loading
+            statusElement.textContent = '⏳';
+            statusElement.className = 'status loading';
+            statusText.textContent = `Clearing ${step.label.toLowerCase()}...`;
+            
+            setTimeout(() => {
+                if (userCancelled) return;
+                
+                // Clear localStorage keys for this step
+                step.keys.forEach(key => {
+                    localStorage.removeItem(key);
+                    console.log(`Cleared: ${key}`);
+                });
+                
+                // Mark as complete
+                statusElement.textContent = '✓';
+                statusElement.className = 'status complete';
+                
+                currentStep++;
+                const progress = (currentStep / resetSteps.length) * 100;
+                updateProgress(progress);
+                
+                // Continue to next step
+                setTimeout(() => {
+                    executeNextStep();
+                }, 200);
+                
+            }, step.delay);
+        }
+        
+        function updateProgress(percentage) {
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = percentage + '%';
+        }
+        
+        function completeReset() {
+            const resetIcon = document.getElementById('resetIcon');
+            const resetTitle = document.getElementById('resetTitle');
+            const resetSubtitle = document.getElementById('resetSubtitle');
+            const statusText = document.getElementById('statusText');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const countdownElement = document.getElementById('countdown');
+            
+            // Update UI to show completion
+            resetIcon.textContent = '✅';
+            resetIcon.className = 'reset-icon success';
+            resetTitle.textContent = 'Reset Complete';
+            resetSubtitle.textContent = 'All cached data has been cleared successfully.';
+            statusText.textContent = 'Redirecting to welcome screen...';
+            
+            // Hide cancel button and show countdown
+            cancelBtn.style.display = 'none';
+            countdownElement.style.display = 'block';
+            
+            // Start countdown
+            startCountdown();
+        }
+        
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            
+            countdownInterval = setInterval(() => {
+                if (userCancelled) {
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                
+                countdownElement.textContent = `Redirecting in ${countdownValue} seconds...`;
+                countdownValue--;
+                
+                if (countdownValue < 0) {
+                    clearInterval(countdownInterval);
+                    redirectToWelcome();
+                }
+            }, 1000);
+            
+            // Initial display
+            countdownElement.textContent = `Redirecting in ${countdownValue} seconds...`;
+        }
+        
+        function redirectToWelcome() {
+            if (userCancelled) return;
+            
+            // Final cleanup - clear any remaining localStorage items
+            try {
+                localStorage.clear();
+                console.log('Complete localStorage clear performed');
+            } catch (e) {
+                console.warn('Failed to clear localStorage:', e);
+            }
+            
+            // Redirect to welcome screen
+            window.location.href = 'index.html';
+        }
+        
+        // Cancel button functionality
+        document.getElementById('cancelBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            userCancelled = true;
+            
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            const resetIcon = document.getElementById('resetIcon');
+            const resetTitle = document.getElementById('resetTitle');
+            const resetSubtitle = document.getElementById('resetSubtitle');
+            const statusText = document.getElementById('statusText');
+            
+            resetIcon.textContent = '⚠️';
+            resetIcon.className = 'reset-icon warning';
+            resetTitle.textContent = 'Reset Cancelled';
+            resetSubtitle.textContent = 'The reset process was cancelled by user.';
+            statusText.textContent = 'Some data may have been partially cleared.';
+            
+            this.textContent = 'Back to Home';
+            this.href = 'index.html';
+        });
+        
+        // Log current localStorage state for debugging
+        console.log('Current localStorage keys:', Object.keys(localStorage));
+        console.log('localStorage contents:', { ...localStorage });
+    </script>
+</body>
+</html>
