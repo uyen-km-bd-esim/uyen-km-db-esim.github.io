@@ -504,6 +504,19 @@
             outline-offset: 2px;
         }
         
+        /* Pulse animation for highlighting */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+            }
+        }
+        
         /* Loading states */
         .loading-skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -658,14 +671,19 @@
         });
         
         function loadUserData() {
-            // Simulate loading user data from localStorage or API
+            // Load user data from localStorage or API
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
             const userData = {
-                firstName: localStorage.getItem('userFirstName') || 'John',
-                balance: localStorage.getItem('userBalance') || '35.00'
+                firstName: localStorage.getItem('userFirstName') || userProfile.firstName || 'John',
+                balance: localStorage.getItem('userBalance') || userProfile.balance || '35.00',
+                accountType: userProfile.accountType || 'default'
             };
             
             document.getElementById('userName').textContent = userData.firstName;
             document.getElementById('currentBalance').textContent = `$${userData.balance}`;
+            
+            // Update UI based on account type
+            updateUIForAccountType(userData.accountType, parseFloat(userData.balance));
         }
         
         function checkActivePlan() {
@@ -673,6 +691,7 @@
             const activePlan = localStorage.getItem('userActivePlan');
             const activePlanSection = document.getElementById('activePlanSection');
             const availablePlansSection = document.getElementById('availablePlansSection');
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
             
             if (activePlan) {
                 // User has active plan, show it
@@ -680,19 +699,23 @@
                 renderActivePlan(planData);
                 activePlanSection.style.display = 'block';
                 availablePlansSection.querySelector('.section-title').textContent = 'Upgrade Your Plan';
-            } else {
-                // No active plan, simulate one for registered user
+            } else if (userProfile.accountType === 'has-plan' || userProfile.accountType === 'default') {
+                // Show mock active plan for demo accounts with plan or default users
                 const mockActivePlan = {
-                    name: 'Global Traveler Prepaid',
-                    dataTotal: 10,
-                    dataUsed: 6.5,
-                    dataRemaining: 3.5,
-                    expiryDays: 22,
-                    renewalPrice: '$15.00'
+                    name: userProfile.accountType === 'has-plan' ? 'Euro Data Pass' : 'Global Traveler Prepaid',
+                    dataTotal: userProfile.accountType === 'has-plan' ? 20 : 10,
+                    dataUsed: userProfile.accountType === 'has-plan' ? 8.5 : 6.5,
+                    dataRemaining: userProfile.accountType === 'has-plan' ? 11.5 : 3.5,
+                    expiryDays: userProfile.accountType === 'has-plan' ? 18 : 22,
+                    renewalPrice: userProfile.accountType === 'has-plan' ? '$25.00' : '$15.00'
                 };
                 renderActivePlan(mockActivePlan);
                 activePlanSection.style.display = 'block';
                 availablePlansSection.querySelector('.section-title').textContent = 'Upgrade Your Plan';
+            } else {
+                // No active plan for new users or users without plans
+                activePlanSection.style.display = 'none';
+                availablePlansSection.querySelector('.section-title').textContent = 'Choose Your First Plan';
             }
         }
         
@@ -843,6 +866,44 @@
         
         // Call on load
         updateNavigationState();
+        
+        function updateUIForAccountType(accountType, balance) {
+            const topUpButton = document.querySelector('.btn-topup');
+            const balanceCard = document.querySelector('.balance-card');
+            
+            // Update UI based on account type
+            switch(accountType) {
+                case 'no-balance':
+                    // Highlight top-up for users with no balance
+                    topUpButton.style.animation = 'pulse 2s infinite';
+                    balanceCard.style.border = '2px solid var(--esimphony-warning)';
+                    break;
+                    
+                case 'has-balance':
+                    // Normal state for users with balance but no plan
+                    topUpButton.style.animation = 'none';
+                    balanceCard.style.border = 'none';
+                    break;
+                    
+                case 'has-plan':
+                    // Users with active plan - focus on plan management
+                    topUpButton.style.animation = 'none';
+                    balanceCard.style.border = 'none';
+                    break;
+                    
+                case 'new':
+                    // New registered users
+                    if (balance === 0) {
+                        topUpButton.style.animation = 'pulse 2s infinite';
+                        balanceCard.style.border = '2px solid var(--esimphony-warning)';
+                    }
+                    break;
+                    
+                default:
+                    topUpButton.style.animation = 'none';
+                    balanceCard.style.border = 'none';
+            }
+        }
         
         function changePlan() {
             // Set source for Use Case 3 navigation
