@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eSimphony - Get Connected with eSIM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+        }
+        
+        .welcome-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 1rem;
+            background-color: var(--esimphony-black);
+        }
+        
+        .logo-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .tagline {
+            font-size: 1.125rem;
+            font-weight: 400;
+            color: var(--esimphony-white);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .cta-section {
+            max-width: 340px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .btn-esimphony-primary {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            width: 100%;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-esimphony-primary:hover,
+        .btn-esimphony-primary:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .btn-esimphony-secondary {
+            background-color: transparent;
+            border: 2px solid var(--esimphony-white);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-esimphony-secondary:hover,
+        .btn-esimphony-secondary:focus {
+            background-color: var(--esimphony-white);
+            color: var(--esimphony-black);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Responsive adjustments */
+        @media (min-width: 576px) {
+            .welcome-container {
+                padding: 3rem 2rem;
+            }
+            
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.25rem;
+            }
+            
+            .cta-section {
+                max-width: 400px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .welcome-container {
+                padding: 4rem 2rem;
+            }
+            
+            .logo-section {
+                max-width: 500px;
+            }
+            
+            .cta-section {
+                max-width: 400px;
+                display: flex;
+                gap: 1rem;
+            }
+            
+            .btn-esimphony-primary,
+            .btn-esimphony-secondary {
+                margin-bottom: 0;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .logo {
+                font-size: 3.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.375rem;
+                margin-bottom: 3rem;
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-esimphony-primary:hover,
+            .btn-esimphony-secondary:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-esimphony-primary:active {
+                background-color: #CC0000;
+            }
+            
+            .btn-esimphony-secondary:active {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        }
+        
+        /* Focus states for accessibility */
+        .btn-esimphony-primary:focus-visible,
+        .btn-esimphony-secondary:focus-visible {
+            outline: 3px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="logo-section">
+            <h1 class="logo">eSimphony</h1>
+            <p class="tagline">Get connected with eSIM plans in seconds.</p>
+        </div>
+        
+        <div class="cta-section">
+            <button class="btn btn-esimphony-primary" type="button">Sign Up</button>
+            <button class="btn btn-esimphony-secondary" type="button">Log In</button>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
