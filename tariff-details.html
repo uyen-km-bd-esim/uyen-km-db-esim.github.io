@@ -1143,8 +1143,9 @@
             window.location.href = `top-up.html?amount=${planPrice}`;
         }
         
-        // Load balance from localStorage
-        const storedBalance = localStorage.getItem('userBalance');
+        // Load balance from localStorage with profile fallback
+        const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+        const storedBalance = localStorage.getItem('userBalance') || userProfile.balance;
         if (storedBalance) {
             userBalance = parseFloat(storedBalance);
         }
