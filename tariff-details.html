@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Details - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-light-gray: #999999;
+            --esimphony-card-bg: #FFFFFF;
+            --esimphony-border: #E5E5E5;
+            --esimphony-success: #00D26A;
+            --esimphony-warning: #FFA500;
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+            padding-bottom: 100px; /* Space for fixed CTA */
+        }
+        
+        .details-container {
+            min-height: 100vh;
+            background-color: var(--esimphony-black);
+        }
+        
+        /* Header Section */
+        .header-section {
+            background-color: var(--esimphony-card-bg);
+            color: var(--esimphony-black);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--esimphony-black);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .back-button:hover {
+            opacity: 0.7;
+        }
+        
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+        }
+        
+        .country-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .country-flag {
+            font-size: 2rem;
+            border-radius: 4px;
+        }
+        
+        .country-details h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--esimphony-black);
+        }
+        
+        .country-details p {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            margin: 0;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 1rem;
+        }
+        
+        /* Plan Type Tabs */
+        .plan-tabs {
+            margin-bottom: 2rem;
+        }
+        
+        .tab-container {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .tab-button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-button.active {
+            background-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+        }
+        
+        .tab-button:hover:not(.active) {
+            background-color: #F5F5F5;
+        }
+        
+        /* Plan Options */
+        .plan-options {
+            margin-bottom: 2rem;
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr;
+        }
+        
+        .option-card {
+            background-color: var(--esimphony-card-bg);
+            border: 2px solid var(--esimphony-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .option-card:hover {
+            border-color: var(--esimphony-red);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option-card.selected {
+            border-color: var(--esimphony-red);
+            background-color: #FFEAEA;
+        }
+        
+        .option-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 24px;
+            height: 24px;
+            background-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .option-data {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .option-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-red);
+        }
+        
+        .option-details {
+            color: var(--esimphony-gray);
+            font-size: 0.875rem;
+        }
+        
+        .option-duration {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .option-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .option-features li {
+            margin-bottom: 0.25rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .option-features li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--esimphony-red);
+            font-weight: 600;
+        }
+        
+        /* Auto-Renewal Section */
+        .auto-renewal {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none; /* Show only for subscription plans */
+        }
+        
+        .auto-renewal.show {
+            display: block;
+        }
+        
+        .renewal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .renewal-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            background-color: var(--esimphony-light-gray);
+            color: var(--esimphony-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background-color: var(--esimphony-border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .toggle-switch.active {
+            background-color: var(--esimphony-red);
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background-color: var(--esimphony-white);
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+        
+        .renewal-description {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            line-height: 1.4;
+        }
+        
+        /* Balance Info */
+        .balance-info {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .balance-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .balance-amount {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .balance-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .balance-status.sufficient {
+            background-color: #E8F5E8;
+            color: var(--esimphony-success);
+        }
+        
+        .balance-status.insufficient {
+            background-color: #FFF3E0;
+            color: var(--esimphony-warning);
+        }
+        
+        /* Fixed CTA Section */
+        .fixed-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--esimphony-card-bg);
+            border-top: 1px solid var(--esimphony-border);
+            padding: 1rem;
+            z-index: 1000;
+        }
+        
+        .cta-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .selected-plan-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: #F5F5F5;
+            border-radius: 12px;
+        }
+        
+        .summary-info {
+            flex: 1;
+        }
+        
+        .summary-data {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+        }
+        
+        .summary-duration {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .summary-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-red);
+        }
+        
+        .btn-order {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-order:hover,
+        .btn-order:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .btn-order:disabled {
+            background-color: var(--esimphony-light-gray);
+            border-color: var(--esimphony-light-gray);
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-topup {
+            background-color: transparent;
+            border: 2px solid var(--esimphony-red);
+            color: var(--esimphony-red);
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            border-radius: 12px;
+            min-height: 48px;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-topup:hover,
+        .btn-topup:focus {
+            background-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .main-content {
+                padding: 0 2rem;
+            }
+            
+            .header-section {
+                padding: 2rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .option-card:hover,
+            .btn-order:hover,
+            .btn-topup:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-order:active {
+                background-color: #CC0000;
+            }
+        }
+        
+        /* Focus states for accessibility */
+        .btn-order:focus-visible,
+        .btn-topup:focus-visible,
+        .tab-button:focus-visible,
+        .option-card:focus-visible {
+            outline: 3px solid rgba(255, 0, 0, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--esimphony-black);
+            color: var(--esimphony-white);
+            text-align: center;
+            border-radius: 8px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1001;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--esimphony-black) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="details-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-nav">
+                <button class="back-button" onclick="goBack()" aria-label="Go back">
+                    ←
+                </button>
+                <div class="header-title">Select Plan</div>
+            </div>
+            
+            <div class="country-info">
+                <div class="country-flag" id="countryFlag">🇺🇸</div>
+                <div class="country-details">
+                    <h2 id="countryName">United States</h2>
+                    <p id="countryRegion">North America</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Plan Type Tabs -->
+            <div class="plan-tabs">
+                <div class="tab-container">
+                    <button class="tab-button active" data-tab="prepaid" onclick="switchTab('prepaid')">
+                        Prepaid
+                    </button>
+                    <button class="tab-button" data-tab="subscription" onclick="switchTab('subscription')">
+                        Subscription
+                    </button>
+                    <button class="tab-button" data-tab="payg" onclick="switchTab('payg')">
+                        PAYG
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Plan Options -->
+            <div class="plan-options">
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options will be dynamically generated -->
+                </div>
+            </div>
+            
+            <!-- Auto-Renewal Section -->
+            <div class="auto-renewal" id="autoRenewalSection">
+                <div class="renewal-header">
+                    <div class="renewal-label">
+                        Auto-Renew
+                        <div class="info-icon tooltip">
+                            ?
+                            <span class="tooltiptext">Your plan will automatically renew each month until you cancel</span>
+                        </div>
+                    </div>
+                    <div class="toggle-switch" id="autoRenewToggle" onclick="toggleAutoRenew()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <p class="renewal-description">
+                    Keep your connection active with automatic monthly renewals. You can cancel anytime.
+                </p>
+            </div>
+            
+            <!-- Balance Info -->
+            <div class="balance-info">
+                <div>
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-amount" id="currentBalance">$25.00</div>
+                </div>
+                <div class="balance-status sufficient" id="balanceStatus">Sufficient</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fixed CTA Section -->
+    <div class="fixed-cta">
+        <div class="cta-content">
+            <div class="selected-plan-summary" id="planSummary">
+                <div class="summary-info">
+                    <div class="summary-data" id="summaryData">No plan selected</div>
+                    <div class="summary-duration" id="summaryDuration"></div>
+                </div>
+                <div class="summary-price" id="summaryPrice">-</div>
+            </div>
+            
+            <button class="btn btn-order" id="orderBtn" onclick="orderPlan()" disabled>
+                Select a plan to continue
+            </button>
+            
+            <button class="btn btn-topup" id="topupBtn" onclick="topUpBalance()" style="display: none;">
+                Top-Up Balance
+            </button>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data for different plan types
+        const planData = {
+            prepaid: [
+                {
+                    id: 'prepaid-5gb',
+                    data: '5 GB',
+                    price: '$10.00',
+                    duration: '7 Days',
+                    features: ['High-speed data', 'No activation fee', 'Instant activation']
+                },
+                {
+                    id: 'prepaid-10gb',
+                    data: '10 GB',
+                    price: '$15.00',
+                    duration: '30 Days',
+                    features: ['High-speed data', 'No activation fee', 'Instant activation', '24/7 support']
+                },
+                {
+                    id: 'prepaid-25gb',
+                    data: '25 GB',
+                    price: '$25.00',
+                    duration: '30 Days',
+                    features: ['High-speed data', 'No activation fee', 'Instant activation', '24/7 support', 'Data rollover']
+                },
+                {
+                    id: 'prepaid-50gb',
+                    data: '50 GB',
+                    price: '$40.00',
+                    duration: '30 Days',
+                    features: ['High-speed data', 'No activation fee', 'Instant activation', '24/7 support', 'Data rollover', 'Premium speeds']
+                }
+            ],
+            subscription: [
+                {
+                    id: 'sub-unlimited',
+                    data: 'Unlimited',
+                    price: '$60.00',
+                    duration: 'Monthly',
+                    features: ['Unlimited data', 'No throttling', '5G speeds', 'International roaming', '24/7 priority support']
+                },
+                {
+                    id: 'sub-100gb',
+                    data: '100 GB',
+                    price: '$45.00',
+                    duration: 'Monthly',
+                    features: ['High-speed data', '5G speeds', 'International roaming', '24/7 support', 'Data rollover']
+                },
+                {
+                    id: 'sub-50gb',
+                    data: '50 GB',
+                    price: '$35.00',
+                    duration: 'Monthly',
+                    features: ['High-speed data', '5G speeds', '24/7 support', 'Data rollover']
+                }
+            ],
+            payg: [
+                {
+                    id: 'payg-1gb',
+                    data: '1 GB',
+                    price: '$3.00',
+                    duration: 'Pay as you go',
+                    features: ['High-speed data', 'No expiry', 'Pay only for what you use']
+                },
+                {
+                    id: 'payg-5gb',
+                    data: '5 GB',
+                    price: '$12.00',
+                    duration: 'Pay as you go',
+                    features: ['High-speed data', 'No expiry', 'Pay only for what you use', 'Better value']
+                }
+            ]
+        };
+        
+        let currentTab = 'prepaid';
+        let selectedPlan = null;
+        let userBalance = 25.00; // Sample balance
+        let autoRenewEnabled = false;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCountryInfo();
+            renderPlanOptions();
+            updateBalance();
+        });
+        
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'home-dashboard.html';
+            }
+        }
+        
+        function loadCountryInfo() {
+            // Get country info from URL params or default
+            const urlParams = new URLSearchParams(window.location.search);
+            const country = urlParams.get('country') || 'United States';
+            const region = urlParams.get('region') || 'North America';
+            const flag = urlParams.get('flag') || '🇺🇸';
+            
+            document.getElementById('countryName').textContent = country;
+            document.getElementById('countryRegion').textContent = region;
+            document.getElementById('countryFlag').textContent = flag;
+        }
+        
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update current tab
+            currentTab = tabName;
+            selectedPlan = null;
+            
+            // Show/hide auto-renewal section
+            const autoRenewalSection = document.getElementById('autoRenewalSection');
+            if (tabName === 'subscription') {
+                autoRenewalSection.classList.add('show');
+            } else {
+                autoRenewalSection.classList.remove('show');
+            }
+            
+            // Re-render options
+            renderPlanOptions();
+            updatePlanSummary();
+        }
+        
+        function renderPlanOptions() {
+            const optionsGrid = document.getElementById('optionsGrid');
+            const options = planData[currentTab] || [];
+            
+            optionsGrid.innerHTML = options.map(option => `
+                <div class="option-card" data-plan-id="${option.id}" onclick="selectPlan('${option.id}')">
+                    <div class="option-header">
+                        <div class="option-data">${option.data}</div>
+                        <div class="option-price">${option.price}</div>
+                    </div>
+                    <div class="option-details">
+                        <div class="option-duration">${option.duration}</div>
+                        <ul class="option-features">
+                            ${option.features.map(feature => `<li>${feature}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectPlan(planId) {
+            // Remove previous selection
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked card
+            document.querySelector(`[data-plan-id="${planId}"]`).classList.add('selected');
+            
+            // Find selected plan data
+            selectedPlan = planData[currentTab].find(plan => plan.id === planId);
+            
+            // Update summary and CTA
+            updatePlanSummary();
+            updateOrderButton();
+        }
+        
+        function updatePlanSummary() {
+            const summaryData = document.getElementById('summaryData');
+            const summaryDuration = document.getElementById('summaryDuration');
+            const summaryPrice = document.getElementById('summaryPrice');
+            
+            if (selectedPlan) {
+                summaryData.textContent = selectedPlan.data;
+                summaryDuration.textContent = selectedPlan.duration;
+                summaryPrice.textContent = selectedPlan.price;
+            } else {
+                summaryData.textContent = 'No plan selected';
+                summaryDuration.textContent = '';
+                summaryPrice.textContent = '-';
+            }
+        }
+        
+        function updateOrderButton() {
+            const orderBtn = document.getElementById('orderBtn');
+            const topupBtn = document.getElementById('topupBtn');
+            
+            if (!selectedPlan) {
+                orderBtn.textContent = 'Select a plan to continue';
+                orderBtn.disabled = true;
+                topupBtn.style.display = 'none';
+                return;
+            }
+            
+            const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
+            const hasEnoughBalance = userBalance >= planPrice;
+            
+            if (hasEnoughBalance) {
+                orderBtn.textContent = 'Order and Activate eSIM';
+                orderBtn.disabled = false;
+                topupBtn.style.display = 'none';
+            } else {
+                orderBtn.textContent = 'Insufficient Balance';
+                orderBtn.disabled = true;
+                topupBtn.style.display = 'block';
+            }
+        }
+        
+        function updateBalance() {
+            const balanceElement = document.getElementById('currentBalance');
+            const balanceStatus = document.getElementById('balanceStatus');
+            
+            balanceElement.textContent = `$${userBalance.toFixed(2)}`;
+            
+            if (selectedPlan) {
+                const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
+                if (userBalance >= planPrice) {
+                    balanceStatus.textContent = 'Sufficient';
+                    balanceStatus.className = 'balance-status sufficient';
+                } else {
+                    balanceStatus.textContent = 'Insufficient';
+                    balanceStatus.className = 'balance-status insufficient';
+                }
+            }
+            
+            updateOrderButton();
+        }
+        
+        function toggleAutoRenew() {
+            const toggle = document.getElementById('autoRenewToggle');
+            autoRenewEnabled = !autoRenewEnabled;
+            
+            if (autoRenewEnabled) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+        
+        function orderPlan() {
+            if (!selectedPlan) {
+                alert('Please select a plan first');
+                return;
+            }
+            
+            const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
+            if (userBalance < planPrice) {
+                alert('Insufficient balance. Please top up your account.');
+                return;
+            }
+            
+            // Simulate order process
+            const orderDetails = {
+                plan: selectedPlan,
+                autoRenew: currentTab === 'subscription' ? autoRenewEnabled : false,
+                country: document.getElementById('countryName').textContent
+            };
+            
+            const confirmed = confirm(
+                `Order ${selectedPlan.data} plan for ${selectedPlan.price}?\n\n` +
+                `Duration: ${selectedPlan.duration}\n` +
+                (orderDetails.autoRenew ? 'Auto-renew: Enabled\n' : '') +
+                `Country: ${orderDetails.country}`
+            );
+            
+            if (confirmed) {
+                // Update balance
+                userBalance -= planPrice;
+                localStorage.setItem('userBalance', userBalance.toFixed(2));
+                
+                alert('eSIM order successful! Activation instructions will be sent to your email.');
+                
+                // In a real app, this would navigate to order confirmation
+                window.location.href = 'home-dashboard.html';
+            }
+        }
+        
+        function topUpBalance() {
+            // Simulate top-up process
+            const topUpAmount = prompt('Enter top-up amount (e.g., 20):');
+            
+            if (topUpAmount && !isNaN(topUpAmount)) {
+                const amount = parseFloat(topUpAmount);
+                if (amount > 0) {
+                    userBalance += amount;
+                    localStorage.setItem('userBalance', userBalance.toFixed(2));
+                    updateBalance();
+                    alert(`Successfully topped up $${amount.toFixed(2)}`);
+                }
+            }
+        }
+        
+        // Load balance from localStorage
+        const storedBalance = localStorage.getItem('userBalance');
+        if (storedBalance) {
+            userBalance = parseFloat(storedBalance);
+        }
+        
+        // Watch for plan selection changes to update balance status
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' || mutation.type === 'attributes') {
+                    updateBalance();
+                }
+            });
+        });
+        
+        // Start observing
+        observer.observe(document.getElementById('optionsGrid'), {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    </script>
+</body>
+</html>
