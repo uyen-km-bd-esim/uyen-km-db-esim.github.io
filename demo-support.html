@@ -140,6 +140,31 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-login-account {
+            background: linear-gradient(135deg, var(--esimphony-red), #FF6B6B);
+            color: var(--esimphony-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-login-account:hover {
+            background: linear-gradient(135deg, #E60000, #FF5555);
+            color: var(--esimphony-white);
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
         }
         
         .feature-badge {
@@ -166,6 +191,16 @@
         
         .badge-no-plan {
             background-color: #6c757d;
+            color: white;
+        }
+        
+        .badge-esim-available {
+            background-color: #fd7e14;
+            color: white;
+        }
+        
+        .badge-esim-active {
+            background-color: #20c997;
             color: white;
         }
         
@@ -310,7 +345,7 @@
                     Demo Test Accounts
                 </h2>
                 <p style="color: var(--esimphony-gray); margin-bottom: 2rem;">
-                    Use these pre-configured accounts to test different user scenarios. All accounts use password: <strong>123456</strong>
+                    Use these pre-configured accounts to test different user scenarios. Click the <strong>"Login as [Name]"</strong> button to instantly log in with that account's settings and be redirected to the home dashboard. Traditional login with password <strong>123456</strong> is also available.
                 </p>
                 
                 <div class="account-item">
@@ -323,6 +358,10 @@
                         <span class="feature-badge badge-no-balance">$0.00 Balance</span>
                         <span class="feature-badge badge-no-plan">No Active Plan</span>
                     </div>
+                    <button class="btn-login-account" onclick="loginAsAccount('nobalance@esim.demo')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as Alex
+                    </button>
                 </div>
                 
                 <div class="account-item">
@@ -335,6 +374,10 @@
                         <span class="feature-badge badge-balance">$25.00 Balance</span>
                         <span class="feature-badge badge-no-plan">No Active Plan</span>
                     </div>
+                    <button class="btn-login-account" onclick="loginAsAccount('exist-topup@esim.demo')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as Sarah
+                    </button>
                 </div>
                 
                 <div class="account-item">
@@ -347,6 +390,44 @@
                         <span class="feature-badge badge-balance">$45.00 Balance</span>
                         <span class="feature-badge badge-plan">Euro Data Pass Active</span>
                     </div>
+                    <button class="btn-login-account" onclick="loginAsAccount('exist-plan@esim.demo')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as Michael
+                    </button>
+                </div>
+                
+                <div class="account-item">
+                    <div class="account-email"><i class="fas fa-sim-card"></i> esim-available@esim.demo</div>
+                    <div class="account-password"><i class="fas fa-key"></i> Password: 123456</div>
+                    <div class="account-description">
+                        <strong>Emma Thompson</strong> - User with eSIM ready for activation. Shows "Activate eSIM" section on home dashboard with activation button.
+                    </div>
+                    <div class="account-features">
+                        <span class="feature-badge badge-balance">$35.00 Balance</span>
+                        <span class="feature-badge badge-esim-available">eSIM Available</span>
+                        <span class="feature-badge badge-no-plan">No Active Plan</span>
+                    </div>
+                    <button class="btn-login-account" onclick="loginAsAccount('esim-available@esim.demo')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as Emma
+                    </button>
+                </div>
+                
+                <div class="account-item">
+                    <div class="account-email"><i class="fas fa-chart-line"></i> esim-active@esim.demo</div>
+                    <div class="account-password"><i class="fas fa-key"></i> Password: 123456</div>
+                    <div class="account-description">
+                        <strong>David Kim</strong> - User with active eSIM and data usage. Displays usage statistics, data consumption, and expiration information on home dashboard.
+                    </div>
+                    <div class="account-features">
+                        <span class="feature-badge badge-balance">$52.00 Balance</span>
+                        <span class="feature-badge badge-esim-active">eSIM Active</span>
+                        <span class="feature-badge badge-plan">US Prepaid 10GB</span>
+                    </div>
+                    <button class="btn-login-account" onclick="loginAsAccount('esim-active@esim.demo')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as David
+                    </button>
                 </div>
             </div>
             
@@ -388,6 +469,21 @@
                 
                 <div class="flow-step">
                     <div class="step-number">4</div>
+                    <div class="step-title">Use Case 4: eSIM Activation & Usage Management</div>
+                    <div class="step-description">Test eSIM activation flows and active usage monitoring with different eSIM states.</div>
+                    <div style="margin-top: 1rem;">
+                        <strong>eSIM Available:</strong> esim-available@esim.demo → 
+                        <a href="home-dashboard.html" class="page-link">home-dashboard.html (Activate Button)</a>
+                        <a href="esim-settings.html?action=activate" class="page-link">esim-settings.html (Activation)</a>
+                        <br><br>
+                        <strong>eSIM Active:</strong> esim-active@esim.demo → 
+                        <a href="home-dashboard.html" class="page-link">home-dashboard.html (Usage Stats)</a>
+                        <a href="charges-consumption.html" class="page-link">charges-consumption.html (Detailed Usage)</a>
+                    </div>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-number">5</div>
                     <div class="step-title">Multi-Account Demo System</div>
                     <div class="step-description">Experience different user personas with account-specific UI modifications and data states.</div>
                     <div style="margin-top: 1rem;">
@@ -490,6 +586,126 @@
             } else {
                 window.location.href = 'index.html';
             }
+        }
+        
+        function loginAsAccount(email) {
+            // Clear all existing localStorage data first
+            localStorage.clear();
+            
+            let userProfile = {};
+            let firstName = '';
+            let balance = '';
+            let activePlan = null;
+            let successMessage = '';
+            
+            // Set up account-specific data based on email
+            if (email === 'nobalance@esim.demo') {
+                firstName = 'Alex';
+                balance = '0.00';
+                userProfile = {
+                    firstName: firstName,
+                    email: email,
+                    balance: balance,
+                    activePlan: null,
+                    accountType: 'no-balance'
+                };
+                successMessage = `Logged in as ${firstName}! Balance: $${balance}`;
+            }
+            else if (email === 'exist-topup@esim.demo') {
+                firstName = 'Sarah';
+                balance = '25.00';
+                userProfile = {
+                    firstName: firstName,
+                    email: email,
+                    balance: balance,
+                    activePlan: null,
+                    accountType: 'has-balance'
+                };
+                successMessage = `Logged in as ${firstName}! Balance: $${balance}`;
+            }
+            else if (email === 'exist-plan@esim.demo') {
+                firstName = 'Michael';
+                balance = '45.00';
+                activePlan = {
+                    name: 'Euro Data Pass',
+                    dataTotal: 20,
+                    dataUsed: 8.5,
+                    dataRemaining: 11.5,
+                    expiryDays: 18,
+                    renewalPrice: '$25.00'
+                };
+                userProfile = {
+                    firstName: firstName,
+                    email: email,
+                    balance: balance,
+                    activePlan: activePlan,
+                    accountType: 'has-plan'
+                };
+                successMessage = `Logged in as ${firstName}! Balance: $${balance}, Active plan: Euro Data Pass`;
+            }
+            else if (email === 'esim-available@esim.demo') {
+                firstName = 'Emma';
+                balance = '35.00';
+                userProfile = {
+                    firstName: firstName,
+                    email: email,
+                    balance: balance,
+                    activePlan: null,
+                    accountType: 'has-balance',
+                    esimStatus: 'available'
+                };
+                successMessage = `Logged in as ${firstName}! Balance: $${balance}, eSIM ready for activation`;
+            }
+            else if (email === 'esim-active@esim.demo') {
+                firstName = 'David';
+                balance = '52.00';
+                activePlan = {
+                    name: 'US Prepaid 10GB',
+                    dataTotal: 10,
+                    dataUsed: 2.3,
+                    dataRemaining: 7.7,
+                    expiryDays: 23,
+                    renewalPrice: '$15.00'
+                };
+                const usageData = {
+                    planName: 'US Prepaid Plan',
+                    dataUsed: 2.3,
+                    dataTotal: 10,
+                    expirationDays: 23
+                };
+                userProfile = {
+                    firstName: firstName,
+                    email: email,
+                    balance: balance,
+                    activePlan: activePlan,
+                    accountType: 'has-plan',
+                    esimStatus: 'active',
+                    usageData: usageData
+                };
+                successMessage = `Logged in as ${firstName}! Balance: $${balance}, eSIM Active: US Prepaid 10GB`;
+            }
+            
+            // Store user data in localStorage
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            localStorage.setItem('userFirstName', firstName);
+            localStorage.setItem('userBalance', balance);
+            localStorage.setItem('userEmail', email);
+            
+            if (activePlan) {
+                localStorage.setItem('userActivePlan', JSON.stringify(activePlan));
+            }
+            
+            // Show loading message
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            button.disabled = true;
+            
+            // Redirect to home dashboard after a brief delay
+            setTimeout(() => {
+                alert(successMessage + '\n\nRedirecting to dashboard...');
+                window.location.href = 'home-dashboard.html';
+            }, 1000);
         }
     </script>
 </body>

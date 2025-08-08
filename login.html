@@ -419,6 +419,53 @@
                         localStorage.setItem('userBalance', '45.00');
                         localStorage.setItem('userActivePlan', JSON.stringify(activePlan));
                         alert('Welcome back, Michael! Your balance: $45.00, Active plan: Euro Data Pass');
+                    }
+                    else if (loginEmail === 'esim-available@esim.demo') {
+                        // eSIM available for activation
+                        userProfile = {
+                            firstName: 'Emma',
+                            email: loginEmail,
+                            balance: '35.00',
+                            activePlan: null,
+                            accountType: 'has-balance',
+                            esimStatus: 'available'
+                        };
+                        localStorage.setItem('userFirstName', 'Emma');
+                        localStorage.setItem('userBalance', '35.00');
+                        localStorage.removeItem('userActivePlan');
+                        alert('Welcome back, Emma! Your balance: $35.00, eSIM ready for activation');
+                    }
+                    else if (loginEmail === 'esim-active@esim.demo') {
+                        // eSIM active with usage data
+                        const activePlan = {
+                            name: 'US Prepaid 10GB',
+                            dataTotal: 10,
+                            dataUsed: 2.3,
+                            dataRemaining: 7.7,
+                            expiryDays: 23,
+                            renewalPrice: '$15.00'
+                        };
+                        
+                        const usageData = {
+                            planName: 'US Prepaid Plan',
+                            dataUsed: 2.3,
+                            dataTotal: 10,
+                            expirationDays: 23
+                        };
+                        
+                        userProfile = {
+                            firstName: 'David',
+                            email: loginEmail,
+                            balance: '52.00',
+                            activePlan: activePlan,
+                            accountType: 'has-plan',
+                            esimStatus: 'active',
+                            usageData: usageData
+                        };
+                        localStorage.setItem('userFirstName', 'David');
+                        localStorage.setItem('userBalance', '52.00');
+                        localStorage.setItem('userActivePlan', JSON.stringify(activePlan));
+                        alert('Welcome back, David! Your balance: $52.00, eSIM Active: US Prepaid 10GB');
                     } 
                     else {
                         // Default/regular user login

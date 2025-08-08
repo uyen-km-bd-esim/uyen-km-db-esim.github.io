@@ -781,6 +781,245 @@
             background: rgba(255, 255, 255, 0.2);
             color: var(--esimphony-white);
         }
+        
+        /* Usage Section Styles */
+        .usage-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .usage-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .usage-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .usage-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--esimphony-red), #FF6B6B);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .usage-details {
+            flex: 1;
+        }
+        
+        .usage-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .usage-subtitle {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .btn-usage {
+            background: var(--esimphony-red);
+            color: var(--esimphony-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-usage:hover {
+            background: #E60000;
+            transform: translateY(-1px);
+        }
+        
+        .usage-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #F8F9FA;
+            border-radius: 12px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--esimphony-gray);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .usage-progress {
+            margin-bottom: 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E5E5E5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--esimphony-red), #FF6B6B);
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            text-align: center;
+        }
+        
+        /* Activate eSIM Section Styles */
+        .activate-esim-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .activate-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .activate-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .activate-content {
+            flex: 1;
+        }
+        
+        .activate-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .activate-description {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-activate {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn-activate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* eSIM Settings Section Styles */
+        .esim-settings-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            overflow: hidden;
+        }
+        
+        .settings-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .settings-option:hover {
+            background: #F8F9FA;
+        }
+        
+        .settings-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6c757d, #495057);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .settings-info {
+            flex: 1;
+        }
+        
+        .settings-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .settings-description {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .settings-arrow {
+            color: var(--esimphony-gray);
+            font-size: 1.25rem;
+        }
     </style>
 </head>
 <body>
@@ -872,6 +1111,88 @@
                 
                 <div class="plans-grid" id="plansGrid">
                     <!-- Plan cards will be dynamically generated -->
+                </div>
+            </div>
+            
+            <!-- Usage Section (for active eSIM) -->
+            <div class="usage-section" id="usageSection" style="display: none;">
+                <h2 class="section-title">Usage</h2>
+                <div class="usage-card" id="usageCard">
+                    <div class="usage-header">
+                        <div class="usage-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="usage-details">
+                            <div class="usage-title">Data Usage</div>
+                            <div class="usage-subtitle" id="usageEsimName">eSIM Plan</div>
+                        </div>
+                        <button class="btn btn-usage" onclick="openUsageScreen()">
+                            View Details
+                        </button>
+                    </div>
+                    
+                    <div class="usage-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Used</div>
+                            <div class="stat-value" id="dataUsed">2.3 GB</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Remaining</div>
+                            <div class="stat-value" id="dataRemaining">7.7 GB</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Expires</div>
+                            <div class="stat-value" id="dataExpiration">23 days</div>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="usageProgressBar" style="width: 23%;"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="usagePercentage">23%</span> used of total allowance
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activate eSIM Section (for available but inactive eSIM) -->
+            <div class="activate-esim-section" id="activateEsimSection" style="display: none;">
+                <h2 class="section-title">Activate eSIM</h2>
+                <div class="activate-card">
+                    <div class="activate-icon">
+                        <i class="fas fa-sim-card"></i>
+                    </div>
+                    <div class="activate-content">
+                        <div class="activate-title">Ready to Activate</div>
+                        <div class="activate-description">
+                            Your eSIM is ready for activation. Follow the setup process to start using your plan.
+                        </div>
+                        <button class="btn btn-activate" onclick="activateEsim()">
+                            <i class="fas fa-power-off"></i>
+                            Activate Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- eSIM Settings Section -->
+            <div class="esim-settings-section" id="esimSettingsSection">
+                <h2 class="section-title">eSIM Settings</h2>
+                <div class="settings-card">
+                    <div class="settings-option" onclick="openEsimSettings()">
+                        <div class="settings-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="settings-info">
+                            <div class="settings-title">eSIM Configuration</div>
+                            <div class="settings-description">Manage your eSIM profiles and network settings</div>
+                        </div>
+                        <div class="settings-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1527,6 +1848,86 @@
         
         // Update balance every 30 seconds (for demo)
         setInterval(simulateBalanceUpdate, 30000);
+        
+        // eSIM Management Functions
+        function checkEsimStatus() {
+            // Get user profile to determine eSIM state
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const esimStatus = userProfile.esimStatus || 'none'; // none, available, active
+            
+            console.log('eSIM Status:', esimStatus);
+            
+            // Show/hide sections based on eSIM status
+            const usageSection = document.getElementById('usageSection');
+            const activateSection = document.getElementById('activateEsimSection');
+            const settingsSection = document.getElementById('esimSettingsSection');
+            
+            switch (esimStatus) {
+                case 'active':
+                    // Show usage section with data
+                    usageSection.style.display = 'block';
+                    activateSection.style.display = 'none';
+                    settingsSection.style.display = 'block';
+                    updateUsageData(userProfile);
+                    break;
+                    
+                case 'available':
+                    // Show activate section
+                    usageSection.style.display = 'none';
+                    activateSection.style.display = 'block';
+                    settingsSection.style.display = 'block';
+                    break;
+                    
+                default:
+                    // Hide both usage and activate, show only settings
+                    usageSection.style.display = 'none';
+                    activateSection.style.display = 'none';
+                    settingsSection.style.display = 'block';
+                    break;
+            }
+        }
+        
+        function updateUsageData(userProfile) {
+            // Update usage statistics from user profile
+            const usageData = userProfile.usageData || {
+                planName: 'US Prepaid Plan',
+                dataUsed: 2.3,
+                dataTotal: 10,
+                expirationDays: 23
+            };
+            
+            const usagePercentage = Math.round((usageData.dataUsed / usageData.dataTotal) * 100);
+            const dataRemaining = Math.max(0, usageData.dataTotal - usageData.dataUsed);
+            
+            // Update DOM elements
+            document.getElementById('usageEsimName').textContent = usageData.planName;
+            document.getElementById('dataUsed').textContent = `${usageData.dataUsed} GB`;
+            document.getElementById('dataRemaining').textContent = `${dataRemaining.toFixed(1)} GB`;
+            document.getElementById('dataExpiration').textContent = `${usageData.expirationDays} days`;
+            document.getElementById('usageProgressBar').style.width = `${usagePercentage}%`;
+            document.getElementById('usagePercentage').textContent = `${usagePercentage}%`;
+        }
+        
+        function openUsageScreen() {
+            // Navigate to usage/charges screen
+            window.location.href = 'charges-consumption.html';
+        }
+        
+        function activateEsim() {
+            // Navigate to eSIM activation screen
+            window.location.href = 'esim-settings.html?action=activate';
+        }
+        
+        function openEsimSettings() {
+            // Navigate to eSIM settings screen
+            window.location.href = 'esim-settings.html';
+        }
+        
+        // Initialize eSIM status check
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add small delay to ensure other initialization completes
+            setTimeout(checkEsimStatus, 100);
+        });
     </script>
 </body>
 </html>
