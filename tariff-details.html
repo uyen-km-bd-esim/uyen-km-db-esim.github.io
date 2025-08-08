@@ -6,6 +6,7 @@
     <title>Plan Details - eSimphony</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --esimphony-black: #000000;
@@ -27,7 +28,7 @@
             background-color: var(--esimphony-black) !important;
             color: var(--esimphony-white);
             overflow-x: hidden;
-            padding-bottom: 100px; /* Space for fixed CTA */
+            padding-bottom: 220px; /* Space for fixed CTA + bottom nav + extra buffer */
         }
         
         .details-container {
@@ -168,28 +169,243 @@
             color: var(--esimphony-black);
         }
         
-        .country-info {
+        /* Current Location Display */
+        .current-location-section {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .location-info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
         
-        .country-flag {
+        .location-flag {
             font-size: 2rem;
             border-radius: 4px;
         }
         
-        .country-details h2 {
+        .location-details h2 {
             font-size: 1.5rem;
             font-weight: 700;
             margin: 0;
             color: var(--esimphony-black);
         }
         
-        .country-details p {
+        .location-details p {
             font-size: 0.875rem;
             color: var(--esimphony-gray);
             margin: 0;
+        }
+        
+        .change-location-btn {
+            background: none;
+            border: none;
+            color: var(--esimphony-gray);
+            font-size: 1.125rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            border-radius: 8px;
+        }
+        
+        .change-location-btn:hover {
+            color: var(--esimphony-red);
+            background-color: #F5F5F5;
+        }
+        
+        /* Destination Search Styles */
+        .destination-search-section {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .search-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin: 0;
+        }
+        
+        .close-search-btn {
+            background: none;
+            border: none;
+            color: var(--esimphony-gray);
+            font-size: 1.125rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            border-radius: 8px;
+        }
+        
+        .close-search-btn:hover {
+            color: var(--esimphony-red);
+            background-color: #F5F5F5;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--esimphony-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: var(--esimphony-black);
+            transition: border-color 0.2s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--esimphony-red);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--esimphony-gray);
+            font-size: 1.125rem;
+        }
+        
+        .destination-tabs {
+            margin-bottom: 1rem;
+        }
+        
+        .destination-tab-container {
+            background-color: #F8F9FA;
+            border-radius: 12px;
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .destination-tab-button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .destination-tab-button.active {
+            background-color: var(--esimphony-white);
+            color: var(--esimphony-red);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .destination-tab-button:hover:not(.active) {
+            background-color: #E9ECEF;
+        }
+        
+        .destination-lists {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .destination-list {
+            display: none;
+        }
+        
+        .destination-list.active {
+            display: block;
+        }
+        
+        .destination-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--esimphony-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .destination-item:last-child {
+            border-bottom: none;
+        }
+        
+        .destination-item:hover {
+            background-color: #F8F9FA;
+        }
+        
+        .destination-item.selected {
+            background-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+        }
+        
+        .destination-flag {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .destination-info {
+            flex: 1;
+        }
+        
+        .destination-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+            color: var(--esimphony-black);
+        }
+        
+        .destination-region {
+            font-size: 0.75rem;
+            color: var(--esimphony-gray);
+            opacity: 1;
+        }
+        
+        .destination-item.selected .destination-name {
+            color: var(--esimphony-white);
+        }
+        
+        .destination-item.selected .destination-region {
+            color: var(--esimphony-white);
+            opacity: 0.9;
+        }
+        
+        .plan-count {
+            font-size: 0.75rem;
+            background-color: #F8F9FA;
+            color: var(--esimphony-gray);
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .destination-item.selected .plan-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--esimphony-white);
         }
         
         /* Main Content */
@@ -264,22 +480,7 @@
             background-color: #FFEAEA;
         }
         
-        .option-card.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 24px;
-            height: 24px;
-            background-color: var(--esimphony-red);
-            color: var(--esimphony-white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+        /* Remove the checkmark - selected state is shown by border color and background */
         
         .option-header {
             display: flex;
@@ -328,6 +529,71 @@
             left: 0;
             color: var(--esimphony-red);
             font-weight: 600;
+        }
+        
+        /* Auto Renew inside plan cards */
+        .plan-auto-renew {
+            border-top: 1px solid var(--esimphony-border);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .auto-renew-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .auto-renew-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .auto-renew-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+        }
+        
+        .info-icon {
+            color: var(--esimphony-gray);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .info-icon:hover {
+            color: var(--esimphony-red);
+        }
+        
+        .plan-auto-renew .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background-color: var(--esimphony-border);
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .plan-auto-renew .toggle-switch.active {
+            background-color: var(--esimphony-red);
+        }
+        
+        .plan-auto-renew .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background-color: var(--esimphony-white);
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+        }
+        
+        .plan-auto-renew .toggle-switch.active .toggle-slider {
+            transform: translateX(18px);
         }
         
         /* Auto-Renewal Section */
@@ -449,13 +715,16 @@
         /* Fixed CTA Section */
         .fixed-cta {
             position: fixed;
-            bottom: 0;
+            bottom: 85px; /* Above bottom nav with proper gap */
             left: 0;
             right: 0;
             background-color: var(--esimphony-card-bg);
             border-top: 1px solid var(--esimphony-border);
-            padding: 1rem;
-            z-index: 1000;
+            padding: 1rem 1rem 1.25rem 1rem; /* Extra bottom padding */
+            z-index: 999; /* Below bottom nav */
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+            min-height: auto;
+            overflow: visible;
         }
         
         .cta-content {
@@ -463,14 +732,22 @@
             margin: 0 auto;
         }
         
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
         .selected-plan-summary {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            background-color: #F5F5F5;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem 1rem;
+            background-color: #F8F9FA;
             border-radius: 12px;
+            border: 1px solid #E5E5E5;
         }
         
         .summary-info {
@@ -499,13 +776,14 @@
             border-color: var(--esimphony-red);
             color: var(--esimphony-white);
             font-weight: 600;
-            padding: 1rem 2rem;
-            font-size: 1.125rem;
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
             border-radius: 12px;
-            min-height: 56px;
+            min-height: 48px;
             width: 100%;
             transition: all 0.2s ease;
-            margin-bottom: 0.5rem;
+            border: none;
+            margin: 0;
         }
         
         .btn-order:hover,
@@ -519,10 +797,12 @@
         
         .btn-order:disabled {
             background-color: var(--esimphony-light-gray);
-            border-color: var(--esimphony-light-gray);
-            opacity: 0.6;
+            border: 2px solid var(--esimphony-light-gray);
+            color: var(--esimphony-white);
+            opacity: 0.8;
             transform: none;
             box-shadow: none;
+            cursor: not-allowed;
         }
         
         .btn-topup {
@@ -530,12 +810,13 @@
             border: 2px solid var(--esimphony-red);
             color: var(--esimphony-red);
             font-weight: 600;
-            padding: 0.75rem 2rem;
-            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
             border-radius: 12px;
-            min-height: 48px;
+            min-height: 44px;
             width: 100%;
             transition: all 0.2s ease;
+            margin: 0;
         }
         
         .btn-topup:hover,
@@ -589,20 +870,21 @@
         
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 200px;
+            width: 220px;
             background-color: var(--esimphony-black);
             color: var(--esimphony-white);
             text-align: center;
             border-radius: 8px;
-            padding: 0.5rem;
+            padding: 0.75rem;
             position: absolute;
             z-index: 1001;
-            bottom: 125%;
+            bottom: 150%;
             left: 50%;
-            margin-left: -100px;
+            margin-left: -110px;
             font-size: 0.75rem;
             opacity: 0;
             transition: opacity 0.3s;
+            line-height: 1.4;
         }
         
         .tooltip .tooltiptext::after {
@@ -620,6 +902,54 @@
             visibility: visible;
             opacity: 1;
         }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--esimphony-card-bg);
+            border-top: 1px solid #E5E5E5;
+            padding: 0.75rem 0;
+            z-index: 1001;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--esimphony-gray);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            color: var(--esimphony-red);
+        }
+        
+        .nav-item:hover {
+            color: var(--esimphony-red);
+            text-decoration: none;
+        }
+        
+        .nav-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -633,11 +963,62 @@
                 <div class="header-title">Select Plan</div>
             </div>
             
-            <div class="country-info" id="selectedCountryInfo">
-                <div class="country-flag" id="countryFlag">🇺🇸</div>
-                <div class="country-details">
-                    <h2 id="countryName">United States</h2>
-                    <p id="countryRegion">North America</p>
+            <!-- Current Location Display -->
+            <div class="current-location-section" id="currentLocationSection">
+                <div class="location-header">
+                    <div class="location-info">
+                        <div class="location-flag" id="currentLocationFlag">🇺🇸</div>
+                        <div class="location-details">
+                            <h2 id="currentLocationName">United States</h2>
+                            <p id="currentLocationRegion">North America</p>
+                        </div>
+                    </div>
+                    <button class="change-location-btn" id="changeLocationBtn" onclick="toggleDestinationSearch()" title="Change destination">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Balance Section for Plans Tab -->
+            <div class="plans-balance-section" id="plansBalanceSection" style="display: none; background-color: var(--esimphony-card-bg); border-radius: 16px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="balance-label" style="font-size: 0.875rem; color: var(--esimphony-gray);">Balance</div>
+                    <div class="balance-amount" id="plansBalanceAmount" style="font-size: 1.125rem; font-weight: 700; color: var(--esimphony-black);">$25.00</div>
+                </div>
+            </div>
+            
+            <!-- Destination Search (Initially Hidden) -->
+            <div class="destination-search-section" id="destinationSearchSection" style="display: none;">
+                <div class="search-header">
+                    <h3 class="search-title">Select your destination</h3>
+                    <button class="close-search-btn" id="closeSearchBtn" onclick="toggleDestinationSearch()" title="Close search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search destination" id="destinationSearch" onkeyup="searchDestinations()">
+                </div>
+                
+                <div class="destination-tabs">
+                    <div class="destination-tab-container">
+                        <button class="destination-tab-button active" data-tab="countries" onclick="switchDestinationTab('countries')">
+                            Countries
+                        </button>
+                        <button class="destination-tab-button" data-tab="regions" onclick="switchDestinationTab('regions')">
+                            Regions
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="destination-lists" id="destinationLists">
+                    <div class="destination-list active" id="countriesList">
+                        <!-- Countries will be populated here -->
+                    </div>
+                    <div class="destination-list" id="regionsList">
+                        <!-- Regions will be populated here -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -712,7 +1093,7 @@
             </div>
             
             <!-- Balance Info -->
-            <div class="balance-info">
+            <div class="balance-info" id="balanceInfoSection">
                 <div>
                     <div class="balance-label">Current Balance</div>
                     <div class="balance-amount" id="currentBalance">$25.00</div>
@@ -723,7 +1104,7 @@
     </div>
     
     <!-- Fixed CTA Section -->
-    <div class="fixed-cta">
+    <div class="fixed-cta" id="fixedCta" style="display: none;">
         <div class="cta-content">
             <div class="selected-plan-summary" id="planSummary">
                 <div class="summary-info">
@@ -733,18 +1114,78 @@
                 <div class="summary-price" id="summaryPrice">-</div>
             </div>
             
-            <button class="btn btn-order" id="orderBtn" onclick="orderPlan()" disabled>
-                Select a plan to continue
-            </button>
-            
-            <button class="btn btn-topup" id="topupBtn" onclick="topUpBalance()" style="display: none;">
-                Top-Up Balance
-            </button>
+            <div class="cta-buttons">
+                <button class="btn-order" id="orderBtn" onclick="orderPlan()" disabled>
+                    Select a plan to continue
+                </button>
+                
+                <button class="btn-topup" id="topupBtn" onclick="topUpBalance()" style="display: none; visibility: hidden;">
+                    Top-Up Balance
+                </button>
+            </div>
         </div>
     </div>
     
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="home-dashboard.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>Home</span>
+            </a>
+            <a href="tariff-details.html" class="nav-item active">
+                <div class="nav-icon"><i class="fas fa-mobile-alt"></i></div>
+                <span>Plans</span>
+            </a>
+            <a href="charges-consumption.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+                <span>Usage</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <span>Profile</span>
+            </a>
+        </div>
+    </nav>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Sample destination data
+        const destinationData = {
+            countries: [
+                { id: 'us', name: 'United States', flag: '🇺🇸', region: 'North America', planCount: 8 },
+                { id: 'gb', name: 'United Kingdom', flag: '🇬🇧', region: 'Europe', planCount: 6 },
+                { id: 'de', name: 'Germany', flag: '🇩🇪', region: 'Europe', planCount: 7 },
+                { id: 'fr', name: 'France', flag: '🇫🇷', region: 'Europe', planCount: 6 },
+                { id: 'jp', name: 'Japan', flag: '🇯🇵', region: 'Asia Pacific', planCount: 5 },
+                { id: 'au', name: 'Australia', flag: '🇦🇺', region: 'Asia Pacific', planCount: 4 },
+                { id: 'ca', name: 'Canada', flag: '🇨🇦', region: 'North America', planCount: 6 },
+                { id: 'es', name: 'Spain', flag: '🇪🇸', region: 'Europe', planCount: 5 },
+                { id: 'it', name: 'Italy', flag: '🇮🇹', region: 'Europe', planCount: 6 },
+                { id: 'mx', name: 'Mexico', flag: '🇲🇽', region: 'Latin America', planCount: 4 },
+                { id: 'br', name: 'Brazil', flag: '🇧🇷', region: 'Latin America', planCount: 3 },
+                { id: 'sg', name: 'Singapore', flag: '🇸🇬', region: 'Asia Pacific', planCount: 5 },
+                { id: 'th', name: 'Thailand', flag: '🇹🇭', region: 'Asia Pacific', planCount: 4 },
+                { id: 'vn', name: 'Vietnam', flag: '🇻🇳', region: 'Asia Pacific', planCount: 4 },
+                { id: 'kr', name: 'South Korea', flag: '🇰🇷', region: 'Asia Pacific', planCount: 5 },
+                { id: 'my', name: 'Malaysia', flag: '🇲🇾', region: 'Asia Pacific', planCount: 4 },
+                { id: 'ph', name: 'Philippines', flag: '🇵🇭', region: 'Asia Pacific', planCount: 3 },
+                { id: 'id', name: 'Indonesia', flag: '🇮🇩', region: 'Asia Pacific', planCount: 3 },
+                { id: 'nl', name: 'Netherlands', flag: '🇳🇱', region: 'Europe', planCount: 6 }
+            ],
+            regions: [
+                { id: 'europe', name: 'Europe', flag: '🇪🇺', region: '30+ Countries', planCount: 12 },
+                { id: 'asia', name: 'Asia Pacific', flag: '🌏', region: '25+ Countries', planCount: 10 },
+                { id: 'americas', name: 'Americas', flag: '🌎', region: '15+ Countries', planCount: 8 },
+                { id: 'global', name: 'Global', flag: '🌍', region: '100+ Countries', planCount: 15 },
+                { id: 'middle-east', name: 'Middle East', flag: '🕌', region: '10+ Countries', planCount: 6 },
+                { id: 'africa', name: 'Africa', flag: '🦁', region: '20+ Countries', planCount: 7 }
+            ]
+        };
+        
+        let selectedDestination = null;
+        let currentDestinationTab = 'countries';
+        
         // Sample data for different plan types
         const planData = {
             prepaid: [
@@ -827,11 +1268,46 @@
         
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
+            // Load user balance from localStorage first
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const storedBalance = localStorage.getItem('userBalance') || userProfile.balance;
+            if (storedBalance) {
+                userBalance = parseFloat(storedBalance);
+                console.log('Loaded user balance:', userBalance);
+            }
+            
+            setDefaultDestination();
             loadCountryInfo();
             checkPlanChangeMode();
+            renderDestinations();
             renderPlanOptions();
             updateBalance();
+            updateBalanceVisibility();
+            updateBackButtonVisibility();
+            
+            // Ensure CTA is initially hidden since no plan should be selected initially
+            updateOrderButton();
+            
+            // Add some safety checks
+            setTimeout(() => {
+                const orderBtn = document.getElementById('orderBtn');
+                const topupBtn = document.getElementById('topupBtn');
+                if (!orderBtn) console.error('Order button not found after initialization!');
+                if (!topupBtn) console.error('Top-up button not found after initialization!');
+                
+                // Force a refresh of button states after everything loads
+                updateOrderButton();
+            }, 100);
         });
+        
+        function setDefaultDestination() {
+            // Set United States as default selected destination
+            selectedDestination = destinationData.countries.find(country => country.id === 'us');
+            if (!selectedDestination) {
+                // Fallback to first country if US not found
+                selectedDestination = destinationData.countries[0];
+            }
+        }
         
         function goBack() {
             if (isChangeMode) {
@@ -845,15 +1321,16 @@
         }
         
         function loadCountryInfo() {
-            // Get country info from URL params or default
+            // Get country info from URL params or use selected destination
             const urlParams = new URLSearchParams(window.location.search);
-            const country = urlParams.get('country') || 'United States';
-            const region = urlParams.get('region') || 'North America';
-            const flag = urlParams.get('flag') || '🇺🇸';
+            const country = urlParams.get('country') || selectedDestination?.name || 'United States';
+            const region = urlParams.get('region') || selectedDestination?.region || 'North America';
+            const flag = urlParams.get('flag') || selectedDestination?.flag || '🇺🇸';
             
-            document.getElementById('countryName').textContent = country;
-            document.getElementById('countryRegion').textContent = region;
-            document.getElementById('countryFlag').textContent = flag;
+            // Update current location display
+            document.getElementById('currentLocationName').textContent = country;
+            document.getElementById('currentLocationRegion').textContent = region;
+            document.getElementById('currentLocationFlag').textContent = flag;
             
             // Update plans title
             document.getElementById('availablePlansTitle').textContent = `Plans for ${country}`;
@@ -929,38 +1406,14 @@
             currentTab = tabName;
             selectedPlan = null;
             
-            // Show/hide auto-renewal section
+            // Hide the old auto-renewal section as it's now inside plan cards
             const autoRenewalSection = document.getElementById('autoRenewalSection');
-            if (tabName === 'subscription') {
-                autoRenewalSection.classList.add('show');
-            } else {
-                autoRenewalSection.classList.remove('show');
-            }
+            autoRenewalSection.classList.remove('show');
             
-            // Re-render options
+            // Re-render options (will auto-select first)
             renderPlanOptions();
             updatePlanSummary();
-        }
-        
-        function renderPlanOptions() {
-            const optionsGrid = document.getElementById('optionsGrid');
-            const options = planData[currentTab] || [];
-            
-            
-            optionsGrid.innerHTML = options.map(option => `
-                <div class="option-card" data-plan-id="${option.id}" onclick="selectPlan('${option.id}')">
-                    <div class="option-header">
-                        <div class="option-data">${option.data}</div>
-                        <div class="option-price">${option.price}</div>
-                    </div>
-                    <div class="option-details">
-                        <div class="option-duration">${option.duration}</div>
-                        <ul class="option-features">
-                            ${option.features.map(feature => `<li>${feature}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-            `).join('');
+            updateOrderButton();
         }
         
         function renderDestinations() {
@@ -1028,19 +1481,10 @@
             // Find selected destination data
             selectedDestination = destinationData[type].find(dest => dest.id === destinationId);
             
-            // Update country info
-            document.getElementById('countryName').textContent = selectedDestination.name;
-            document.getElementById('countryRegion').textContent = selectedDestination.region;
-            document.getElementById('countryFlag').textContent = selectedDestination.flag;
-            
-            // Hide search section and show selected country info
+            // Update current location display and hide search
             setTimeout(() => {
-                document.getElementById('travelSearchSection').style.display = 'none';
-                document.getElementById('selectedCountryInfo').style.display = 'flex';
-                document.getElementById('availablePlansHeader').style.display = 'block';
-                
-                // Update plans title
-                document.getElementById('availablePlansTitle').textContent = `Plans for ${selectedDestination.name}`;
+                updateCurrentLocation(selectedDestination, type);
+                toggleDestinationSearch();
                 
                 // Clear any selected plan when destination changes
                 selectedPlan = null;
@@ -1048,7 +1492,7 @@
                     card.classList.remove('selected');
                 });
                 
-                // Render plan options for selected destination
+                // Re-render plan options for selected destination (will auto-select first)
                 renderPlanOptions();
                 updatePlanSummary();
                 updateOrderButton();
@@ -1072,14 +1516,201 @@
             });
         }
         
-        function selectPlan(planId) {
+        function toggleDestinationSearch() {
+            const currentLocationSection = document.getElementById('currentLocationSection');
+            const destinationSearchSection = document.getElementById('destinationSearchSection');
+            
+            if (destinationSearchSection.style.display === 'none' || !destinationSearchSection.style.display) {
+                // Show search, hide current location
+                destinationSearchSection.style.display = 'block';
+                currentLocationSection.style.display = 'none';
+                // Clear search input and reset filters
+                document.getElementById('destinationSearch').value = '';
+                searchDestinations();
+            } else {
+                // Hide search, show current location
+                destinationSearchSection.style.display = 'none';
+                currentLocationSection.style.display = 'block';
+            }
+        }
+        
+        function updateCurrentLocation(destination, type) {
+            const flag = document.getElementById('currentLocationFlag');
+            const name = document.getElementById('currentLocationName');
+            const region = document.getElementById('currentLocationRegion');
+            
+            flag.textContent = destination.flag;
+            name.textContent = destination.name;
+            region.textContent = destination.region || destination.name;
+            
+            // Store selection for persistence
+            selectedDestination = destination;
+            
+            // Update plans title
+            document.getElementById('availablePlansTitle').textContent = `Plans for ${destination.name}`;
+        }
+        
+        function renderPlanOptions() {
+            const optionsGrid = document.getElementById('optionsGrid');
+            const options = planData[currentTab] || [];
+            
+            optionsGrid.innerHTML = options.map(option => {
+                const autoRenewSection = currentTab === 'subscription' ? `
+                    <div class="plan-auto-renew" onclick="event.stopPropagation();">
+                        <div class="auto-renew-content">
+                            <div class="auto-renew-info">
+                                <span class="auto-renew-label">Auto-Renew</span>
+                                <div class="info-icon tooltip" onclick="event.stopPropagation();">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="tooltiptext">Your plan will be automatically renewed before it expires. You can cancel anytime from Home.</span>
+                                </div>
+                            </div>
+                            <div class="toggle-switch" id="toggle-${option.id}" data-plan-id="${option.id}" onclick="togglePlanAutoRenew('${option.id}', event)">
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                ` : '';
+                
+                return `
+                    <div class="option-card" data-plan-id="${option.id}" onclick="selectPlan('${option.id}')">
+                        <div class="option-header">
+                            <div class="option-data">${option.data}</div>
+                            <div class="option-price">${option.price}</div>
+                        </div>
+                        <div class="option-details">
+                            <div class="option-duration">${option.duration}</div>
+                            <ul class="option-features">
+                                ${option.features.map(feature => `<li>${feature}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ${autoRenewSection}
+                    </div>
+                `;
+            }).join('');
+            
+            // Auto-select the first item if there are options and no current selection
+            if (options.length > 0 && !selectedPlan) {
+                setTimeout(() => {
+                    const firstOption = options[0];
+                    selectPlan(firstOption.id, true); // true flag for auto-selection
+                }, 100);
+            }
+        }
+        
+        function renderDestinations() {
+            renderCountriesList();
+            renderRegionsList();
+        }
+        
+        function renderCountriesList() {
+            const countriesList = document.getElementById('countriesList');
+            const countries = destinationData.countries;
+            
+            countriesList.innerHTML = countries.map(country => `
+                <div class="destination-item" data-destination-id="${country.id}" onclick="selectDestination('countries', '${country.id}')">
+                    <div class="destination-flag">${country.flag}</div>
+                    <div class="destination-info">
+                        <div class="destination-name">${country.name}</div>
+                        <div class="destination-region">${country.region}</div>
+                    </div>
+                    <div class="plan-count">${country.planCount} plans</div>
+                </div>
+            `).join('');
+        }
+        
+        function renderRegionsList() {
+            const regionsList = document.getElementById('regionsList');
+            const regions = destinationData.regions;
+            
+            regionsList.innerHTML = regions.map(region => `
+                <div class="destination-item" data-destination-id="${region.id}" onclick="selectDestination('regions', '${region.id}')">
+                    <div class="destination-flag">${region.flag}</div>
+                    <div class="destination-info">
+                        <div class="destination-name">${region.name}</div>
+                        <div class="destination-region">${region.region}</div>
+                    </div>
+                    <div class="plan-count">${region.planCount} plans</div>
+                </div>
+            `).join('');
+        }
+        
+        function switchDestinationTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.destination-tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update destination lists
+            document.querySelectorAll('.destination-list').forEach(list => {
+                list.classList.remove('active');
+            });
+            document.getElementById(`${tabName}List`).classList.add('active');
+            
+            currentDestinationTab = tabName;
+        }
+        
+        function selectDestination(type, destinationId) {
+            // Clear previous selections
+            document.querySelectorAll('.destination-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Add selection to clicked item
+            document.querySelector(`[data-destination-id="${destinationId}"]`).classList.add('selected');
+            
+            // Find selected destination data
+            selectedDestination = destinationData[type].find(dest => dest.id === destinationId);
+            
+            // Update current location display
+            updateCurrentLocation(selectedDestination, type);
+        }
+        
+        function searchDestinations() {
+            const searchTerm = document.getElementById('destinationSearch').value.toLowerCase();
+            const currentList = document.querySelector('.destination-list.active');
+            const items = currentList.querySelectorAll('.destination-item');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.destination-name').textContent.toLowerCase();
+                const region = item.querySelector('.destination-region').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || region.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = searchTerm === '' ? 'flex' : 'none';
+                }
+            });
+        }
+        
+        function selectPlan(planId, isAutoSelect = false) {
+            const clickedCard = document.querySelector(`[data-plan-id="${planId}"]`);
+            const wasAlreadySelected = clickedCard?.classList.contains('selected');
+            
+            // If clicking on already selected item (and not auto-select), unselect it
+            if (wasAlreadySelected && !isAutoSelect) {
+                // Unselect the plan
+                clickedCard.classList.remove('selected');
+                selectedPlan = null;
+                
+                // Update summary and CTA
+                updatePlanSummary();
+                updateOrderButton();
+                return;
+            }
+            
             // Remove previous selection
             document.querySelectorAll('.option-card').forEach(card => {
                 card.classList.remove('selected');
             });
             
             // Add selection to clicked card
-            document.querySelector(`[data-plan-id="${planId}"]`).classList.add('selected');
+            if (clickedCard) {
+                clickedCard.classList.add('selected');
+            } else {
+                console.error('Clicked card not found for planId:', planId);
+            }
             
             // Find selected plan data
             selectedPlan = planData[currentTab].find(plan => plan.id === planId);
@@ -1089,7 +1720,7 @@
             updateOrderButton();
             
             // Handle plan change mode
-            if (isChangeMode) {
+            if (isChangeMode && !isAutoSelect) {
                 handlePlanChange();
             }
         }
@@ -1134,15 +1765,21 @@
         function updateOrderButton() {
             const orderBtn = document.getElementById('orderBtn');
             const topupBtn = document.getElementById('topupBtn');
+            const fixedCta = document.getElementById('fixedCta') || document.querySelector('.fixed-cta');
             
             if (!selectedPlan) {
-                if (isChangeMode) {
-                    orderBtn.textContent = 'Select a new plan to continue';
-                } else {
-                    orderBtn.textContent = 'Select a plan to continue';
+                // Hide the entire CTA section when no plan is selected
+                if (fixedCta) fixedCta.style.display = 'none';
+                return;
+            } else {
+                // Show the CTA section when a plan is selected
+                if (fixedCta) {
+                    fixedCta.style.display = 'block';
                 }
-                orderBtn.disabled = true;
-                topupBtn.style.display = 'none';
+            }
+            
+            if (!orderBtn) {
+                console.error('Order button not found!');
                 return;
             }
             
@@ -1150,25 +1787,40 @@
             const hasEnoughBalance = userBalance >= planPrice;
             
             if (hasEnoughBalance) {
+                // Sufficient balance - enable order button, hide top-up
                 if (isChangeMode) {
                     orderBtn.textContent = 'Select Plan';
                 } else {
                     orderBtn.textContent = 'Order and Activate eSIM';
                 }
                 orderBtn.disabled = false;
-                topupBtn.style.display = 'none';
+                orderBtn.style.cursor = 'pointer';
+                if (topupBtn) {
+                    topupBtn.style.display = 'none';
+                    topupBtn.style.visibility = 'hidden';
+                }
             } else {
+                // Insufficient balance - disable order button, show top-up
                 orderBtn.textContent = 'Insufficient Balance';
                 orderBtn.disabled = true;
-                topupBtn.style.display = 'block';
+                orderBtn.style.cursor = 'not-allowed';
+                if (topupBtn) {
+                    topupBtn.style.display = 'block';
+                    topupBtn.style.visibility = 'visible';
+                } else {
+                    console.error('Top-up button not found!');
+                }
             }
         }
         
         function updateBalance() {
             const balanceElement = document.getElementById('currentBalance');
             const balanceStatus = document.getElementById('balanceStatus');
+            const plansBalanceAmount = document.getElementById('plansBalanceAmount');
             
-            balanceElement.textContent = `$${userBalance.toFixed(2)}`;
+            const balanceText = `$${userBalance.toFixed(2)}`;
+            if (balanceElement) balanceElement.textContent = balanceText;
+            if (plansBalanceAmount) plansBalanceAmount.textContent = balanceText;
             
             if (selectedPlan) {
                 const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
@@ -1181,7 +1833,49 @@
                 }
             }
             
+            updateBalanceVisibility();
             updateOrderButton();
+        }
+        
+        function updateBalanceVisibility() {
+            const balanceInfoSection = document.getElementById('balanceInfoSection');
+            const plansBalanceSection = document.getElementById('plansBalanceSection');
+            
+            // Check if we're navigated here from home dashboard or directly accessing plans
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromHome = urlParams.get('from') === 'home' || urlParams.get('source') === 'home';
+            
+            // Since this page IS the Plans tab, we should always show the plans balance layout
+            // But we can show different layouts based on navigation source
+            const isPlansTabContext = true;
+            
+            if (isPlansTabContext) {
+                // Hide main balance info section and show plans balance section
+                if (balanceInfoSection) balanceInfoSection.style.display = 'none';
+                if (plansBalanceSection) plansBalanceSection.style.display = 'block';
+            } else {
+                // Show main balance info section and hide plans balance section
+                if (balanceInfoSection) balanceInfoSection.style.display = 'block';
+                if (plansBalanceSection) plansBalanceSection.style.display = 'none';
+            }
+        }
+        
+        function updateBackButtonVisibility() {
+            const backButton = document.querySelector('.back-button');
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Show back button only when navigated from home dashboard
+            const fromHome = urlParams.get('from') === 'home' || urlParams.get('source') === 'home';
+            
+            // Since this IS the Plans tab page, hide back button by default
+            // Only show it when specifically navigated from home
+            if (fromHome) {
+                // Show back button when clicked from home page
+                if (backButton) backButton.style.display = 'block';
+            } else {
+                // Hide back button when accessed directly via Plans tab
+                if (backButton) backButton.style.display = 'none';
+            }
         }
         
         function toggleAutoRenew() {
@@ -1195,7 +1889,50 @@
             }
         }
         
+        function togglePlanAutoRenew(planId, event) {
+            // Stop event propagation to prevent plan selection
+            event.stopPropagation();
+            
+            const toggle = document.getElementById(`toggle-${planId}`);
+            if (!toggle) return;
+            
+            const currentlyActive = toggle.classList.contains('active');
+            
+            // Toggle the state
+            if (currentlyActive) {
+                toggle.classList.remove('active');
+            } else {
+                toggle.classList.add('active');
+            }
+            
+            // Update the autoRenewEnabled variable if this is the selected plan
+            if (selectedPlan && selectedPlan.id === planId) {
+                autoRenewEnabled = !currentlyActive;
+            }
+        }
+        
+        function getCurrentPlanAutoRenewState() {
+            if (!selectedPlan || currentTab !== 'subscription') {
+                return false;
+            }
+            
+            const toggle = document.getElementById(`toggle-${selectedPlan.id}`);
+            return toggle ? toggle.classList.contains('active') : false;
+        }
+        
         function orderPlan() {
+            // Check if button is disabled
+            const orderBtn = document.getElementById('orderBtn');
+            if (orderBtn && orderBtn.disabled) {
+                if (!selectedPlan) {
+                    alert('Please select a plan first');
+                } else {
+                    const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
+                    alert(`Insufficient balance. You have $${userBalance.toFixed(2)} but need $${planPrice.toFixed(2)}. Please top up your account.`);
+                }
+                return;
+            }
+            
             if (isChangeMode) {
                 handlePlanChange();
                 return;
@@ -1207,24 +1944,28 @@
             }
             
             const planPrice = parseFloat(selectedPlan.price.replace('$', ''));
+            
             if (userBalance < planPrice) {
-                alert('Insufficient balance. Please top up your account.');
+                alert(`Insufficient balance. You have $${userBalance.toFixed(2)} but need $${planPrice.toFixed(2)}. Please top up your account.`);
                 return;
             }
             
             // Simulate order process
+            const countryElement = document.getElementById('currentLocationName');
+            const countryName = countryElement ? countryElement.textContent : 'Unknown';
+            
             const orderDetails = {
                 plan: selectedPlan,
-                autoRenew: currentTab === 'subscription' ? autoRenewEnabled : false,
-                country: document.getElementById('countryName').textContent
+                autoRenew: currentTab === 'subscription' ? getCurrentPlanAutoRenewState() : false,
+                country: countryName
             };
             
-            const confirmed = confirm(
-                `Order ${selectedPlan.data} plan for ${selectedPlan.price}?\n\n` +
+            const confirmMessage = `Order ${selectedPlan.data} plan for ${selectedPlan.price}?\n\n` +
                 `Duration: ${selectedPlan.duration}\n` +
                 (orderDetails.autoRenew ? 'Auto-renew: Enabled\n' : '') +
-                `Country: ${orderDetails.country}`
-            );
+                `Country: ${orderDetails.country}`;
+            
+            const confirmed = confirm(confirmMessage);
             
             if (confirmed) {
                 // Update balance
@@ -1232,11 +1973,12 @@
                 localStorage.setItem('userBalance', userBalance.toFixed(2));
                 
                 // Store plan details for activation
-                localStorage.setItem('activatingPlan', JSON.stringify({
+                const planData = {
                     ...selectedPlan,
-                    country: document.getElementById('countryName').textContent,
+                    country: countryName,
                     autoRenew: orderDetails.autoRenew
-                }));
+                };
+                localStorage.setItem('activatingPlan', JSON.stringify(planData));
                 
                 // Navigate to eSIM activation
                 window.location.href = 'activate-esim.html';
@@ -1257,12 +1999,7 @@
             window.location.href = `top-up.html?amount=${planPrice}`;
         }
         
-        // Load balance from localStorage with profile fallback
-        const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
-        const storedBalance = localStorage.getItem('userBalance') || userProfile.balance;
-        if (storedBalance) {
-            userBalance = parseFloat(storedBalance);
-        }
+        // Balance loading moved to DOMContentLoaded event above
         
         // Watch for plan selection changes to update balance status
         const observer = new MutationObserver(function(mutations) {
