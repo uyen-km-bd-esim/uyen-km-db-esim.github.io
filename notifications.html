@@ -125,86 +125,94 @@
             padding: 0 1rem 2rem 1rem;
         }
         
-        /* Notification Summary */
-        .notification-summary {
-            background-color: var(--esimphony-card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
+        
+        /* Filter Dropdown */
+        .filter-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 4px 12px var(--esimphony-shadow);
         }
         
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-        }
-        
-        .summary-item {
-            text-align: center;
-            padding: 1rem;
-            background: #F8F9FA;
+        .filter-button {
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.25rem;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
         }
         
-        .summary-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--esimphony-black);
-            margin-bottom: 0.25rem;
+        .filter-button:hover {
+            opacity: 0.8;
+            background-color: rgba(255, 255, 255, 0.15);
         }
         
-        .summary-label {
-            font-size: 0.875rem;
-            color: var(--esimphony-gray);
+        .filter-text {
+            font-size: 1rem;
             font-weight: 500;
         }
         
-        .unread-summary {
-            background: linear-gradient(135deg, var(--esimphony-red), #FF6B6B);
-            color: white;
+        .filter-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--esimphony-card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
         }
         
-        .unread-summary .summary-value,
-        .unread-summary .summary-label {
-            color: white;
+        .filter-dropdown-menu.show {
+            display: block;
         }
         
-        /* Filters */
-        .filters-card {
-            background-color: var(--esimphony-card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 12px var(--esimphony-shadow);
-        }
-        
-        .filter-tabs {
+        .filter-dropdown-item {
+            padding: 0.875rem 1.25rem;
+            color: var(--esimphony-black);
+            text-decoration: none;
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .filter-tab {
-            padding: 0.75rem 1.5rem;
-            border: 2px solid var(--esimphony-border);
-            border-radius: 20px;
-            background-color: white;
-            color: var(--esimphony-gray);
-            font-weight: 600;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.875rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
         }
         
-        .filter-tab.active {
-            border-color: var(--esimphony-red);
+        .filter-dropdown-item:hover {
+            background-color: #F8F9FA;
+            color: var(--esimphony-black);
+            text-decoration: none;
+        }
+        
+        .filter-dropdown-item.active {
             background-color: var(--esimphony-red);
-            color: white;
+            color: var(--esimphony-white);
         }
         
-        .filter-tab:hover {
-            border-color: var(--esimphony-red);
+        .filter-dropdown-item.active:hover {
+            background-color: #E60000;
+            color: var(--esimphony-white);
+        }
+        
+        .filter-dropdown-item i {
+            width: 16px;
+            text-align: center;
         }
         
         /* Notifications List */
@@ -441,9 +449,6 @@
                 align-self: flex-end;
             }
             
-            .summary-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
         }
     </style>
 </head>
@@ -474,45 +479,32 @@
         
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Notification Summary -->
-            <div class="notification-summary">
-                <div class="card-title">
-                    <i class="fas fa-bell card-icon"></i>
-                    Notification Summary
-                </div>
-                
-                <div class="summary-grid">
-                    <div class="summary-item unread-summary">
-                        <div class="summary-value" id="unreadCount">3</div>
-                        <div class="summary-label">Unread</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value" id="totalCount">12</div>
-                        <div class="summary-label">Total</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value" id="promoCount">2</div>
-                        <div class="summary-label">Promotions</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-value" id="todayCount">5</div>
-                        <div class="summary-label">Today</div>
-                    </div>
-                </div>
-            </div>
             
-            <!-- Filters -->
-            <div class="filters-card">
-                <div class="card-title">
-                    <i class="fas fa-filter card-icon"></i>
-                    Filter Notifications
-                </div>
+            <!-- Filter Dropdown -->
+            <div class="filter-dropdown">
+                <button class="filter-button" onclick="toggleFilterDropdown()" id="filterButton">
+                    <i class="fas fa-filter"></i>
+                    <span class="filter-text" id="filterText">All Notifications</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
                 
-                <div class="filter-tabs">
-                    <button class="filter-tab active" onclick="filterNotifications('all')">All</button>
-                    <button class="filter-tab" onclick="filterNotifications('unread')">Unread</button>
-                    <button class="filter-tab" onclick="filterNotifications('promo')">Promotions</button>
-                    <button class="filter-tab" onclick="filterNotifications('urgent')">Urgent</button>
+                <div class="filter-dropdown-menu" id="filterDropdownMenu">
+                    <button class="filter-dropdown-item active" onclick="selectFilter('all', 'All Notifications')">
+                        <i class="fas fa-list"></i>
+                        All Notifications
+                    </button>
+                    <button class="filter-dropdown-item" onclick="selectFilter('unread', 'Unread Only')">
+                        <i class="fas fa-circle"></i>
+                        Unread Only
+                    </button>
+                    <button class="filter-dropdown-item" onclick="selectFilter('promo', 'Promotions')">
+                        <i class="fas fa-gift"></i>
+                        Promotions
+                    </button>
+                    <button class="filter-dropdown-item" onclick="selectFilter('urgent', 'Urgent')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Urgent
+                    </button>
                 </div>
             </div>
             
@@ -733,14 +725,25 @@
             }
         }
         
-        function filterNotifications(filter) {
+        function toggleFilterDropdown() {
+            const menu = document.getElementById('filterDropdownMenu');
+            menu.classList.toggle('show');
+        }
+        
+        function selectFilter(filter, text) {
             currentFilter = filter;
             
-            // Update active tab
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
+            // Update button text
+            document.getElementById('filterText').textContent = text;
+            
+            // Update active item
+            document.querySelectorAll('.filter-dropdown-item').forEach(item => {
+                item.classList.remove('active');
             });
             event.target.classList.add('active');
+            
+            // Close dropdown
+            document.getElementById('filterDropdownMenu').classList.remove('show');
             
             let filteredNotifications = sampleNotifications;
             
@@ -763,6 +766,17 @@
             renderNotifications(currentNotifications);
         }
         
+        function filterNotifications(filter) {
+            // Legacy function for backwards compatibility
+            const filterTexts = {
+                'all': 'All Notifications',
+                'unread': 'Unread Only',
+                'promo': 'Promotions',
+                'urgent': 'Urgent'
+            };
+            selectFilter(filter, filterTexts[filter]);
+        }
+        
         function markAsRead(notificationId) {
             const notification = sampleNotifications.find(n => n.id === notificationId);
             if (notification && !notification.read) {
@@ -770,6 +784,12 @@
                 updateSummary();
                 
                 // Re-render if showing filtered results
+                const filterTexts = {
+                    'all': 'All Notifications',
+                    'unread': 'Unread Only',
+                    'promo': 'Promotions',
+                    'urgent': 'Urgent'
+                };
                 filterNotifications(currentFilter);
                 
                 // Handle actionable notifications
@@ -785,7 +805,6 @@
                     notification.read = true;
                 });
                 
-                updateSummary();
                 filterNotifications(currentFilter);
                 toggleMenu();
                 
@@ -802,7 +821,6 @@
                 currentNotifications = [];
                 
                 renderNotifications(currentNotifications);
-                updateSummary();
                 toggleMenu();
                 
                 // Show success message
@@ -812,21 +830,6 @@
             }
         }
         
-        function updateSummary() {
-            const unreadCount = sampleNotifications.filter(n => !n.read).length;
-            const totalCount = sampleNotifications.length;
-            const promoCount = sampleNotifications.filter(n => n.category === 'promo').length;
-            
-            // Calculate today's notifications
-            const today = new Date();
-            const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-            const todayCount = sampleNotifications.filter(n => n.time >= todayStart).length;
-            
-            document.getElementById('unreadCount').textContent = unreadCount;
-            document.getElementById('totalCount').textContent = totalCount;
-            document.getElementById('promoCount').textContent = promoCount;
-            document.getElementById('todayCount').textContent = todayCount;
-        }
         
         function handleNotificationAction(action) {
             switch (action) {
@@ -853,20 +856,27 @@
             }
         }
         
-        // Close dropdown when clicking outside
+        // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
-            const menu = document.getElementById('actionsMenu');
-            const button = document.querySelector('.menu-button');
+            const actionsMenu = document.getElementById('actionsMenu');
+            const actionsButton = document.querySelector('.menu-button');
+            const filterMenu = document.getElementById('filterDropdownMenu');
+            const filterButton = document.getElementById('filterButton');
             
-            if (!menu.contains(event.target) && !button.contains(event.target)) {
-                menu.classList.remove('show');
+            // Close actions menu
+            if (actionsMenu && !actionsMenu.contains(event.target) && !actionsButton.contains(event.target)) {
+                actionsMenu.classList.remove('show');
+            }
+            
+            // Close filter menu
+            if (filterMenu && !filterMenu.contains(event.target) && !filterButton.contains(event.target)) {
+                filterMenu.classList.remove('show');
             }
         });
         
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             renderNotifications(currentNotifications);
-            updateSummary();
             
             // Set active navigation item (this page doesn't have a direct nav item)
         });

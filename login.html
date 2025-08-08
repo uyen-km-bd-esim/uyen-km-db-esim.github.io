@@ -243,9 +243,83 @@
             }
         }
         
+        /* Social login buttons */
+        .social-login-section {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .social-divider {
+            position: relative;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .social-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #333333;
+        }
+        
+        .social-divider span {
+            background-color: var(--esimphony-black);
+            padding: 0 1rem;
+            color: var(--esimphony-gray);
+            font-size: 0.875rem;
+        }
+        
+        .social-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-social {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: 2px solid #333333;
+            background-color: transparent;
+            color: var(--esimphony-white);
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .btn-social:hover {
+            border-color: var(--esimphony-red);
+            background-color: rgba(255, 0, 0, 0.05);
+            color: var(--esimphony-white);
+            text-decoration: none;
+        }
+        
+        .btn-social i {
+            font-size: 1.125rem;
+        }
+        
+        .btn-google:hover {
+            border-color: #4285f4;
+            background-color: rgba(66, 133, 244, 0.05);
+        }
+        
+        .btn-facebook:hover {
+            border-color: #1877f2;
+            background-color: rgba(24, 119, 242, 0.05);
+        }
+        
         /* Focus states for accessibility */
         .btn-esimphony-primary:focus-visible,
-        .form-control:focus-visible {
+        .form-control:focus-visible,
+        .btn-social:focus-visible {
             outline: 3px solid rgba(255, 255, 255, 0.5);
             outline-offset: 2px;
         }
@@ -264,6 +338,24 @@
             <h1 class="form-title">Welcome back</h1>
             <p class="form-subtitle">Sign in to your eSimphony account</p>
             
+            
+            <!-- Social Login Options -->
+            <div class="social-login-section">
+                <div class="social-buttons">
+                    <button type="button" class="btn-social btn-google" onclick="loginWithGoogle()">
+                        <i class="fab fa-google"></i>
+                        Google
+                    </button>
+                    <button type="button" class="btn-social btn-facebook" onclick="loginWithFacebook()">
+                        <i class="fab fa-facebook-f"></i>
+                        Facebook
+                    </button>
+                </div>
+                
+                <div class="social-divider">
+                    <span>or continue with email</span>
+                </div>
+            </div>
             
             <form id="loginForm" novalidate>
                 <div class="form-group">
@@ -516,6 +608,73 @@
         function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
+        }
+        
+        // Social login functions
+        function loginWithGoogle() {
+            // Show loading state
+            const googleBtn = document.querySelector('.btn-google');
+            googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+            googleBtn.disabled = true;
+            
+            // Simulate Google OAuth flow
+            setTimeout(() => {
+                // Reset button
+                googleBtn.innerHTML = '<i class="fab fa-google"></i> Google';
+                googleBtn.disabled = false;
+                
+                // Simulate successful Google login
+                const userProfile = {
+                    firstName: 'John',
+                    email: 'john@gmail.com',
+                    balance: '15.00',
+                    activePlan: null,
+                    accountType: 'social-google',
+                    loginMethod: 'google'
+                };
+                
+                localStorage.setItem('userFirstName', 'John');
+                localStorage.setItem('userEmail', 'john@gmail.com');
+                localStorage.setItem('userBalance', '15.00');
+                localStorage.setItem('userProfile', JSON.stringify(userProfile));
+                localStorage.removeItem('userActivePlan');
+                
+                alert('Successfully logged in with Google! Welcome back, John.');
+                window.location.href = 'home-dashboard.html';
+            }, 2000);
+        }
+        
+        function loginWithFacebook() {
+            // Show loading state
+            const facebookBtn = document.querySelector('.btn-facebook');
+            facebookBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+            facebookBtn.disabled = true;
+            
+            // Simulate Facebook OAuth flow
+            setTimeout(() => {
+                // Reset button
+                facebookBtn.innerHTML = '<i class="fab fa-facebook-f"></i> Facebook';
+                facebookBtn.disabled = false;
+                
+                // Simulate successful Facebook login
+                const userProfile = {
+                    firstName: 'Lisa',
+                    email: 'lisa@facebook.com',
+                    balance: '20.00',
+                    activePlan: null,
+                    accountType: 'social-facebook',
+                    loginMethod: 'facebook'
+                };
+                
+                localStorage.setItem('userFirstName', 'Lisa');
+                localStorage.setItem('userEmail', 'lisa@facebook.com');
+                localStorage.setItem('userBalance', '20.00');
+                localStorage.setItem('userProfile', JSON.stringify(userProfile));
+                localStorage.removeItem('userActivePlan');
+                
+                alert('Successfully logged in with Facebook! Welcome back, Lisa.');
+                window.location.href = 'home-dashboard.html';
+            }, 2000);
         }
         
         // Real-time validation

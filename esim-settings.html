@@ -96,42 +96,6 @@
             font-size: 1.5rem;
         }
         
-        .platform-selector {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .platform-btn {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid var(--esimphony-border);
-            border-radius: 12px;
-            background-color: var(--esimphony-white);
-            color: var(--esimphony-black);
-            font-weight: 600;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        .platform-btn.active {
-            border-color: var(--esimphony-red);
-            background-color: #FFEAEA;
-            color: var(--esimphony-red);
-        }
-        
-        .platform-btn:hover {
-            border-color: var(--esimphony-red);
-        }
-        
-        .platform-icon {
-            font-size: 1.25rem;
-        }
         
         .instructions-section {
             display: none;
@@ -338,11 +302,6 @@
         
         /* Responsive Design */
         @media (max-width: 576px) {
-            .platform-selector {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            
             .qr-placeholder {
                 width: 150px;
                 height: 150px;
@@ -368,24 +327,6 @@
         
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Platform Selection -->
-            <div class="settings-card">
-                <h2 class="card-title">
-                    <i class="fas fa-mobile-alt card-icon"></i>
-                    Select Your Platform
-                </h2>
-                
-                <div class="platform-selector">
-                    <button class="platform-btn active" id="iosBtn" onclick="selectPlatform('ios')">
-                        <i class="fab fa-apple platform-icon"></i>
-                        <span>iOS</span>
-                    </button>
-                    <button class="platform-btn" id="androidBtn" onclick="selectPlatform('android')">
-                        <i class="fab fa-android platform-icon"></i>
-                        <span>Android</span>
-                    </button>
-                </div>
-            </div>
             
             <!-- eSIM Activation Details -->
             <div class="settings-card">
@@ -437,79 +378,36 @@
                     Setup Instructions
                 </h2>
                 
-                <div class="instructions-section active" id="iosInstructions">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-title">Open Settings</div>
-                        <div class="step-description">
-                            Go to <strong>Settings</strong> > <strong>Cellular</strong> > <strong>Add Cellular Plan</strong>
-                        </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-title">Scan QR Code</div>
-                        <div class="step-description">
-                            Use your camera to scan the QR code above, or tap "Enter Details Manually" to use the activation codes
-                        </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-title">Complete Setup</div>
-                        <div class="step-description">
-                            Follow the on-screen prompts to complete the eSIM installation. You may need to restart your device.
-                        </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="step-title">Configure Data Settings</div>
-                        <div class="step-description">
-                            Go to <strong>Settings</strong> > <strong>Cellular</strong> > Select your eSimphony plan > Turn on <strong>Data Roaming</strong>
-                        </div>
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Open Device Settings</div>
+                    <div class="step-description">
+                        <strong>iOS:</strong> Go to Settings > Cellular > Add Cellular Plan<br>
+                        <strong>Android:</strong> Go to Settings > Network & Internet > Mobile Network
                     </div>
                 </div>
                 
-                <div class="instructions-section" id="androidInstructions">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-title">Open Settings</div>
-                        <div class="step-description">
-                            Go to <strong>Settings</strong> > <strong>Network & Internet</strong> > <strong>Mobile Network</strong>
-                        </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Scan QR Code or Add Manually</div>
+                    <div class="step-description">
+                        Use your camera to scan the QR code above, or select "Enter Details Manually" to use the activation codes provided
                     </div>
-                    
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-title">Add eSIM</div>
-                        <div class="step-description">
-                            Tap <strong>Add carrier</strong> or <strong>Add eSIM</strong> > <strong>Next</strong>
-                        </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Complete Setup</div>
+                    <div class="step-description">
+                        Follow the on-screen prompts to complete the eSIM installation. You may need to restart your device after installation.
                     </div>
-                    
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div class="step-title">Scan QR Code</div>
-                        <div class="step-description">
-                            Use your camera to scan the QR code above, or tap "Need help?" to enter the activation details manually
-                        </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="step-title">Enable eSIM</div>
-                        <div class="step-description">
-                            After installation, make sure to enable the eSIM and set it as your data connection
-                        </div>
-                    </div>
-                    
-                    <div class="step">
-                        <div class="step-number">5</div>
-                        <div class="step-title">Configure APN</div>
-                        <div class="step-description">
-                            Go to <strong>Access Point Names</strong> and ensure APN is set to <strong>esimphony.flex</strong>
-                        </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Enable eSIM and Configure</div>
+                    <div class="step-description">
+                        Make sure to enable the eSIM, turn on Data Roaming, and set the APN to <strong>esimphony.flex</strong> if prompted
                     </div>
                 </div>
             </div>
@@ -561,17 +459,6 @@
             }
         }
         
-        function selectPlatform(platform) {
-            // Update button states
-            document.getElementById('iosBtn').classList.remove('active');
-            document.getElementById('androidBtn').classList.remove('active');
-            document.getElementById(platform + 'Btn').classList.add('active');
-            
-            // Update instructions
-            document.getElementById('iosInstructions').classList.remove('active');
-            document.getElementById('androidInstructions').classList.remove('active');
-            document.getElementById(platform + 'Instructions').classList.add('active');
-        }
         
         function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
