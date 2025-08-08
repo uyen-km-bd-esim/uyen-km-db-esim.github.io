@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Support - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-success: #28a745;
+            --esimphony-warning: #ffc107;
+            --esimphony-info: #17a2b8;
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+        }
+        
+        .demo-container {
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        .header-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .back-button:hover {
+            opacity: 0.7;
+        }
+        
+        .logo-small {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            letter-spacing: -0.02em;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--esimphony-gray);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .content-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .demo-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333333;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.2s ease;
+        }
+        
+        .demo-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #444444;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card-icon {
+            font-size: 1.75rem;
+        }
+        
+        .account-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--esimphony-red);
+        }
+        
+        .account-email {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--esimphony-white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .account-password {
+            font-size: 0.875rem;
+            color: var(--esimphony-info);
+            margin-bottom: 0.5rem;
+        }
+        
+        .account-description {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            margin-bottom: 1rem;
+        }
+        
+        .account-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .feature-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-balance {
+            background-color: var(--esimphony-success);
+            color: white;
+        }
+        
+        .badge-no-balance {
+            background-color: var(--esimphony-warning);
+            color: black;
+        }
+        
+        .badge-plan {
+            background-color: var(--esimphony-info);
+            color: white;
+        }
+        
+        .badge-no-plan {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .flow-step {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--esimphony-info);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: var(--esimphony-red);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            font-weight: 700;
+            margin-right: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--esimphony-white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-description {
+            color: var(--esimphony-gray);
+            margin-bottom: 1rem;
+        }
+        
+        .page-link {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #444444;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--esimphony-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--esimphony-white);
+            text-decoration: none;
+        }
+        
+        .btn-demo-primary {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+            margin-top: 2rem;
+        }
+        
+        .btn-demo-primary:hover {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .reset-section {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid var(--esimphony-warning);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .reset-title {
+            color: var(--esimphony-warning);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-reset {
+            background-color: var(--esimphony-warning);
+            border-color: var(--esimphony-warning);
+            color: black;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-reset:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+            color: black;
+            text-decoration: none;
+        }
+        
+        @media (min-width: 576px) {
+            .demo-container {
+                padding: 3rem 2rem;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="header-section">
+            <button class="back-button" onclick="goBack()" aria-label="Go back">
+                ←
+            </button>
+            <div class="logo-small">eSimphony</div>
+        </div>
+        
+        <div class="content-section">
+            <h1 class="page-title">Demo Support</h1>
+            <p class="page-subtitle">Complete testing guide for eSimphony platform</p>
+            
+            <!-- Demo Accounts Section -->
+            <div class="demo-card">
+                <h2 class="card-title">
+                    <span class="card-icon">👤</span>
+                    Demo Test Accounts
+                </h2>
+                <p style="color: var(--esimphony-gray); margin-bottom: 2rem;">
+                    Use these pre-configured accounts to test different user scenarios. All accounts use password: <strong>123456</strong>
+                </p>
+                
+                <div class="account-item">
+                    <div class="account-email">📧 nobalance@esim.demo</div>
+                    <div class="account-password">🔑 Password: 123456</div>
+                    <div class="account-description">
+                        <strong>Alex Chen</strong> - New user with no balance and no active plans. Perfect for testing first-time user flows and top-up processes.
+                    </div>
+                    <div class="account-features">
+                        <span class="feature-badge badge-no-balance">$0.00 Balance</span>
+                        <span class="feature-badge badge-no-plan">No Active Plan</span>
+                    </div>
+                </div>
+                
+                <div class="account-item">
+                    <div class="account-email">💰 exist-topup@esim.demo</div>
+                    <div class="account-password">🔑 Password: 123456</div>
+                    <div class="account-description">
+                        <strong>Sarah Johnson</strong> - User with existing balance but no active plans. Ideal for testing plan purchase flows without needing to top up first.
+                    </div>
+                    <div class="account-features">
+                        <span class="feature-badge badge-balance">$25.00 Balance</span>
+                        <span class="feature-badge badge-no-plan">No Active Plan</span>
+                    </div>
+                </div>
+                
+                <div class="account-item">
+                    <div class="account-email">📱 exist-plan@esim.demo</div>
+                    <div class="account-password">🔑 Password: 123456</div>
+                    <div class="account-description">
+                        <strong>Michael Rodriguez</strong> - User with balance and an active plan. Perfect for testing plan management, plan changes, and renewal flows.
+                    </div>
+                    <div class="account-features">
+                        <span class="feature-badge badge-balance">$45.00 Balance</span>
+                        <span class="feature-badge badge-plan">Euro Data Pass Active</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Use Cases Section -->
+            <div class="demo-card">
+                <h2 class="card-title">
+                    <span class="card-icon">🎯</span>
+                    Complete Use Case Testing Flows
+                </h2>
+                
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Use Case 1: New User Registration & Top-Up</div>
+                    <div class="step-description">Test the complete new user onboarding process with account creation and first top-up.</div>
+                    <a href="register.html" class="page-link">register.html</a>
+                    <a href="top-up.html" class="page-link">top-up.html</a>
+                    <a href="home-dashboard.html" class="page-link">home-dashboard.html</a>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Use Case 2: Plan Purchase Journey</div>
+                    <div class="step-description">Navigate through country selection, plan comparison, and purchase confirmation flows.</div>
+                    <a href="destination-selector.html" class="page-link">destination-selector.html</a>
+                    <a href="tariff-details.html" class="page-link">tariff-details.html</a>
+                    <a href="purchase-confirmation.html" class="page-link">purchase-confirmation.html</a>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Use Case 3: Plan Change Management</div>
+                    <div class="step-description">Test plan modification flows with warning dialogs and confirmation modals for users with active plans.</div>
+                    <div style="margin-top: 1rem;">
+                        <strong>Login with:</strong> exist-plan@esim.demo → 
+                        <a href="home-dashboard.html" class="page-link">home-dashboard.html</a>
+                        <a href="tariff-details.html?mode=change" class="page-link">tariff-details.html (Change Mode)</a>
+                    </div>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Multi-Account Demo System</div>
+                    <div class="step-description">Experience different user personas with account-specific UI modifications and data states.</div>
+                    <div style="margin-top: 1rem;">
+                        <strong>Features:</strong> Profile-based greetings, balance-specific UI animations, account-type conditional styling
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation & Routing Section -->
+            <div class="demo-card">
+                <h2 class="card-title">
+                    <span class="card-icon">🗺️</span>
+                    Page Navigation & Routing Guide
+                </h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div>
+                        <h4 style="color: var(--esimphony-white); margin-bottom: 0.5rem;">Entry Points</h4>
+                        <a href="index.html" class="page-link">index.html - Landing</a>
+                        <a href="login.html" class="page-link">login.html - Sign In</a>
+                        <a href="register.html" class="page-link">register.html - Sign Up</a>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--esimphony-white); margin-bottom: 0.5rem;">Core Dashboard</h4>
+                        <a href="home-dashboard.html" class="page-link">home-dashboard.html - Main Hub</a>
+                        <a href="destination-selector.html" class="page-link">destination-selector.html - Country Selection</a>
+                        <a href="tariff-details.html" class="page-link">tariff-details.html - Plan Details</a>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--esimphony-white); margin-bottom: 0.5rem;">Purchase Flow</h4>
+                        <a href="top-up.html" class="page-link">top-up.html - Add Balance</a>
+                        <a href="purchase-confirmation.html" class="page-link">purchase-confirmation.html - Order Complete</a>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--esimphony-white); margin-bottom: 0.5rem;">Support & Demo</h4>
+                        <a href="demo-support.html" class="page-link">demo-support.html - This Page</a>
+                        <a href="reset.html" class="page-link">reset.html - Clear Demo Data</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testing Instructions -->
+            <div class="demo-card">
+                <h2 class="card-title">
+                    <span class="card-icon">🧪</span>
+                    Testing Instructions
+                </h2>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--esimphony-white); margin-bottom: 1rem;">Quick Test Scenarios</h4>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>🆕 New User Flow:</strong> Register → Top-up → Select Destination → Choose Plan → Purchase
+                    </div>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>💰 Existing User (Has Balance):</strong> Login with exist-topup@esim.demo → Select Destination → Purchase Plan
+                    </div>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>📱 Plan Change Flow:</strong> Login with exist-plan@esim.demo → Home Dashboard → Change Plan → Confirm Warning
+                    </div>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 8px;">
+                        <strong>🔄 Reset Between Tests:</strong> Visit Reset Page to clear all demo data and start fresh
+                    </div>
+                </div>
+                
+                <h4 style="color: var(--esimphony-white); margin-bottom: 1rem;">Key Features to Test</h4>
+                <ul style="color: var(--esimphony-gray); line-height: 1.6;">
+                    <li>Responsive design on different screen sizes</li>
+                    <li>Form validation and error handling</li>
+                    <li>Modal dialog interactions and confirmations</li>
+                    <li>Navigation source tracking and routing logic</li>
+                    <li>Account-specific UI modifications and animations</li>
+                    <li>LocalStorage persistence across page reloads</li>
+                </ul>
+            </div>
+            
+            <!-- Reset Section -->
+            <div class="reset-section">
+                <h3 class="reset-title">🔄 Reset Demo Environment</h3>
+                <p style="color: var(--esimphony-gray); margin-bottom: 1.5rem;">
+                    Clear all stored demo data and return to a clean testing state. Use this between test scenarios to ensure accurate results.
+                </p>
+                <a href="reset.html" class="btn-reset">Reset All Demo Data</a>
+            </div>
+            
+            <!-- Start Testing Button -->
+            <div style="text-align: center;">
+                <a href="login.html" class="btn-demo-primary">Start Testing with Demo Accounts</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
