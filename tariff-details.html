@@ -43,6 +43,7 @@
             margin-bottom: 1.5rem;
         }
         
+        
         /* Current Active Plan Section */
         .current-plan-section {
             background-color: var(--esimphony-card-bg);
@@ -632,7 +633,7 @@
                 <div class="header-title">Select Plan</div>
             </div>
             
-            <div class="country-info">
+            <div class="country-info" id="selectedCountryInfo">
                 <div class="country-flag" id="countryFlag">🇺🇸</div>
                 <div class="country-details">
                     <h2 id="countryName">United States</h2>
@@ -853,6 +854,9 @@
             document.getElementById('countryName').textContent = country;
             document.getElementById('countryRegion').textContent = region;
             document.getElementById('countryFlag').textContent = flag;
+            
+            // Update plans title
+            document.getElementById('availablePlansTitle').textContent = `Plans for ${country}`;
         }
         
         function checkPlanChangeMode() {
@@ -942,6 +946,7 @@
             const optionsGrid = document.getElementById('optionsGrid');
             const options = planData[currentTab] || [];
             
+            
             optionsGrid.innerHTML = options.map(option => `
                 <div class="option-card" data-plan-id="${option.id}" onclick="selectPlan('${option.id}')">
                     <div class="option-header">
@@ -956,6 +961,115 @@
                     </div>
                 </div>
             `).join('');
+        }
+        
+        function renderDestinations() {
+            renderCountriesList();
+            renderRegionsList();
+        }
+        
+        function renderCountriesList() {
+            const countriesList = document.getElementById('countriesList');
+            const countries = destinationData.countries;
+            
+            countriesList.innerHTML = countries.map(country => `
+                <div class="destination-item" data-destination-id="${country.id}" onclick="selectDestination('countries', '${country.id}')">
+                    <div class="destination-flag">${country.flag}</div>
+                    <div class="destination-info">
+                        <div class="destination-name">${country.name}</div>
+                        <div class="destination-region">${country.region}</div>
+                    </div>
+                    <div class="plan-count">${country.planCount} plans</div>
+                </div>
+            `).join('');
+        }
+        
+        function renderRegionsList() {
+            const regionsList = document.getElementById('regionsList');
+            const regions = destinationData.regions;
+            
+            regionsList.innerHTML = regions.map(region => `
+                <div class="destination-item" data-destination-id="${region.id}" onclick="selectDestination('regions', '${region.id}')">
+                    <div class="destination-flag">${region.flag}</div>
+                    <div class="destination-info">
+                        <div class="destination-name">${region.name}</div>
+                        <div class="destination-region">${region.region}</div>
+                    </div>
+                    <div class="plan-count">${region.planCount} plans</div>
+                </div>
+            `).join('');
+        }
+        
+        function switchDestinationTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.destination-tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update destination lists
+            document.querySelectorAll('.destination-list').forEach(list => {
+                list.classList.remove('active');
+            });
+            document.getElementById(`${tabName}List`).classList.add('active');
+            
+            currentDestinationTab = tabName;
+        }
+        
+        function selectDestination(type, destinationId) {
+            // Clear previous selections
+            document.querySelectorAll('.destination-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Add selection to clicked item
+            document.querySelector(`[data-destination-id="${destinationId}"]`).classList.add('selected');
+            
+            // Find selected destination data
+            selectedDestination = destinationData[type].find(dest => dest.id === destinationId);
+            
+            // Update country info
+            document.getElementById('countryName').textContent = selectedDestination.name;
+            document.getElementById('countryRegion').textContent = selectedDestination.region;
+            document.getElementById('countryFlag').textContent = selectedDestination.flag;
+            
+            // Hide search section and show selected country info
+            setTimeout(() => {
+                document.getElementById('travelSearchSection').style.display = 'none';
+                document.getElementById('selectedCountryInfo').style.display = 'flex';
+                document.getElementById('availablePlansHeader').style.display = 'block';
+                
+                // Update plans title
+                document.getElementById('availablePlansTitle').textContent = `Plans for ${selectedDestination.name}`;
+                
+                // Clear any selected plan when destination changes
+                selectedPlan = null;
+                document.querySelectorAll('.option-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                // Render plan options for selected destination
+                renderPlanOptions();
+                updatePlanSummary();
+                updateOrderButton();
+            }, 300);
+        }
+        
+        function searchDestinations() {
+            const searchTerm = document.getElementById('destinationSearch').value.toLowerCase();
+            const currentList = document.querySelector('.destination-list.active');
+            const items = currentList.querySelectorAll('.destination-item');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.destination-name').textContent.toLowerCase();
+                const region = item.querySelector('.destination-region').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || region.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = searchTerm === '' ? 'flex' : 'none';
+                }
+            });
         }
         
         function selectPlan(planId) {
