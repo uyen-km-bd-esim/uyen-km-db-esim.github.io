@@ -429,6 +429,40 @@
                         Login as David
                     </button>
                 </div>
+                
+                <div class="account-item">
+                    <div class="account-email"><i class="fas fa-times-circle"></i> esim-fail@esim.demo</div>
+                    <div class="account-password"><i class="fas fa-key"></i> Password: 123456</div>
+                    <div class="account-description">
+                        <strong>Lisa Martinez</strong> - Test account that always fails automatic eSIM activation, forcing manual setup flow. Perfect for testing error handling and manual activation process.
+                    </div>
+                    <div class="account-features">
+                        <span class="feature-badge badge-balance">$30.00 Balance</span>
+                        <span class="feature-badge badge-esim-available">eSIM Available</span>
+                        <span class="feature-badge" style="background-color: #dc3545; color: white;">Activation Fails</span>
+                    </div>
+                    <button class="btn-login-account" onclick="loginAsAccount('esim-fail@esim.demo')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as Lisa
+                    </button>
+                </div>
+                
+                <div class="account-item">
+                    <div class="account-email"><i class="fas fa-check-circle"></i> esim-success@esim.demo</div>
+                    <div class="account-password"><i class="fas fa-key"></i> Password: 123456</div>
+                    <div class="account-description">
+                        <strong>Ryan Chang</strong> - Test account that always succeeds in automatic eSIM activation. Ideal for testing successful activation flow and transition to active state.
+                    </div>
+                    <div class="account-features">
+                        <span class="feature-badge badge-balance">$40.00 Balance</span>
+                        <span class="feature-badge badge-esim-available">eSIM Available</span>
+                        <span class="feature-badge" style="background-color: #28a745; color: white;">Activation Success</span>
+                    </div>
+                    <button class="btn-login-account" onclick="loginAsAccount('esim-success@esim.demo')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login as Ryan
+                    </button>
+                </div>
             </div>
             
             <!-- Use Cases Section -->
@@ -683,6 +717,34 @@
                     usageData: usageData
                 };
                 successMessage = `Logged in as ${firstName}! Balance: $${balance}, eSIM Active: US Prepaid 10GB`;
+            }
+            else if (email === 'esim-fail@esim.demo') {
+                firstName = 'Lisa';
+                balance = '30.00';
+                userProfile = {
+                    firstName: firstName,
+                    email: email,
+                    balance: balance,
+                    activePlan: null,
+                    accountType: 'has-balance',
+                    esimStatus: 'available',
+                    activationBehavior: 'fail'
+                };
+                successMessage = `Logged in as ${firstName}! Balance: $${balance}, eSIM ready (will fail activation test)`;
+            }
+            else if (email === 'esim-success@esim.demo') {
+                firstName = 'Ryan';
+                balance = '40.00';
+                userProfile = {
+                    firstName: firstName,
+                    email: email,
+                    balance: balance,
+                    activePlan: null,
+                    accountType: 'has-balance',
+                    esimStatus: 'available',
+                    activationBehavior: 'success'
+                };
+                successMessage = `Logged in as ${firstName}! Balance: $${balance}, eSIM ready (will succeed activation test)`;
             }
             
             // Store user data in localStorage

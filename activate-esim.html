@@ -674,12 +674,38 @@
             
             // Simulate activation process
             setTimeout(() => {
-                // Simulate checking activation status
-                const activationSuccess = Math.random() > 0.2; // 80% success rate for demo
+                // Check user profile for deterministic behavior
+                const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+                const activationBehavior = userProfile.activationBehavior;
+                
+                let activationSuccess;
+                
+                if (activationBehavior === 'fail') {
+                    // Force failure for testing
+                    activationSuccess = false;
+                } else if (activationBehavior === 'success') {
+                    // Force success for testing
+                    activationSuccess = true;
+                } else {
+                    // Default random behavior (80% success rate)
+                    activationSuccess = Math.random() > 0.2;
+                }
                 
                 if (activationSuccess) {
                     // Show success state
                     showSuccessState();
+                    
+                    // Update user profile to reflect successful activation
+                    if (userProfile.esimStatus === 'available') {
+                        userProfile.esimStatus = 'active';
+                        userProfile.usageData = {
+                            planName: 'Test eSIM Plan',
+                            dataUsed: 0,
+                            dataTotal: 5,
+                            expirationDays: 30
+                        };
+                        localStorage.setItem('userProfile', JSON.stringify(userProfile));
+                    }
                 } else {
                     // Fallback to manual activation
                     activateBtn.classList.remove('loading');
@@ -687,7 +713,10 @@
                     btnText.textContent = 'Activation Failed';
                     
                     setTimeout(() => {
-                        alert('Automatic activation failed. Please try manual setup.');
+                        const failureMessage = activationBehavior === 'fail' 
+                            ? 'Automatic activation failed as expected for this test account. Please try manual setup.' 
+                            : 'Automatic activation failed. Please try manual setup.';
+                        alert(failureMessage);
                         showManualFlow();
                     }, 1000);
                 }
