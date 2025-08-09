@@ -27,6 +27,10 @@
     @apply bg-transparent border-2 border-esimphony-white text-esimphony-white font-semibold py-4 px-8 text-lg rounded-esim min-h-[56px] w-full transition-all duration-200 hover:bg-esimphony-white hover:text-esimphony-black hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-black;
   }
   
+  .btn-esimphony-secondary-no-transform {
+    @apply bg-transparent border-2 border-esimphony-white text-esimphony-white font-semibold py-4 px-8 text-lg rounded-esim min-h-[56px] w-full transition-all duration-200 hover:bg-esimphony-white hover:text-esimphony-black hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-black;
+  }
+  
   .card-esimphony {
     @apply bg-esimphony-white text-esimphony-black rounded-2xl shadow-lg;
   }

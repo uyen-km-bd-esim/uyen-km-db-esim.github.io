@@ -1,13 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { PaymentModal } from '@/components/ui/PaymentModal'
 import { User } from '@/types'
-import { useRouter } from 'next/navigation'
-import { storage } from '@/lib/utils'
 
 interface TopUpRecommendationsProps {
   user: User
+  onUserUpdate: (user: User) => void
 }
 
 interface RecommendedAmount {
@@ -18,8 +19,8 @@ interface RecommendedAmount {
   popular?: boolean
 }
 
-export function TopUpRecommendations({ user }: TopUpRecommendationsProps) {
-  const router = useRouter()
+export function TopUpRecommendations({ user, onUserUpdate }: TopUpRecommendationsProps) {
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   // Only show for users with active plans (Prepaid or Subscription)
   if (!user.activePlan) return null
@@ -78,10 +79,14 @@ export function TopUpRecommendations({ user }: TopUpRecommendationsProps) {
     }
   }
 
-  const handleTopUp = (amount: number) => {
-    storage.set('topUpSource', 'home-dashboard-recommendation')
-    storage.set('recommendedAmount', amount)
-    router.push('/top-up')
+  const handleRecommendationSelect = (amount: number) => {
+    setSelectedRecommendation(amount)
+  }
+
+  const handleTopUpNow = () => {
+    if (selectedRecommendation) {
+      setShowPaymentModal(true)
+    }
   }
 
   const getDaysUntilExpiry = () => {
@@ -94,6 +99,7 @@ export function TopUpRecommendations({ user }: TopUpRecommendationsProps) {
   }
 
   const recommendedAmounts = getRecommendedAmounts()
+  const [selectedRecommendation, setSelectedRecommendation] = useState<number | null>(recommendedAmounts[0]?.amount || null)
   const daysLeft = getDaysUntilExpiry()
   const usagePercent = getUsagePercentage()
   const showUrgentRecommendation = daysLeft <= 7 || usagePercent >= 80
@@ -121,77 +127,38 @@ export function TopUpRecommendations({ user }: TopUpRecommendationsProps) {
           )}
         </div>
 
-        {/* Current Status */}
-        <div className="bg-gray-50 rounded-lg p-4 mb-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <div className="text-esimphony-gray text-xs uppercase font-semibold mb-1">
-                Current Balance
-              </div>
-              <div className="text-lg font-bold text-esimphony-black">
-                ${user.balance.toFixed(2)}
-              </div>
-            </div>
-            <div>
-              <div className="text-esimphony-gray text-xs uppercase font-semibold mb-1">
-                {isSubscription ? 'Next Renewal' : 'Plan Expires'}
-              </div>
-              <div className="text-lg font-bold text-esimphony-black">
-                {daysLeft} {daysLeft === 1 ? 'day' : 'days'}
-              </div>
-            </div>
-          </div>
-
-          {/* Usage Bar for Prepaid */}
-          {isPrepaid && user.activePlan?.dataUsed && user.activePlan?.dataTotal && (
-            <div className="mt-4">
-              <div className="flex justify-between text-xs text-esimphony-gray mb-1">
-                <span>Data Usage</span>
-                <span>{user.activePlan.dataUsed}GB / {user.activePlan.dataTotal}GB</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className={`h-2 rounded-full transition-all ${
-                    usagePercent >= 80 ? 'bg-esimphony-warning' : 'bg-esimphony-success'
-                  }`}
-                  style={{ width: `${Math.min(usagePercent, 100)}%` }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
 
         {/* Recommended Amounts */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
           {recommendedAmounts.map((recommendation, index) => (
             <div
               key={index}
-              className={`relative border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
-                recommendation.popular 
-                  ? 'border-esimphony-red bg-red-50' 
+              className={`relative border rounded-lg p-3 cursor-pointer transition-all hover:shadow-md ${
+                selectedRecommendation === recommendation.amount
+                  ? 'border-esimphony-red bg-red-50 ring-2 ring-esimphony-red ring-opacity-20'
                   : 'border-gray-200 hover:border-esimphony-red'
               }`}
-              onClick={() => handleTopUp(recommendation.amount)}
+              onClick={() => handleRecommendationSelect(recommendation.amount)}
             >
               {recommendation.popular && (
-                <div className="absolute -top-2 left-3 bg-esimphony-red text-esimphony-white text-xs px-2 py-1 rounded-full font-semibold">
+                <div className="absolute -top-2 left-2 bg-esimphony-red text-esimphony-white text-xs px-2 py-0.5 rounded-full font-semibold">
                   RECOMMENDED
                 </div>
               )}
 
               <div className="text-center">
-                <div className="text-2xl font-bold text-esimphony-red mb-2">
+                <div className="text-xl font-bold text-esimphony-red mb-1">
                   ${recommendation.amount}
                 </div>
                 <div className="text-sm font-semibold text-esimphony-black mb-1">
                   {recommendation.label}
                 </div>
-                <div className="text-xs text-esimphony-gray mb-2">
+                <div className="text-xs text-esimphony-gray mb-1">
                   {recommendation.description}
                 </div>
                 
                 {recommendation.savings && (
-                  <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                  <div className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium">
                     {recommendation.savings}
                   </div>
                 )}
@@ -200,29 +167,27 @@ export function TopUpRecommendations({ user }: TopUpRecommendationsProps) {
           ))}
         </div>
 
-        {/* Quick Actions */}
-        <div className="flex gap-3">
+        {/* Top-Up Now Action */}
+        <div className="flex">
           <Button
-            variant="primary"
-            onClick={() => handleTopUp(recommendedAmounts.find(r => r.popular)?.amount || 25)}
-            className="flex-1"
+            variant={selectedRecommendation ? "primary" : "disabled"}
+            onClick={handleTopUpNow}
+            disabled={!selectedRecommendation}
+            className="w-full"
           >
             <i className="fas fa-flash mr-2"></i>
-            Quick Top-Up ${recommendedAmounts.find(r => r.popular)?.amount || 25}
-          </Button>
-          
-          <Button
-            variant="secondary"
-            onClick={() => {
-              storage.set('topUpSource', 'home-dashboard-custom')
-              router.push('/top-up')
-            }}
-            className="flex-1"
-          >
-            <i className="fas fa-cog mr-2"></i>
-            Custom Amount
+            {selectedRecommendation ? `Top-Up Now $${selectedRecommendation}` : 'Select Amount First'}
           </Button>
         </div>
+
+        {/* Payment Modal */}
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          user={user}
+          onUserUpdate={onUserUpdate}
+          prefilledAmount={selectedRecommendation || undefined}
+        />
 
         {/* Urgency Warning */}
         {showUrgentRecommendation && (

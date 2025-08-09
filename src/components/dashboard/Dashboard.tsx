@@ -156,7 +156,7 @@ export function Dashboard() {
 
         {/* Top-Up Recommendations - Show for users with active Prepaid or Subscription plans */}
         {hasActivePlan && (
-          <TopUpRecommendations user={user} />
+          <TopUpRecommendations user={user} onUserUpdate={handleUserUpdate} />
         )}
 
         {/* Available Tariffs / Popular Plans Section */}

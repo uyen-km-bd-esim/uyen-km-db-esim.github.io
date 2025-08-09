@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { ButtonHTMLAttributes, forwardRef } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'topup' | 'disabled'
+  variant?: 'primary' | 'secondary' | 'secondary-no-transform' | 'topup' | 'disabled'
   size?: 'sm' | 'md' | 'lg'
   isLoading?: boolean
 }
@@ -16,6 +16,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const variants = {
       primary: 'btn-esimphony-primary',
       secondary: 'btn-esimphony-secondary',
+      'secondary-no-transform': 'btn-esimphony-secondary-no-transform',
       topup: 'bg-transparent border-2 border-esimphony-red text-esimphony-red hover:bg-esimphony-red hover:text-esimphony-white focus:ring-esimphony-red/50',
       disabled: 'bg-transparent border-2 border-esimphony-light-gray text-esimphony-white opacity-80 cursor-not-allowed'
     }
