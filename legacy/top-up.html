@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top-Up Balance - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-light-gray: #999999;
+            --esimphony-card-bg: #FFFFFF;
+            --esimphony-border: #E5E5E5;
+            --esimphony-success: #00D26A;
+            --esimphony-error: #FF3B30;
+            --esimphony-shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+            padding-bottom: 120px; /* Space for fixed buttons */
+        }
+        
+        .topup-container {
+            min-height: 100vh;
+            background-color: var(--esimphony-black);
+        }
+        
+        /* Header Section */
+        .header-section {
+            padding: 1rem 1rem 2rem 1rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .back-button:hover {
+            opacity: 0.7;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 1rem;
+        }
+        
+        /* Current Balance Display */
+        .balance-display {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .balance-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        /* Amount Section */
+        .amount-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .amount-input-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--esimphony-gray);
+            z-index: 2;
+        }
+        
+        .amount-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background-color: var(--esimphony-card-bg);
+            border: 2px solid var(--esimphony-border);
+            border-radius: 16px;
+            color: var(--esimphony-black);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .amount-input:focus {
+            outline: none;
+            border-color: var(--esimphony-red);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+        }
+        
+        .amount-input.is-invalid {
+            border-color: var(--esimphony-error);
+        }
+        
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .quick-amount-btn {
+            background-color: var(--esimphony-card-bg);
+            border: 2px solid var(--esimphony-border);
+            color: var(--esimphony-black);
+            font-weight: 600;
+            padding: 0.75rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+        
+        .quick-amount-btn:hover {
+            border-color: var(--esimphony-red);
+        }
+        
+        .quick-amount-btn.selected {
+            border-color: var(--esimphony-red);
+            background-color: #FFEAEA;
+        }
+        
+        /* Payment Method Section */
+        .payment-section {
+            margin-bottom: 2rem;
+        }
+        
+        /* Error Message Section */
+        .error-message {
+            background-color: #FFEBEE;
+            border: 1px solid var(--esimphony-error);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .error-text {
+            color: var(--esimphony-error);
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin: 0;
+        }
+        
+        .error-icon {
+            color: var(--esimphony-error);
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        
+        .payment-form {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .security-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+            color: var(--esimphony-gray);
+            font-size: 0.875rem;
+        }
+        
+        .lock-icon {
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            background-color: var(--esimphony-white);
+            border: 2px solid var(--esimphony-border);
+            border-radius: 12px;
+            color: var(--esimphony-black);
+            transition: all 0.2s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--esimphony-red);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: var(--esimphony-light-gray);
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--esimphony-error);
+        }
+        
+        .form-control.is-valid {
+            border-color: var(--esimphony-success);
+        }
+        
+        .invalid-feedback {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--esimphony-error);
+            margin-top: 0.5rem;
+        }
+        
+        .card-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .payment-providers {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--esimphony-border);
+        }
+        
+        .providers-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .payment-icon {
+            height: 32px;
+            transition: opacity 0.2s ease;
+            opacity: 0.8;
+        }
+        
+        .payment-icon:hover {
+            opacity: 1;
+        }
+        
+        .stripe-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+            justify-content: center;
+        }
+        
+        .stripe-logo {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .stripe-brand {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #635BFF;
+        }
+        
+        .security-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            border: 1px solid var(--esimphony-border);
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            font-weight: 500;
+        }
+        
+        .security-icon {
+            color: #28a745;
+            font-size: 1rem;
+        }
+        
+        .pci-badge {
+            background: #006FCF;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* Fixed Action Buttons */
+        .fixed-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--esimphony-card-bg);
+            border-top: 1px solid var(--esimphony-border);
+            padding: 1rem;
+            z-index: 1000;
+        }
+        
+        .actions-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .btn-topup {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-bottom: 0.75rem;
+        }
+        
+        .btn-retry {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-bottom: 0.75rem;
+        }
+        
+        .btn-topup:hover,
+        .btn-topup:focus,
+        .btn-retry:hover,
+        .btn-retry:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .btn-topup:disabled,
+        .btn-retry:disabled {
+            background-color: var(--esimphony-light-gray);
+            border-color: var(--esimphony-light-gray);
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-cancel {
+            background: none;
+            border: none;
+            color: var(--esimphony-gray);
+            font-weight: 500;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .btn-cancel:hover {
+            opacity: 0.7;
+        }
+        
+        .btn-different-card {
+            background: none;
+            border: none;
+            color: var(--esimphony-red);
+            font-weight: 500;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            text-decoration: underline;
+            display: none;
+        }
+        
+        .btn-different-card.show {
+            display: block;
+        }
+        
+        .btn-different-card:hover {
+            opacity: 0.7;
+        }
+        
+        /* Loading state */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid transparent;
+            border-top-color: var(--esimphony-white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .success-modal.show {
+            display: flex;
+        }
+        
+        .success-content {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            max-width: 320px;
+            margin: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--esimphony-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            font-size: 2rem;
+            color: var(--esimphony-white);
+        }
+        
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 1rem;
+        }
+        
+        .success-message {
+            font-size: 1.125rem;
+            color: var(--esimphony-black);
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .main-content {
+                padding: 0 2rem;
+            }
+            
+            .header-section {
+                padding: 2rem 2rem 2rem 2rem;
+            }
+            
+            .quick-amounts {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-topup:hover,
+            .quick-amount-btn:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-topup:active {
+                background-color: #CC0000;
+            }
+        }
+        
+        /* Focus states for accessibility */
+        .btn-topup:focus-visible,
+        .btn-cancel:focus-visible,
+        .form-control:focus-visible,
+        .amount-input:focus-visible {
+            outline: 3px solid rgba(255, 0, 0, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Input formatting helpers */
+        .input-hint {
+            font-size: 0.75rem;
+            color: var(--esimphony-light-gray);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="topup-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <button class="back-button" onclick="goBack()" aria-label="Go back">
+                ←
+            </button>
+            <div class="header-title">Top-Up Balance</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Current Balance -->
+            <div class="balance-display">
+                <div class="balance-label">Current Balance</div>
+                <div class="balance-amount" id="currentBalance">$8.50</div>
+            </div>
+            
+            <!-- Amount Section -->
+            <div class="amount-section">
+                <h2 class="section-title">Top-Up Amount</h2>
+                
+                <div class="amount-input-container">
+                    <div class="currency-symbol">$</div>
+                    <input 
+                        type="number" 
+                        class="amount-input" 
+                        id="topupAmount" 
+                        placeholder="0.00"
+                        min="1"
+                        max="500"
+                        step="0.01"
+                    >
+                    <div class="invalid-feedback" id="amountError"></div>
+                </div>
+                
+                <div class="quick-amounts">
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(10)">$10</button>
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(25)">$25</button>
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(50)">$50</button>
+                    <button class="quick-amount-btn" onclick="selectQuickAmount(100)">$100</button>
+                </div>
+            </div>
+            
+            <!-- Payment Method Section -->
+            <div class="payment-section">
+                <h2 class="section-title">Payment Method</h2>
+                
+                <!-- Security Badges -->
+                <div class="security-badges">
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt security-icon"></i>
+                        <span>256-bit SSL</span>
+                    </div>
+                    <div class="security-badge">
+                        <i class="fas fa-lock security-icon"></i>
+                        <span>Bank-Level Security</span>
+                    </div>
+                    <div class="pci-badge">PCI DSS Compliant</div>
+                    <div class="security-badge">
+                        <i class="fas fa-user-shield security-icon"></i>
+                        <span>Data Protected</span>
+                    </div>
+                </div>
+                
+                <div class="payment-form">
+                    <div class="security-header">
+                        <span class="lock-icon"><i class="fas fa-lock"></i></span>
+                        Secured by SSL encryption
+                    </div>
+                    
+                    <form id="paymentForm" novalidate>
+                        <div class="form-group">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="cardNumber" 
+                                name="cardNumber"
+                                placeholder="1234 5678 9012 3456"
+                                maxlength="19"
+                                autocomplete="cc-number"
+                                required
+                            >
+                            <div class="invalid-feedback" id="cardNumberError"></div>
+                        </div>
+                        
+                        <div class="card-row">
+                            <div class="form-group">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="expiryDate" 
+                                    name="expiryDate"
+                                    placeholder="MM/YY"
+                                    maxlength="5"
+                                    autocomplete="cc-exp"
+                                    required
+                                >
+                                <div class="invalid-feedback" id="expiryError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cvc" class="form-label">CVC</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="cvc" 
+                                    name="cvc"
+                                    placeholder="123"
+                                    maxlength="4"
+                                    autocomplete="cc-csc"
+                                    required
+                                >
+                                <div class="invalid-feedback" id="cvcError"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cardholderName" class="form-label">Cardholder Name</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="cardholderName" 
+                                name="cardholderName"
+                                placeholder="John Doe"
+                                autocomplete="cc-name"
+                                required
+                            >
+                            <div class="invalid-feedback" id="nameError"></div>
+                        </div>
+                        
+                        <div class="payment-providers">
+                            <div class="stripe-badge">
+                                <span class="stripe-logo">Powered by</span>
+                                <span class="stripe-brand">Stripe</span>
+                            </div>
+                            
+                            <div class="providers-label">We accept</div>
+                            
+                            <div class="card-icons">
+                                <!-- Visa -->
+                                <svg class="payment-icon" viewBox="0 0 256 83" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient x1="45.974%" y1="-2.006%" x2="54.877%" y2="99.530%" id="a">
+                                            <stop stop-color="#222357" offset="0%"/>
+                                            <stop stop-color="#254AA5" offset="100%"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path fill="url(#a)" d="M132.397 56.24c-.146-11.516 10.263-17.942 18.104-21.763 8.056-3.92 10.762-6.434 10.73-9.94-.06-5.365-6.426-7.733-12.383-7.825-10.393-.161-16.436 2.806-21.24 5.05l-3.744-17.519c4.82-2.221 13.745-4.158 23-4.243 21.725 0 35.938 10.724 36.015 27.351.085 21.102-29.188 22.27-28.988 31.702.069 2.86 2.798 5.912 8.778 6.688 2.96.392 11.131.692 20.395-3.574l3.636 16.95c-4.982 1.814-11.385 3.551-19.357 3.551-20.448 0-34.83-10.87-34.946-26.428m89.241 24.968c-3.967 0-7.31-2.314-8.802-5.865L181.803 1.245h21.709l4.32 11.939h26.528l2.506-11.939H256l-16.697 79.963h-17.665m3.037-21.601l6.265-30.027h-17.158l10.893 30.027m-118.049 21.6L88.964 1.246h20.687l17.104 79.963h-20.687m-30.603 0L53.941 26.782c-1.613-6.988-3.018-9.543-7.934-12.467C40.984 11.25 34.537 9.039 28.764 7.92l.518-2.683h36.32c4.63 0 8.686 3.075 9.727 8.686l8.903 47.318 21.934-56.004h21.709L85.059 81.209H64.383"/>
+                                </svg>
+                                
+                                <!-- Mastercard -->
+                                <svg class="payment-icon" viewBox="0 0 256 199" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#FF5F00" d="M93.299 16.903h69.15v165.55h-69.15z"/>
+                                    <path fill="#EB001B" d="M97.689 99.678c0-33.134 15.513-62.674 39.658-81.775C120.125 4.24 97.16 0 73.467 0 32.943 0 0 44.508 0 99.678s32.943 99.677 73.467 99.677c23.693 0 46.658-4.24 63.88-17.903-24.145-19.101-39.658-48.641-39.658-81.774"/>
+                                    <path fill="#0099DF" d="M256 99.678c0 55.17-32.943 99.677-73.467 99.677-23.693 0-46.658-4.24-63.88-17.903 24.145-19.101 39.658-48.641 39.658-81.774 0-33.134-15.513-62.674-39.658-81.775C135.875 4.24 158.84 0 182.533 0 223.057 0 256 44.508 256 99.678"/>
+                                </svg>
+                                
+                                <!-- American Express -->
+                                <svg class="payment-icon" viewBox="0 0 256 199" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#006FCF" d="M0 16.903A16.903 16.903 0 0 1 16.903 0h222.194A16.903 16.903 0 0 1 256 16.903v165.194A16.903 16.903 0 0 1 239.097 199H16.903A16.903 16.903 0 0 1 0 182.097V16.903Z"/>
+                                    <path fill="#FFF" d="m27.833 81.453 7.157-16.724h14.866l7.26 16.724v-16.724H71.92l3.555 9.394 3.659-9.394h39.697v3.11c1.907-2.136 4.907-3.761 9.394-3.761h15.521v3.11c2.585-2.136 6.605-3.761 11.813-3.761h53.434l7.156-16.724h14.867l7.26 16.724v-16.724h18.14l9.808 14.314 9.394-14.314H256v83.606H225.64l-9.808-14.832-9.394 14.832h-56.537c-4.45 0-8.366-1.211-11.192-3.658v3.658H92.644c-4.45 0-8.366-1.211-11.192-3.658v3.658H67.020l-3.658-8.78H48.437l-3.658 8.78H27.833V81.453Zm161.445 14.935v-4.761h24.69c1.314 0 2.378.518 2.378 2.277 0 1.829-1.064 2.484-2.378 2.484h-24.69Zm0-11.813V80.28h23.004c1.211 0 2.069.415 2.069 2.07 0 1.55-.858 2.225-2.069 2.225h-23.004Zm-95.474-3.969-6.294 15.002h12.587l-6.293-15.002Z"/>
+                                </svg>
+                                
+                                <!-- PayPal -->
+                                <svg class="payment-icon" viewBox="0 0 256 199" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#27346A" d="M49.187 56.619c-1.851 11.825-9.178 11.825-16.594 11.825h-4.213l2.962-18.743c.177-1.122 1.142-1.936 2.284-1.936h1.921c5.012 0 9.746 0 12.186 2.857 1.455 1.703 2.034 4.21 1.454 5.997"/>
+                                    <path fill="#27346A" d="M47.73 56.619c-1.85 11.825-9.178 11.825-16.595 11.825H26.92l2.962-18.743c.178-1.122 1.142-1.936 2.285-1.936h1.92c5.013 0 9.747 0 12.187 2.857 1.455 1.703 2.033 4.21 1.455 5.997"/>
+                                    <path fill="#2790C3" d="M61.24 56.584c-.594 3.74-3.477 3.74-6.28 3.74h-1.595l1.117-7.067c.067-.424.433-.73.864-.73h.726c1.896 0 3.688 0 4.612 1.081.55.646.767 1.595.555 2.976"/>
+                                    <path fill="#1F264F" d="M19.187 98.951c-.7 4.434-3.97 4.434-7.176 4.434H9.782l1.277-8.077c.076-.485.496-.835 .988-.835h.83c2.17 0 4.22 0 5.273 1.235.63.74.877 1.826.635 3.404"/>
+                                </svg>
+                                
+                                <!-- Google Pay -->
+                                <svg class="payment-icon" viewBox="0 0 256 199" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#5F6368" d="M72.627 114.24c0 9.494-7.485 16.62-17.37 16.62s-17.37-7.126-17.37-16.62c0-9.355 7.485-16.62 17.37-16.62s17.37 7.265 17.37 16.62Zm-7.126 0c0-5.43-3.935-9.146-10.244-9.146s-10.244 3.716-10.244 9.146c0 5.29 3.935 9.146 10.244 9.146s10.244-3.856 10.244-9.146Z"/>
+                                    <path fill="#5F6368" d="M127.626 114.24c0 9.494-7.485 16.62-17.37 16.62s-17.37-7.126-17.37-16.62c0-9.355 7.485-16.62 17.37-16.62s17.37 7.265 17.37 16.62Zm-7.126 0c0-5.43-3.935-9.146-10.244-9.146s-10.244 3.716-10.244 9.146c0 5.29 3.935 9.146 10.244 9.146s10.244-3.856 10.244-9.146Z"/>
+                                    <path fill="#5F6368" d="M180.067 98.76v31.482c0 12.931-7.625 18.222-16.62 18.222-8.477 0-13.628-5.71-15.548-10.384l6.274-2.612c1.199 2.872 4.07 6.274 9.274 6.274 6.064 0 9.774-3.752 9.774-10.804v-2.522h-.28c-1.808 2.243-5.29 4.207-9.684 4.207-9.215 0-17.65-8.058-17.65-18.362 0-10.444 8.435-18.222 17.65-18.222 4.395 0 7.876 1.964 9.684 4.067h.28V99.9h6.846v-1.14Zm-6.274 15.548c0-5.29-3.542-9.146-8.058-9.146-4.586 0-8.407 3.856-8.407 9.146 0 5.15 3.821 9.146 8.407 9.146 4.516 0 8.058-3.996 8.058-9.146Z"/>
+                                    <path fill="#5F6368" d="M198.358 79.818v50.564h-7.126V79.818h7.126Z"/>
+                                    <path fill="#5F6368" d="M228.687 116.72l5.71 3.821c-1.839 2.732-6.274 7.486-13.909 7.486-9.494 0-16.62-7.346-16.62-16.62 0-9.355 7.206-16.62 15.828-16.62 8.757 0 13.070 6.974 14.408 10.724l.766 1.919-22.475 9.285c1.719 3.402 4.377 5.15 8.128 5.15 3.752 0 6.344-1.859 8.164-4.656v-.488Zm-17.58-6.064 15.013-6.204c-.826-2.103-3.332-3.542-6.274-3.542-3.822 0-9.215 3.332-8.739 9.774v-.028Z"/>
+                                    <path fill="#4285F4" d="M37.887 79.818v7.126H20.167V99.9h15.967v7.126H20.167v12.931H37.887v7.126H12.321V79.818h25.566Z"/>
+                                </svg>
+                                
+                                <!-- Apple Pay -->
+                                <svg class="payment-icon" viewBox="0 0 256 199" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#000" d="M42.265 105.453c.048-5.134 4.207-7.625 4.398-7.765-2.394-3.502-6.134-3.982-7.455-4.032-3.171-.327-6.19 1.87-7.799 1.87-1.609 0-4.088-1.822-6.718-1.774-3.455.048-6.622 2.011-8.406 5.109-3.58 6.23-.918 15.452 2.571 20.514 1.706 2.475 3.742 5.254 6.407 5.158 2.618-.096 3.598-1.69 6.758-1.69 3.16 0 4.088 1.69 6.838 1.642 2.809-.048 4.557-2.522 6.263-4.997 1.97-2.857 2.777-5.666 2.825-5.809-.048-.048-5.42-2.08-5.468-8.255h-.024l-.04.029Z"/>
+                                    <path fill="#000" d="M36.624 91.069c1.425-1.723 2.394-4.088 2.13-6.478-2.059.096-4.557 1.378-6.031 3.101-1.33 1.546-2.489 4.016-2.178 6.383 2.297.191 4.64-1.169 6.079-3.006Z"/>
+                                    <path fill="#000" d="M76.096 116.12c-.622 1.928-2.918 6.718-7.551 6.718-3.694 0-4.914-2.155-9.204-2.155-4.509 0-5.968 2.203-9.66 2.107-3.455-.096-5.206-2.585-5.828-4.513-2.537-7.84-.654-19.458 1.835-25.018 1.234-2.728 2.871-4.85 4.85-5.491 3.838-.144 6.095 2.155 8.154 2.155 2.059 0 4.945-2.585 8.639-2.203 1.474.048 5.61.622 8.267 4.513-.192.144-4.914 2.89-4.866 8.554.048 6.767 5.923 9.012 5.971 9.06-.048.096-.918 3.214-3.043 6.383l.436-.11Z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Error Message (Hidden by default) -->
+                        <div class="error-message" id="errorMessage">
+                            <p class="error-text">
+                                <span class="error-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                                Payment Declined. Please check your card details or try a different payment method.
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fixed Action Buttons -->
+    <div class="fixed-actions">
+        <div class="actions-content">
+            <button class="btn btn-topup" id="topupBtn" onclick="processPayment()">
+                <span id="topupBtnText">Top-Up $0.00</span>
+            </button>
+            <button class="btn btn-retry" id="retryBtn" onclick="retryPayment()" style="display: none;">
+                <span id="retryBtnText">Retry Payment</span>
+            </button>
+            <button class="btn-cancel" id="cancelBtn" onclick="goBack()">Cancel</button>
+            <button class="btn-different-card" id="differentCardBtn" onclick="useDifferentCard()">
+                Use a different card
+            </button>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h3 class="success-title">Top-Up Successful!</h3>
+            <p class="success-message" id="successMessage">Your new balance is $8.50.</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBalance = 0.00;
+        let topupAmount = 0.00;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentBalance();
+            setupEventListeners();
+            loadPrefilledAmount();
+        });
+        
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'tariff-details.html';
+            }
+        }
+        
+        function loadCurrentBalance() {
+            const storedBalance = localStorage.getItem('userBalance') || '8.50';
+            currentBalance = parseFloat(storedBalance);
+            document.getElementById('currentBalance').textContent = `$${currentBalance.toFixed(2)}`;
+        }
+        
+        function loadPrefilledAmount() {
+            // Get plan price from URL params or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const planPrice = urlParams.get('amount') || localStorage.getItem('selectedPlanPrice') || '15.00';
+            
+            if (planPrice) {
+                selectQuickAmount(parseFloat(planPrice));
+            }
+        }
+        
+        function selectQuickAmount(amount) {
+            // Clear previous selections
+            document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Select clicked button
+            event.target?.classList.add('selected');
+            
+            // Update amount input and button
+            document.getElementById('topupAmount').value = amount.toFixed(2);
+            topupAmount = amount;
+            updateTopupButton();
+            validateAmount();
+        }
+        
+        function setupEventListeners() {
+            const amountInput = document.getElementById('topupAmount');
+            const cardNumberInput = document.getElementById('cardNumber');
+            const expiryInput = document.getElementById('expiryDate');
+            const cvcInput = document.getElementById('cvc');
+            
+            // Amount input
+            amountInput.addEventListener('input', function() {
+                topupAmount = parseFloat(this.value) || 0;
+                updateTopupButton();
+                validateAmount();
+                
+                // Clear quick amount selections when typing
+                document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            });
+            
+            // Card number formatting
+            cardNumberInput.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                this.value = value;
+                validateCardNumber();
+            });
+            
+            // Expiry date formatting
+            expiryInput.addEventListener('input', function() {
+                let value = this.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                this.value = value;
+                validateExpiryDate();
+            });
+            
+            // CVC input
+            cvcInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                validateCVC();
+            });
+            
+            // Cardholder name
+            document.getElementById('cardholderName').addEventListener('blur', function() {
+                validateCardholderName();
+            });
+        }
+        
+        function updateTopupButton() {
+            const topupBtn = document.getElementById('topupBtn');
+            const btnText = document.getElementById('topupBtnText');
+            
+            if (topupAmount > 0) {
+                btnText.textContent = `Top-Up $${topupAmount.toFixed(2)}`;
+                topupBtn.disabled = false;
+            } else {
+                btnText.textContent = 'Enter amount to continue';
+                topupBtn.disabled = true;
+            }
+        }
+        
+        function validateAmount() {
+            const amountInput = document.getElementById('topupAmount');
+            const errorElement = document.getElementById('amountError');
+            const amount = parseFloat(amountInput.value);
+            
+            clearFieldError('topupAmount');
+            
+            if (amountInput.value && (isNaN(amount) || amount < 1)) {
+                showFieldError('topupAmount', 'Minimum top-up amount is $1.00');
+                return false;
+            }
+            
+            if (amount > 500) {
+                showFieldError('topupAmount', 'Maximum top-up amount is $500.00');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function validateCardNumber() {
+            const cardInput = document.getElementById('cardNumber');
+            const cardNumber = cardInput.value.replace(/\s/g, '');
+            
+            clearFieldError('cardNumber');
+            
+            if (cardInput.value && cardNumber.length < 13) {
+                showFieldError('cardNumber', 'Please enter a valid card number');
+                return false;
+            }
+            
+            if (cardInput.value && !luhnCheck(cardNumber)) {
+                showFieldError('cardNumber', 'Please enter a valid card number');
+                return false;
+            }
+            
+            if (cardInput.value && cardNumber.length >= 13) {
+                cardInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function validateExpiryDate() {
+            const expiryInput = document.getElementById('expiryDate');
+            const expiry = expiryInput.value;
+            
+            clearFieldError('expiryDate');
+            
+            if (expiry && expiry.length === 5) {
+                const [month, year] = expiry.split('/');
+                const currentDate = new Date();
+                const currentYear = currentDate.getFullYear() % 100;
+                const currentMonth = currentDate.getMonth() + 1;
+                
+                const expMonth = parseInt(month);
+                const expYear = parseInt(year);
+                
+                if (expMonth < 1 || expMonth > 12) {
+                    showFieldError('expiryDate', 'Invalid month');
+                    return false;
+                }
+                
+                if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+                    showFieldError('expiryDate', 'Card has expired');
+                    return false;
+                }
+                
+                expiryInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function validateCVC() {
+            const cvcInput = document.getElementById('cvc');
+            const cvc = cvcInput.value;
+            
+            clearFieldError('cvc');
+            
+            if (cvc && (cvc.length < 3 || cvc.length > 4)) {
+                showFieldError('cvc', 'Invalid CVC');
+                return false;
+            }
+            
+            if (cvc && cvc.length >= 3) {
+                cvcInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function validateCardholderName() {
+            const nameInput = document.getElementById('cardholderName');
+            const name = nameInput.value.trim();
+            
+            clearFieldError('cardholderName');
+            
+            if (name && name.length < 2) {
+                showFieldError('cardholderName', 'Please enter a valid name');
+                return false;
+            }
+            
+            if (name && name.length >= 2) {
+                nameInput.classList.add('is-valid');
+            }
+            
+            return true;
+        }
+        
+        function luhnCheck(cardNumber) {
+            let sum = 0;
+            let isEven = false;
+            
+            for (let i = cardNumber.length - 1; i >= 0; i--) {
+                let digit = parseInt(cardNumber[i]);
+                
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) {
+                        digit -= 9;
+                    }
+                }
+                
+                sum += digit;
+                isEven = !isEven;
+            }
+            
+            return sum % 10 === 0;
+        }
+        
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId.replace('topupAmount', 'amount') + 'Error');
+            
+            field.classList.remove('is-invalid', 'is-valid');
+            if (errorElement) errorElement.textContent = '';
+        }
+        
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId.replace('topupAmount', 'amount') + 'Error');
+            
+            field.classList.remove('is-valid');
+            field.classList.add('is-invalid');
+            if (errorElement) errorElement.textContent = message;
+        }
+        
+        function validateForm() {
+            const amountValid = validateAmount();
+            const cardValid = validateCardNumber();
+            const expiryValid = validateExpiryDate();
+            const cvcValid = validateCVC();
+            const nameValid = validateCardholderName();
+            
+            // Check if all required fields have values
+            const hasAmount = parseFloat(document.getElementById('topupAmount').value) > 0;
+            const hasCard = document.getElementById('cardNumber').value.replace(/\s/g, '').length >= 13;
+            const hasExpiry = document.getElementById('expiryDate').value.length === 5;
+            const hasCVC = document.getElementById('cvc').value.length >= 3;
+            const hasName = document.getElementById('cardholderName').value.trim().length >= 2;
+            
+            return amountValid && cardValid && expiryValid && cvcValid && nameValid &&
+                   hasAmount && hasCard && hasExpiry && hasCVC && hasName;
+        }
+        
+        function processPayment() {
+            if (!validateForm()) {
+                alert('Please fill in all required fields correctly');
+                return;
+            }
+            
+            const topupBtn = document.getElementById('topupBtn');
+            const btnText = document.getElementById('topupBtnText');
+            
+            // Show loading state
+            topupBtn.classList.add('btn-loading');
+            btnText.style.opacity = '0';
+            topupBtn.disabled = true;
+            
+            // Hide any previous error messages
+            hideErrorMessage();
+            
+            // Simulate payment processing with occasional failures
+            setTimeout(() => {
+                // Simulate payment failure 20% of the time for demo
+                const shouldFail = Math.random() < 0.2;
+                
+                if (shouldFail) {
+                    // Payment failed - show error state
+                    showErrorState();
+                } else {
+                    // Payment successful
+                    processSuccessfulPayment();
+                }
+                
+            }, 3000);
+        }
+        
+        function processSuccessfulPayment() {
+            // Update balance
+            currentBalance += topupAmount;
+            localStorage.setItem('userBalance', currentBalance.toFixed(2));
+            
+            // Update success message with new balance
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = `Your new balance is $${currentBalance.toFixed(2)}.`;
+            
+            // Show success modal
+            document.getElementById('successModal').classList.add('show');
+            
+            // Reset button state
+            resetButtonState();
+            
+            // Auto-close success modal and redirect
+            setTimeout(() => {
+                document.getElementById('successModal').classList.remove('show');
+                
+                // Redirect based on flow - supports both Use Case 1 and Use Case 2
+                setTimeout(() => {
+                    const referrer = document.referrer;
+                    const activatingPlan = localStorage.getItem('activatingPlan');
+                    const topUpSource = localStorage.getItem('topUpSource');
+                    
+                    // Use Case 1: New customer onboarding flow (tariff → top-up → activation)
+                    if (referrer.includes('tariff-details') && activatingPlan) {
+                        // Coming from tariff details with plan - continue to eSIM activation
+                        window.location.href = 'activate-esim.html';
+                    } 
+                    // Use Case 3: Plan change flow - return to tariff details with change mode
+                    else if (topUpSource === 'tariff-details-change') {
+                        localStorage.removeItem('topUpSource');
+                        localStorage.removeItem('planChangeData');
+                        window.location.href = 'tariff-details.html?country=United%20States&region=North%20America&flag=🇺🇸&mode=change';
+                    }
+                    // Use Case 2: Existing customer direct top-up from home dashboard
+                    else if (topUpSource === 'home-dashboard') {
+                        // Return to home dashboard after successful top-up
+                        localStorage.removeItem('topUpSource');
+                        window.location.href = 'home-dashboard.html';
+                    }
+                    // Insufficient balance top-up: return to tariff details to continue purchase
+                    else if (topUpSource === 'tariff-details-balance') {
+                        localStorage.removeItem('topUpSource');
+                        window.location.href = 'tariff-details.html';
+                    }
+                    // Fallback navigation based on referrer
+                    else if (referrer.includes('home-dashboard')) {
+                        window.location.href = 'home-dashboard.html';
+                    }
+                    else if (referrer.includes('tariff-details')) {
+                        window.location.href = 'tariff-details.html';
+                    } 
+                    // Default fallback
+                    else {
+                        window.location.href = 'home-dashboard.html';
+                    }
+                }, 500);
+            }, 2000);
+        }
+        
+        function showErrorState() {
+            // Reset button loading state
+            resetButtonState();
+            
+            // Show error message
+            document.getElementById('errorMessage').classList.add('show');
+            
+            // Hide top-up button and show retry button
+            document.getElementById('topupBtn').style.display = 'none';
+            document.getElementById('retryBtn').style.display = 'block';
+            document.getElementById('differentCardBtn').classList.add('show');
+            
+            // Update retry button text with amount
+            const retryBtnText = document.getElementById('retryBtnText');
+            retryBtnText.textContent = `Retry Payment - $${topupAmount.toFixed(2)}`;
+        }
+        
+        function hideErrorMessage() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+        
+        function resetButtonState() {
+            const topupBtn = document.getElementById('topupBtn');
+            const btnText = document.getElementById('topupBtnText');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            topupBtn.classList.remove('btn-loading');
+            retryBtn.classList.remove('btn-loading');
+            btnText.style.opacity = '1';
+            topupBtn.disabled = false;
+            retryBtn.disabled = false;
+        }
+        
+        function retryPayment() {
+            // Hide error message
+            hideErrorMessage();
+            
+            // Switch back to normal top-up button
+            document.getElementById('topupBtn').style.display = 'block';
+            document.getElementById('retryBtn').style.display = 'none';
+            document.getElementById('differentCardBtn').classList.remove('show');
+            
+            // Process payment again
+            processPayment();
+        }
+        
+        function useDifferentCard() {
+            // Clear all form fields
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('cvc').value = '';
+            document.getElementById('cardholderName').value = '';
+            
+            // Clear all validation states
+            document.querySelectorAll('.form-control').forEach(field => {
+                field.classList.remove('is-valid', 'is-invalid');
+            });
+            document.querySelectorAll('.invalid-feedback').forEach(error => {
+                error.textContent = '';
+            });
+            
+            // Hide error message and switch back to normal state
+            hideErrorMessage();
+            document.getElementById('topupBtn').style.display = 'block';
+            document.getElementById('retryBtn').style.display = 'none';
+            document.getElementById('differentCardBtn').classList.remove('show');
+            
+            // Focus on card number field
+            document.getElementById('cardNumber').focus();
+        }
+        
+        // Handle success modal click to close
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+                
+                // Check navigation flow
+                const referrer = document.referrer;
+                const activatingPlan = localStorage.getItem('activatingPlan');
+                const topUpSource = localStorage.getItem('topUpSource');
+                
+                // Use Case 1: Coming from tariff details with plan
+                if (referrer.includes('tariff-details') && activatingPlan) {
+                    window.location.href = 'activate-esim.html';
+                } 
+                // Use Case 3: Plan change flow
+                else if (topUpSource === 'tariff-details-change') {
+                    localStorage.removeItem('topUpSource');
+                    localStorage.removeItem('planChangeData');
+                    window.location.href = 'tariff-details.html?country=United%20States&region=North%20America&flag=🇺🇸&mode=change';
+                }
+                // Use Case 2: Coming from home dashboard
+                else if (topUpSource === 'home-dashboard' || referrer.includes('home-dashboard')) {
+                    localStorage.removeItem('topUpSource');
+                    window.location.href = 'home-dashboard.html';
+                } 
+                // Tariff details balance top-up
+                else if (topUpSource === 'tariff-details-balance') {
+                    localStorage.removeItem('topUpSource');
+                    window.location.href = 'tariff-details.html';
+                }
+                // Default fallback
+                else {
+                    goBack();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate eSIM - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-light-gray: #999999;
+            --esimphony-card-bg: #FFFFFF;
+            --esimphony-border: #E5E5E5;
+            --esimphony-success: #00D26A;
+            --esimphony-shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+        }
+        
+        .activation-container {
+            min-height: 100vh;
+            background-color: var(--esimphony-black);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header Section */
+        .header-section {
+            padding: 1rem 1rem 0 1rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .back-button:hover {
+            opacity: 0.7;
+        }
+        
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* Automatic Activation Flow */
+        .automatic-flow {
+            display: block;
+        }
+        
+        .automatic-flow.hidden {
+            display: none;
+        }
+        
+        .activation-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .activation-subtitle {
+            font-size: 1.125rem;
+            color: var(--esimphony-white);
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+        
+        .activation-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-activate {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1.25rem 3rem;
+            font-size: 1.25rem;
+            border-radius: 16px;
+            min-height: 64px;
+            min-width: 240px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-activate:hover,
+        .btn-activate:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(255, 0, 0, 0.4);
+        }
+        
+        .btn-activate:disabled {
+            background-color: var(--esimphony-light-gray);
+            border-color: var(--esimphony-light-gray);
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Loading Animation */
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: var(--esimphony-white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.75rem;
+        }
+        
+        .btn-activate.loading .loading-spinner {
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Success State */
+        .success-state {
+            display: none;
+            text-align: center;
+        }
+        
+        .success-state.show {
+            display: block;
+        }
+        
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            background-color: var(--esimphony-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem auto;
+            font-size: 3rem;
+            color: var(--esimphony-white);
+            animation: successPulse 0.6s ease-out;
+        }
+        
+        @keyframes successPulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .success-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .success-message {
+            font-size: 1.125rem;
+            color: var(--esimphony-white);
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+        }
+        
+        /* Manual Activation Flow */
+        .manual-flow {
+            display: none;
+            text-align: center;
+        }
+        
+        .manual-flow.show {
+            display: block;
+        }
+        
+        .manual-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .qr-code-container {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 25px var(--esimphony-shadow);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background-color: var(--esimphony-white);
+            border: 2px solid var(--esimphony-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICA8L2RlZnM+CiAgPGcgZmlsbD0iIzAwMCIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgIDxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgeD0iMCIgeT0iMCIvPgogICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSI0MCIgeT0iMCIvPgogICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSI2MCIgeT0iMCIvPgogICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSI4MCIgeT0iMCIvPgogICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSIxMDAiIHk9IjAiLz4KICAgIDxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgeD0iMTIwIiB5PSIwIi8+CiAgICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHg9IjE0MCIgeT0iMCIvPgogICAgPHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSIxODAiIHk9IjAiLz4KICA8L2c+Cjwvc3ZnPgo=');
+            background-size: 180px 180px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .instructions {
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .instruction-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--esimphony-white);
+        }
+        
+        /* Activation Details */
+        .activation-details {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .details-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--esimphony-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-value {
+            font-size: 0.875rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: var(--esimphony-black);
+            background-color: #F5F5F5;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            word-break: break-all;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .detail-value:hover {
+            background-color: #EEEEEE;
+        }
+        
+        .copy-icon {
+            position: absolute;
+            top: 0.75rem;
+            right: 1rem;
+            font-size: 1rem;
+            color: var(--esimphony-gray);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .copy-icon:hover {
+            color: var(--esimphony-red);
+        }
+        
+        .copy-success {
+            position: absolute;
+            top: 0.75rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            color: var(--esimphony-success);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .copy-success.show {
+            opacity: 1;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding: 1rem 0;
+        }
+        
+        .btn-done {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 12px;
+            min-height: 56px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-done:hover,
+        .btn-done:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .btn-manual {
+            background: none;
+            border: 2px solid var(--esimphony-white);
+            color: var(--esimphony-white);
+            font-weight: 500;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            border-radius: 12px;
+            min-height: 48px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn-manual:hover,
+        .btn-manual:focus {
+            background-color: var(--esimphony-white);
+            color: var(--esimphony-black);
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .main-content {
+                padding: 0 2rem;
+                max-width: 500px;
+            }
+            
+            .header-section {
+                padding: 2rem 2rem 0 2rem;
+            }
+            
+            .qr-code {
+                width: 250px;
+                height: 250px;
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-activate:hover,
+            .btn-done:hover,
+            .btn-manual:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-activate:active {
+                background-color: #CC0000;
+            }
+            
+            .btn-done:active {
+                background-color: #CC0000;
+            }
+        }
+        
+        /* Focus states for accessibility */
+        .btn-activate:focus-visible,
+        .btn-done:focus-visible,
+        .btn-manual:focus-visible {
+            outline: 3px solid rgba(255, 255, 255, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Toast notification */
+        .toast-notification {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--esimphony-success);
+            color: var(--esimphony-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="activation-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <button class="back-button" onclick="goBack()" aria-label="Go back">
+                ←
+            </button>
+            <div class="header-title">eSIM Activation</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Automatic Activation Flow -->
+            <div class="automatic-flow" id="automaticFlow">
+                <h1 class="activation-title">Activate Your eSIM</h1>
+                <p class="activation-subtitle">
+                    Tap the button below to automatically install and activate your eSIM profile. This may take a moment.
+                </p>
+                
+                <div class="activation-icon">
+                    📱
+                </div>
+                
+                <button class="btn btn-activate" id="activateBtn" onclick="startActivation()">
+                    <span class="loading-spinner"></span>
+                    <span id="activateBtnText">Activate eSIM</span>
+                </button>
+                
+                <button class="btn-manual" onclick="showManualFlow()">
+                    Need manual setup?
+                </button>
+            </div>
+            
+            <!-- Success State -->
+            <div class="success-state" id="successState">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title">Activation Successful!</h2>
+                <p class="success-message">
+                    Your eSimphony plan is now active and ready to use.
+                </p>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-done" onclick="goToHome()">
+                        Back to Home
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Manual Activation Flow -->
+            <div class="manual-flow" id="manualFlow">
+                <h1 class="manual-title">Manual eSIM Setup</h1>
+                
+                <div class="qr-code-container">
+                    <div class="qr-code" id="qrCode">
+                        QR Code
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <div class="instruction-step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">
+                            Go to <strong>Settings &gt; Cellular &gt; Add Cellular Plan</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="instruction-step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            Scan the QR code above with your device camera
+                        </div>
+                    </div>
+                    
+                    <div class="instruction-step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            Follow the on-screen prompts to complete activation
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="activation-details">
+                    <div class="details-title">Manual Entry Details</div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">SM-DP+ Address</div>
+                        <div class="detail-value" onclick="copyToClipboard('smdp-address')">
+                            1$smdp.example.com$activation_code_123456
+                            <span class="copy-icon">📋</span>
+                            <span class="copy-success">Copied!</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Activation Code</div>
+                        <div class="detail-value" onclick="copyToClipboard('activation-code')">
+                            ESIM-ACT-789012345
+                            <span class="copy-icon">📋</span>
+                            <span class="copy-success">Copied!</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-done" onclick="goToHome()">
+                        Done
+                    </button>
+                    <button class="btn-manual" onclick="showAutomaticFlow()">
+                        Try automatic activation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast-notification" id="toastNotification">
+        Copied to clipboard!
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if device supports automatic activation
+            checkActivationSupport();
+        });
+        
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'tariff-details.html';
+            }
+        }
+        
+        function goToHome() {
+            // Clear activation data since process is complete
+            localStorage.removeItem('activatingPlan');
+            localStorage.removeItem('selectedPlan');
+            
+            window.location.href = 'home-dashboard.html';
+        }
+        
+        function checkActivationSupport() {
+            // Simulate checking device capabilities
+            const userAgent = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+            const isAndroid = /Android/.test(userAgent);
+            
+            // For demo purposes, we'll show automatic flow by default
+            // In a real app, this would check actual eSIM API support
+            showAutomaticFlow();
+        }
+        
+        function showAutomaticFlow() {
+            document.getElementById('automaticFlow').classList.remove('hidden');
+            document.getElementById('manualFlow').classList.remove('show');
+            document.getElementById('successState').classList.remove('show');
+        }
+        
+        function showManualFlow() {
+            document.getElementById('automaticFlow').classList.add('hidden');
+            document.getElementById('manualFlow').classList.add('show');
+            document.getElementById('successState').classList.remove('show');
+            
+            // Generate QR code (in a real app, this would be actual QR generation)
+            generateQRCode();
+        }
+        
+        function showSuccessState() {
+            document.getElementById('automaticFlow').classList.add('hidden');
+            document.getElementById('manualFlow').classList.remove('show');
+            document.getElementById('successState').classList.add('show');
+        }
+        
+        function startActivation() {
+            const activateBtn = document.getElementById('activateBtn');
+            const btnText = document.getElementById('activateBtnText');
+            
+            // Show loading state
+            activateBtn.classList.add('loading');
+            activateBtn.disabled = true;
+            btnText.textContent = 'Activating...';
+            
+            // Simulate activation process
+            setTimeout(() => {
+                // Check user profile for deterministic behavior
+                const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+                const activationBehavior = userProfile.activationBehavior;
+                
+                let activationSuccess;
+                
+                if (activationBehavior === 'fail') {
+                    // Force failure for testing
+                    activationSuccess = false;
+                } else if (activationBehavior === 'success') {
+                    // Force success for testing
+                    activationSuccess = true;
+                } else {
+                    // Default random behavior (80% success rate)
+                    activationSuccess = Math.random() > 0.2;
+                }
+                
+                if (activationSuccess) {
+                    // Show success state
+                    showSuccessState();
+                    
+                    // Update user profile to reflect successful activation
+                    if (userProfile.esimStatus === 'available') {
+                        userProfile.esimStatus = 'active';
+                        userProfile.usageData = {
+                            planName: 'Test eSIM Plan',
+                            dataUsed: 0,
+                            dataTotal: 5,
+                            expirationDays: 30
+                        };
+                        localStorage.setItem('userProfile', JSON.stringify(userProfile));
+                    }
+                } else {
+                    // Fallback to manual activation
+                    activateBtn.classList.remove('loading');
+                    activateBtn.disabled = false;
+                    btnText.textContent = 'Activation Failed';
+                    
+                    setTimeout(() => {
+                        const failureMessage = activationBehavior === 'fail' 
+                            ? 'Automatic activation failed as expected for this test account. Please try manual setup.' 
+                            : 'Automatic activation failed. Please try manual setup.';
+                        alert(failureMessage);
+                        showManualFlow();
+                    }, 1000);
+                }
+            }, 3000);
+        }
+        
+        function generateQRCode() {
+            // In a real app, this would generate an actual QR code
+            // For demo purposes, we'll show a placeholder
+            const qrCode = document.getElementById('qrCode');
+            
+            // Simulate QR code generation with actual eSIM data
+            const esimData = {
+                smdpAddress: '1$smdp.example.com$activation_code_123456',
+                activationCode: 'ESIM-ACT-789012345',
+                iccid: '89014104277780123456'
+            };
+            
+            // In production, use a QR code library like qrcode.js
+            qrCode.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 0.875rem; color: #666;">
+                    <div>
+                        <div style="margin-bottom: 0.5rem;">📱 Scan with your device</div>
+                        <div style="font-size: 0.75rem;">QR Code will appear here</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function copyToClipboard(type) {
+            let textToCopy = '';
+            let element = event.currentTarget;
+            
+            if (type === 'smdp-address') {
+                textToCopy = '1$smdp.example.com$activation_code_123456';
+            } else if (type === 'activation-code') {
+                textToCopy = 'ESIM-ACT-789012345';
+            }
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                // Show success feedback
+                showCopySuccess(element);
+                showToast('Copied to clipboard!');
+            }).catch(function(err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                showCopySuccess(element);
+                showToast('Copied to clipboard!');
+            });
+        }
+        
+        function showCopySuccess(element) {
+            const copyIcon = element.querySelector('.copy-icon');
+            const copySuccess = element.querySelector('.copy-success');
+            
+            copyIcon.style.opacity = '0';
+            copySuccess.classList.add('show');
+            
+            setTimeout(() => {
+                copyIcon.style.opacity = '1';
+                copySuccess.classList.remove('show');
+            }, 2000);
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Handle device orientation changes
+        window.addEventListener('orientationchange', function() {
+            // Re-center QR code if visible
+            if (!document.getElementById('manualFlow').classList.contains('show')) {
+                return;
+            }
+            
+            setTimeout(() => {
+                const qrContainer = document.querySelector('.qr-code-container');
+                if (qrContainer) {
+                    qrContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        });
+        
+        // Simulate receiving activation status from system
+        function handleActivationCallback(success) {
+            if (success) {
+                showSuccessState();
+            } else {
+                showManualFlow();
+            }
+        }
+        
+        // Demo: Simulate different activation scenarios
+        function simulateActivationScenario(scenario) {
+            switch (scenario) {
+                case 'success':
+                    setTimeout(() => showSuccessState(), 1000);
+                    break;
+                case 'manual':
+                    showManualFlow();
+                    break;
+                default:
+                    showAutomaticFlow();
+            }
+        }
+        
+        // Auto-detect QR code scanning (would integrate with camera API)
+        function handleQRScan(data) {
+            if (data && data.includes('smdp')) {
+                showToast('QR Code detected! Processing...');
+                setTimeout(() => {
+                    showSuccessState();
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

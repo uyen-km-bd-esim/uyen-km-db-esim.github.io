@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    @apply font-inter;
+  }
+  
+  html {
+    @apply h-full;
+  }
+  
+  body {
+    @apply h-full bg-esimphony-black text-esimphony-white overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .btn-esimphony-primary {
+    @apply bg-esimphony-red border border-esimphony-red text-esimphony-white font-semibold py-4 px-8 text-lg rounded-esim min-h-[56px] w-full transition-all duration-200 hover:bg-red-600 hover:border-red-600 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-black;
+  }
+  
+  .btn-esimphony-secondary {
+    @apply bg-transparent border-2 border-esimphony-white text-esimphony-white font-semibold py-4 px-8 text-lg rounded-esim min-h-[56px] w-full transition-all duration-200 hover:bg-esimphony-white hover:text-esimphony-black hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-black;
+  }
+  
+  .card-esimphony {
+    @apply bg-esimphony-white text-esimphony-black rounded-2xl shadow-lg;
+  }
+  
+  .container-esimphony {
+    @apply min-h-screen bg-esimphony-black px-4 py-8 max-w-md mx-auto;
+  }
+}

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usage & Charges - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-light-gray: #999999;
+            --esimphony-card-bg: #FFFFFF;
+            --esimphony-shadow: rgba(255, 255, 255, 0.1);
+            --esimphony-border: #E5E5E5;
+            --esimphony-success: #28a745;
+            --esimphony-warning: #ffc107;
+            --esimphony-info: #17a2b8;
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        .usage-container {
+            min-height: 100vh;
+            background-color: var(--esimphony-black);
+        }
+        
+        /* Header Section */
+        .header-section {
+            padding: 1rem 1rem 0 1rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            display: none; /* Hidden on usage page as it's a main tab */
+        }
+        
+        .back-button:hover {
+            opacity: 0.7;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            flex: 1;
+        }
+        
+        .export-btn {
+            background-color: var(--esimphony-red);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .export-btn:hover {
+            background-color: #E60000;
+            transform: translateY(-1px);
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 1rem 2rem 1rem;
+        }
+        
+        /* Usage Summary */
+        .usage-summary {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 1rem;
+            background: #F8F9FA;
+            border-radius: 12px;
+        }
+        
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .summary-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            font-weight: 500;
+        }
+        
+        .data-usage-bar {
+            background: #E9ECEF;
+            border-radius: 10px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .data-usage-fill {
+            background: linear-gradient(90deg, var(--esimphony-success), var(--esimphony-warning));
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Filters */
+        .filters-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            flex: 1;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--esimphony-border);
+            border-radius: 8px;
+            background-color: white;
+            color: var(--esimphony-black);
+            font-size: 0.875rem;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--esimphony-red);
+        }
+        
+        /* Usage Records */
+        .usage-records {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card-icon {
+            color: var(--esimphony-red);
+            font-size: 1.5rem;
+        }
+        
+        .usage-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--esimphony-border);
+        }
+        
+        .usage-item:last-child {
+            border-bottom: none;
+        }
+        
+        .usage-info {
+            flex: 1;
+        }
+        
+        .usage-type {
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .usage-details {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .usage-badge {
+            background: #E3F2FD;
+            color: #1976D2;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .usage-cost {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .usage-volume {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        /* Plan Status */
+        .plan-status {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-name {
+            font-weight: 700;
+            color: var(--esimphony-black);
+            font-size: 1.125rem;
+        }
+        
+        .plan-type {
+            background: var(--esimphony-red);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .plan-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: #F8F9FA;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--esimphony-gray);
+            margin-top: 0.25rem;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--esimphony-card-bg);
+            border-top: 1px solid var(--esimphony-border);
+            padding: 0.75rem 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--esimphony-gray);
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            color: var(--esimphony-red);
+        }
+        
+        .nav-item:hover {
+            color: var(--esimphony-red);
+            text-decoration: none;
+        }
+        
+        .nav-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .filter-row {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .usage-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .usage-details {
+                gap: 0.5rem;
+            }
+            
+            .plan-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="usage-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <button class="back-button" onclick="goBack()" aria-label="Go back">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 class="page-title">Usage & Charges</h1>
+            <button class="export-btn" onclick="exportData()">
+                <i class="fas fa-download"></i> Export PDF
+            </button>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Current Plan Status -->
+            <div class="plan-status" id="planStatusCard" style="display: none;">
+                <div class="card-title">
+                    <i class="fas fa-mobile-alt card-icon"></i>
+                    Current Plan
+                </div>
+                
+                <div class="plan-header">
+                    <div class="plan-name" id="planName">Euro Data Pass</div>
+                    <div class="plan-type" id="planType">Prepaid</div>
+                </div>
+                
+                <div class="data-usage-bar">
+                    <div class="data-usage-fill" id="dataUsageFill" style="width: 42%;"></div>
+                </div>
+                
+                <div class="plan-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalAllowance">20 GB</div>
+                        <div class="stat-label">Total Data</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="dataUsed">8.5 GB</div>
+                        <div class="stat-label">Used</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="dataRemaining">11.5 GB</div>
+                        <div class="stat-label">Remaining</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="daysRemaining">18 days</div>
+                        <div class="stat-label">Until Expiry</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Usage Summary -->
+            <div class="usage-summary">
+                <div class="card-title">
+                    <i class="fas fa-chart-line card-icon"></i>
+                    This Month Summary
+                </div>
+                
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-value" id="monthlyDataUsage">8.5 GB</div>
+                        <div class="summary-label">Data Used</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="monthlyCharges">$25.00</div>
+                        <div class="summary-label">Total Charges</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="sessionsCount">47</div>
+                        <div class="summary-label">Sessions</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filters -->
+            <div class="filters-card">
+                <div class="card-title">
+                    <i class="fas fa-filter card-icon"></i>
+                    Filter Usage
+                </div>
+                
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <div class="filter-label">Period</div>
+                        <select class="filter-select" id="periodFilter" onchange="filterUsage()">
+                            <option value="current">Current Month</option>
+                            <option value="last">Last Month</option>
+                            <option value="3months">Last 3 Months</option>
+                            <option value="6months">Last 6 Months</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Country/Region</div>
+                        <select class="filter-select" id="countryFilter" onchange="filterUsage()">
+                            <option value="all">All Countries</option>
+                            <option value="US">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="FR">France</option>
+                            <option value="DE">Germany</option>
+                            <option value="IT">Italy</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Usage Records -->
+            <div class="usage-records">
+                <div class="card-title">
+                    <i class="fas fa-list-ul card-icon"></i>
+                    Usage Details
+                </div>
+                
+                <div id="usageList">
+                    <!-- Usage items will be populated by JavaScript -->
+                </div>
+                
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-chart-bar empty-icon"></i>
+                    <div class="empty-title">No Usage Data</div>
+                    <div>No usage records found for the selected period and filters.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="home-dashboard.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>Home</span>
+            </a>
+            <a href="tariff-details.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-mobile-alt"></i></div>
+                <span>Plans</span>
+            </a>
+            <a href="charges-consumption.html" class="nav-item active">
+                <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+                <span>Usage</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <span>Profile</span>
+            </a>
+        </div>
+    </nav>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample usage data
+        const sampleUsageData = [
+            {
+                id: 1,
+                date: '2024-12-10',
+                type: 'Data',
+                volume: '1.2 GB',
+                country: 'United States',
+                countryCode: 'US',
+                region: 'North America',
+                cost: '$3.60',
+                planType: 'prepaid'
+            },
+            {
+                id: 2,
+                date: '2024-12-09',
+                type: 'Data',
+                volume: '850 MB',
+                country: 'United States',
+                countryCode: 'US',
+                region: 'North America',
+                cost: '$2.55',
+                planType: 'prepaid'
+            },
+            {
+                id: 3,
+                date: '2024-12-08',
+                type: 'Data',
+                volume: '2.1 GB',
+                country: 'France',
+                countryCode: 'FR',
+                region: 'Europe',
+                cost: '$6.30',
+                planType: 'prepaid'
+            },
+            {
+                id: 4,
+                date: '2024-12-07',
+                type: 'Data',
+                volume: '1.8 GB',
+                country: 'Germany',
+                countryCode: 'DE',
+                region: 'Europe',
+                cost: '$5.40',
+                planType: 'prepaid'
+            },
+            {
+                id: 5,
+                date: '2024-12-06',
+                type: 'Data',
+                volume: '920 MB',
+                country: 'United Kingdom',
+                countryCode: 'UK',
+                region: 'Europe',
+                cost: '$2.76',
+                planType: 'prepaid'
+            },
+            {
+                id: 6,
+                date: '2024-12-05',
+                type: 'Data',
+                volume: '650 MB',
+                country: 'Italy',
+                countryCode: 'IT',
+                region: 'Europe',
+                cost: '$1.95',
+                planType: 'prepaid'
+            }
+        ];
+        
+        let currentUsageData = sampleUsageData;
+        
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'home-dashboard.html';
+            }
+        }
+        
+        function loadUserPlan() {
+            const userProfile = localStorage.getItem('userProfile');
+            const activePlan = localStorage.getItem('userActivePlan');
+            
+            if (activePlan) {
+                const planData = JSON.parse(activePlan);
+                const planCard = document.getElementById('planStatusCard');
+                
+                // Show plan status card
+                planCard.style.display = 'block';
+                
+                // Update plan information
+                document.getElementById('planName').textContent = planData.name || 'Active Plan';
+                document.getElementById('planType').textContent = 'Prepaid';
+                document.getElementById('totalAllowance').textContent = `${planData.dataTotal || 20} GB`;
+                document.getElementById('dataUsed').textContent = `${planData.dataUsed || 8.5} GB`;
+                document.getElementById('dataRemaining').textContent = `${planData.dataRemaining || 11.5} GB`;
+                document.getElementById('daysRemaining').textContent = `${planData.expiryDays || 18} days`;
+                
+                // Update usage bar
+                const usagePercent = ((planData.dataUsed || 8.5) / (planData.dataTotal || 20)) * 100;
+                document.getElementById('dataUsageFill').style.width = `${usagePercent}%`;
+                
+                // Update summary
+                document.getElementById('monthlyDataUsage').textContent = `${planData.dataUsed || 8.5} GB`;
+            }
+        }
+        
+        function renderUsageList(data) {
+            const usageList = document.getElementById('usageList');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (data.length === 0) {
+                usageList.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            const html = data.map(item => `
+                <div class="usage-item">
+                    <div class="usage-info">
+                        <div class="usage-type">${item.type} Usage</div>
+                        <div class="usage-details">
+                            <span>${formatDate(item.date)}</span>
+                            <span class="usage-badge">${item.country}</span>
+                            <span class="usage-volume">${item.volume}</span>
+                        </div>
+                    </div>
+                    <div class="usage-cost">${item.cost}</div>
+                </div>
+            `).join('');
+            
+            usageList.innerHTML = html;
+        }
+        
+        function filterUsage() {
+            const periodFilter = document.getElementById('periodFilter').value;
+            const countryFilter = document.getElementById('countryFilter').value;
+            
+            let filteredData = sampleUsageData;
+            
+            // Apply country filter
+            if (countryFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.countryCode === countryFilter);
+            }
+            
+            // Apply period filter (simplified for demo)
+            if (periodFilter === 'last') {
+                // Show last month data (empty for demo)
+                filteredData = [];
+            } else if (periodFilter === '3months') {
+                // Show all data for demo
+                filteredData = sampleUsageData;
+            }
+            
+            currentUsageData = filteredData;
+            renderUsageList(currentUsageData);
+            updateSummary(currentUsageData);
+        }
+        
+        function updateSummary(data) {
+            let totalData = 0;
+            let totalCost = 0;
+            
+            data.forEach(item => {
+                // Parse data usage (simplified)
+                const volume = parseFloat(item.volume);
+                totalData += volume;
+                
+                // Parse cost
+                const cost = parseFloat(item.cost.replace('$', ''));
+                totalCost += cost;
+            });
+            
+            document.getElementById('monthlyDataUsage').textContent = `${totalData.toFixed(1)} GB`;
+            document.getElementById('monthlyCharges').textContent = `$${totalCost.toFixed(2)}`;
+            document.getElementById('sessionsCount').textContent = data.length.toString();
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+        
+        function exportData() {
+            // Simulate PDF export
+            alert('Usage data would be exported as PDF. This feature will be available in a future update.');
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserPlan();
+            renderUsageList(currentUsageData);
+            updateSummary(currentUsageData);
+            
+            // Set active navigation item
+            const currentPage = window.location.pathname.split('/').pop();
+            if (currentPage === 'charges-consumption.html') {
+                // Active state is already set in HTML
+            }
+        });
+    </script>
+</body>
+</html>

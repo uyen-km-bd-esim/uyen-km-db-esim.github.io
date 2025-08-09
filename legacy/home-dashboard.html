@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - eSimphony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --esimphony-black: #000000;
+            --esimphony-white: #FFFFFF;
+            --esimphony-red: #FF0000;
+            --esimphony-gray: #666666;
+            --esimphony-light-gray: #999999;
+            --esimphony-card-bg: #FFFFFF;
+            --esimphony-shadow: rgba(255, 255, 255, 0.1);
+            --esimphony-warning: #FFA500;
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--esimphony-black) !important;
+            color: var(--esimphony-white);
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+        
+        .dashboard-container {
+            min-height: 100vh;
+            background-color: var(--esimphony-black);
+        }
+        
+        /* Header Section */
+        .header-section {
+            padding: 1rem 1rem 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .greeting {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--esimphony-white);
+        }
+        
+        .greeting-user {
+            color: var(--esimphony-red);
+        }
+        
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: var(--esimphony-white);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        
+        .notification-btn:hover {
+            opacity: 0.7;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 8px;
+            height: 8px;
+            background-color: var(--esimphony-red);
+            border-radius: 50%;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 0 1rem 2rem 1rem;
+        }
+        
+        /* Balance Section */
+        .balance-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .balance-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--esimphony-gray);
+        }
+        
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .btn-topup {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .btn-topup:hover,
+        .btn-topup:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+        
+        /* Active Plan Section */
+        .active-plan-section {
+            margin-bottom: 2rem;
+        }
+        
+        .active-plan-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            border: 2px solid var(--esimphony-red);
+        }
+        
+        .plan-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 1rem;
+        }
+        
+        .data-usage-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .data-usage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .data-usage-label {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .data-usage-amount {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #E5E5E5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--esimphony-red);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .data-remaining {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .plan-expiry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #F8F8F8;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .expiry-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .expiry-icon {
+            color: var(--esimphony-warning);
+            font-size: 1rem;
+        }
+        
+        .expiry-text {
+            font-size: 0.875rem;
+            color: var(--esimphony-black);
+        }
+        
+        .expiry-days {
+            font-weight: 600;
+            color: var(--esimphony-red);
+        }
+        
+        .plan-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .btn-renew {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        
+        .btn-renew:hover,
+        .btn-renew:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+        
+        .btn-manage {
+            background-color: transparent;
+            border: 2px solid var(--esimphony-gray);
+            color: var(--esimphony-gray);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+        
+        .btn-manage:hover,
+        .btn-manage:focus {
+            background-color: var(--esimphony-gray);
+            color: var(--esimphony-white);
+        }
+        
+        /* Plans Section */
+        .plans-section {
+            margin-bottom: 2rem;
+        }
+        
+        .plans-section.hidden {
+            display: none;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-white);
+            margin-bottom: 1rem;
+        }
+        
+        .plans-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: 1fr;
+        }
+        
+        .plan-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            transition: transform 0.2s ease;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-type {
+            background-color: #F5F5F5;
+            color: var(--esimphony-gray);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        
+        .plan-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .plan-details {
+            margin-bottom: 1.5rem;
+        }
+        
+        .plan-data {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .plan-duration {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .plan-features {
+            margin-bottom: 1.5rem;
+        }
+        
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .plan-features li {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            margin-bottom: 0.25rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00D26A;
+            font-weight: 600;
+        }
+        
+        .btn-select-plan {
+            background-color: var(--esimphony-red);
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            font-size: 0.875rem;
+            border-radius: 12px;
+            min-height: 44px;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-select-plan:hover,
+        .btn-select-plan:focus {
+            background-color: #E60000;
+            border-color: #E60000;
+            color: var(--esimphony-white);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--esimphony-card-bg);
+            border-top: 1px solid #E5E5E5;
+            padding: 0.75rem 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--esimphony-gray);
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            color: var(--esimphony-red);
+        }
+        
+        .nav-item:hover {
+            color: var(--esimphony-red);
+            text-decoration: none;
+        }
+        
+        .nav-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Responsive Design */
+        @media (min-width: 576px) {
+            .header-section {
+                padding: 2rem 2rem 0 2rem;
+            }
+            
+            .main-content {
+                padding: 0 2rem 2rem 2rem;
+            }
+            
+            .greeting {
+                font-size: 1.75rem;
+            }
+            
+            .plans-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .balance-card {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .balance-header {
+                margin-bottom: 0;
+            }
+            
+            .balance-info {
+                flex: 1;
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-topup:hover,
+            .btn-select-plan:hover,
+            .plan-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .btn-topup:active {
+                background-color: #CC0000;
+            }
+            
+            .btn-select-plan:active {
+                background-color: #CC0000;
+            }
+        }
+        
+        /* Focus states for accessibility */
+        .btn-topup:focus-visible,
+        .btn-select-plan:focus-visible,
+        .notification-btn:focus-visible,
+        .nav-item:focus-visible {
+            outline: 3px solid rgba(255, 0, 0, 0.5);
+            outline-offset: 2px;
+        }
+        
+        /* Pulse animation for highlighting */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+            }
+        }
+        
+        /* Loading states */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        /* Destination Search Styles */
+        .destination-search-section {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        /* Current Location Section */
+        .current-location-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .location-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background-color: var(--esimphony-card-bg);
+            border-radius: 12px;
+            border: 2px solid var(--esimphony-border);
+        }
+        
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .location-flag {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        
+        .location-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .location-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .location-region {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .change-location-btn {
+            background: none;
+            border: 2px solid var(--esimphony-border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--esimphony-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.125rem;
+        }
+        
+        .change-location-btn:hover {
+            border-color: var(--esimphony-red);
+            color: var(--esimphony-red);
+            background-color: rgba(255, 0, 0, 0.05);
+        }
+        
+        /* Search Header */
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .close-search-btn {
+            background: none;
+            border: none;
+            color: var(--esimphony-gray);
+            cursor: pointer;
+            padding: 0.5rem;
+            font-size: 1.125rem;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+        }
+        
+        .close-search-btn:hover {
+            color: var(--esimphony-red);
+            background-color: rgba(255, 0, 0, 0.05);
+        }
+        
+        .search-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin: 0;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--esimphony-border);
+            border-radius: 12px;
+            background-color: #F8F9FA;
+            color: var(--esimphony-black);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--esimphony-red);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--esimphony-gray);
+            font-size: 1.125rem;
+        }
+        
+        .destination-tabs {
+            margin-bottom: 1rem;
+        }
+        
+        .destination-tab-container {
+            background-color: #F8F9FA;
+            border-radius: 12px;
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .destination-tab-button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--esimphony-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .destination-tab-button.active {
+            background-color: var(--esimphony-white);
+            color: var(--esimphony-red);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .destination-tab-button:hover:not(.active) {
+            background-color: #E9ECEF;
+        }
+        
+        .destination-lists {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .destination-list {
+            display: none;
+        }
+        
+        .destination-list.active {
+            display: block;
+        }
+        
+        .destination-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--esimphony-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .destination-item:last-child {
+            border-bottom: none;
+        }
+        
+        .destination-item:hover {
+            background-color: #F8F9FA;
+        }
+        
+        .destination-item.selected {
+            background-color: var(--esimphony-red);
+            color: var(--esimphony-white);
+        }
+        
+        .destination-flag {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .destination-info {
+            flex: 1;
+        }
+        
+        .destination-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.125rem;
+            color: var(--esimphony-black);
+        }
+        
+        .destination-region {
+            font-size: 0.75rem;
+            color: var(--esimphony-gray);
+            opacity: 1;
+        }
+        
+        .destination-item.selected .destination-name {
+            color: var(--esimphony-white);
+        }
+        
+        .destination-item.selected .destination-region {
+            color: var(--esimphony-white);
+            opacity: 0.9;
+        }
+        
+        .plan-count {
+            font-size: 0.6875rem;
+            background: var(--esimphony-red);
+            color: var(--esimphony-white);
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .destination-item.selected .plan-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--esimphony-white);
+        }
+        
+        /* Usage Section Styles */
+        .usage-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .usage-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+        }
+        
+        .usage-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .usage-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--esimphony-red), #FF6B6B);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .usage-details {
+            flex: 1;
+        }
+        
+        .usage-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .usage-subtitle {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .btn-usage {
+            background: var(--esimphony-red);
+            color: var(--esimphony-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-usage:hover {
+            background: #E60000;
+            transform: translateY(-1px);
+        }
+        
+        .usage-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #F8F9FA;
+            border-radius: 12px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--esimphony-gray);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+        }
+        
+        .usage-progress {
+            margin-bottom: 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E5E5E5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--esimphony-red), #FF6B6B);
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            text-align: center;
+        }
+        
+        /* Activate eSIM Section Styles */
+        .activate-esim-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .activate-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .activate-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .activate-content {
+            flex: 1;
+        }
+        
+        .activate-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--esimphony-black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .activate-description {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-activate {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn-activate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* eSIM Settings Section Styles */
+        .esim-settings-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-card {
+            background-color: var(--esimphony-card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px var(--esimphony-shadow);
+            overflow: hidden;
+        }
+        
+        .settings-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .settings-option:hover {
+            background: #F8F9FA;
+        }
+        
+        .settings-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6c757d, #495057);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .settings-info {
+            flex: 1;
+        }
+        
+        .settings-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--esimphony-black);
+            margin-bottom: 0.25rem;
+        }
+        
+        .settings-description {
+            font-size: 0.875rem;
+            color: var(--esimphony-gray);
+        }
+        
+        .settings-arrow {
+            color: var(--esimphony-gray);
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="greeting">
+                Welcome, <span class="greeting-user" id="userName">John</span>!
+            </div>
+            <button class="notification-btn" aria-label="Notifications">
+                <i class="fas fa-bell"></i>
+                <div class="notification-badge"></div>
+            </button>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Balance Section -->
+            <div class="balance-card">
+                <div class="balance-info">
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-amount" id="currentBalance">$35.00</div>
+                </div>
+                <button class="btn btn-topup">Top-Up Balance</button>
+            </div>
+            
+            <!-- Active Plan Section -->
+            <div class="active-plan-section" id="activePlanSection">
+                <h2 class="section-title">Your Active Plan</h2>
+                <div class="active-plan-card" id="activePlanCard">
+                    <!-- Active plan details will be shown here -->
+                </div>
+            </div>
+            
+            <!-- Available Tariffs Section -->
+            <div class="plans-section" id="availablePlansSection">
+                <h2 class="section-title">Available Tariffs</h2>
+                
+                <!-- Current Location Display -->
+                <div class="current-location-section" id="currentLocationSection">
+                    <div class="location-header">
+                        <div class="location-info">
+                            <div class="location-flag" id="currentLocationFlag">🇺🇸</div>
+                            <div class="location-details">
+                                <div class="location-name" id="currentLocationName">United States</div>
+                                <div class="location-region" id="currentLocationRegion">North America</div>
+                            </div>
+                        </div>
+                        <button class="change-location-btn" id="changeLocationBtn" onclick="toggleDestinationSearch()" title="Change destination">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Destination Search (Initially Hidden) -->
+                <div class="destination-search-section" id="destinationSearchSection" style="display: none;">
+                    <div class="search-header">
+                        <h3 class="search-title">Select your destination</h3>
+                        <button class="close-search-btn" id="closeSearchBtn" onclick="toggleDestinationSearch()" title="Close search">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search destination" id="destinationSearch" onkeyup="searchDestinations()">
+                    </div>
+                    
+                    <div class="destination-tabs">
+                        <div class="destination-tab-container">
+                            <button class="destination-tab-button active" data-tab="countries" onclick="switchDestinationTab('countries')">
+                                Countries
+                            </button>
+                            <button class="destination-tab-button" data-tab="regions" onclick="switchDestinationTab('regions')">
+                                Regions
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="destination-lists" id="destinationLists">
+                        <div class="destination-list active" id="countriesList">
+                            <!-- Countries will be populated here -->
+                        </div>
+                        <div class="destination-list" id="regionsList">
+                            <!-- Regions will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="plans-grid" id="plansGrid">
+                    <!-- Plan cards will be dynamically generated -->
+                </div>
+            </div>
+            
+            <!-- Usage Section (for active eSIM) -->
+            <div class="usage-section" id="usageSection" style="display: none;">
+                <h2 class="section-title">Usage</h2>
+                <div class="usage-card" id="usageCard">
+                    <div class="usage-header">
+                        <div class="usage-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="usage-details">
+                            <div class="usage-title">Data Usage</div>
+                            <div class="usage-subtitle" id="usageEsimName">eSIM Plan</div>
+                        </div>
+                        <button class="btn btn-usage" onclick="openUsageScreen()">
+                            View Details
+                        </button>
+                    </div>
+                    
+                    <div class="usage-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Used</div>
+                            <div class="stat-value" id="dataUsed">2.3 GB</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Remaining</div>
+                            <div class="stat-value" id="dataRemaining">7.7 GB</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Expires</div>
+                            <div class="stat-value" id="dataExpiration">23 days</div>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="usageProgressBar" style="width: 23%;"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="usagePercentage">23%</span> used of total allowance
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activate eSIM Section (for available but inactive eSIM) -->
+            <div class="activate-esim-section" id="activateEsimSection" style="display: none;">
+                <h2 class="section-title">Activate eSIM</h2>
+                <div class="activate-card">
+                    <div class="activate-icon">
+                        <i class="fas fa-sim-card"></i>
+                    </div>
+                    <div class="activate-content">
+                        <div class="activate-title">Ready to Activate</div>
+                        <div class="activate-description">
+                            Your eSIM is ready for activation. Follow the setup process to start using your plan.
+                        </div>
+                        <button class="btn btn-activate" onclick="activateEsim()">
+                            <i class="fas fa-power-off"></i>
+                            Activate Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- eSIM Settings Section -->
+            <div class="esim-settings-section" id="esimSettingsSection">
+                <h2 class="section-title">eSIM Settings</h2>
+                <div class="settings-card">
+                    <div class="settings-option" onclick="openEsimSettings()">
+                        <div class="settings-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="settings-info">
+                            <div class="settings-title">eSIM Configuration</div>
+                            <div class="settings-description">Manage your eSIM profiles and network settings</div>
+                        </div>
+                        <div class="settings-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <a href="home-dashboard.html" class="nav-item active">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <span>Home</span>
+            </a>
+            <a href="tariff-details.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-mobile-alt"></i></div>
+                <span>Plans</span>
+            </a>
+            <a href="charges-consumption.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+                <span>Usage</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <span>Profile</span>
+            </a>
+        </div>
+    </nav>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample destination data
+        const destinationData = {
+            countries: [
+                { id: 'us', name: 'United States', flag: '🇺🇸', region: 'North America', planCount: 8 },
+                { id: 'gb', name: 'United Kingdom', flag: '🇬🇧', region: 'Europe', planCount: 6 },
+                { id: 'de', name: 'Germany', flag: '🇩🇪', region: 'Europe', planCount: 7 },
+                { id: 'fr', name: 'France', flag: '🇫🇷', region: 'Europe', planCount: 6 },
+                { id: 'jp', name: 'Japan', flag: '🇯🇵', region: 'Asia Pacific', planCount: 5 },
+                { id: 'au', name: 'Australia', flag: '🇦🇺', region: 'Asia Pacific', planCount: 4 },
+                { id: 'ca', name: 'Canada', flag: '🇨🇦', region: 'North America', planCount: 6 },
+                { id: 'es', name: 'Spain', flag: '🇪🇸', region: 'Europe', planCount: 5 },
+                { id: 'it', name: 'Italy', flag: '🇮🇹', region: 'Europe', planCount: 6 },
+                { id: 'mx', name: 'Mexico', flag: '🇲🇽', region: 'Latin America', planCount: 4 },
+                { id: 'br', name: 'Brazil', flag: '🇧🇷', region: 'Latin America', planCount: 3 },
+                { id: 'sg', name: 'Singapore', flag: '🇸🇬', region: 'Asia Pacific', planCount: 5 },
+                { id: 'th', name: 'Thailand', flag: '🇹🇭', region: 'Asia Pacific', planCount: 4 },
+                { id: 'vn', name: 'Vietnam', flag: '🇻🇳', region: 'Asia Pacific', planCount: 4 },
+                { id: 'kr', name: 'South Korea', flag: '🇰🇷', region: 'Asia Pacific', planCount: 5 },
+                { id: 'my', name: 'Malaysia', flag: '🇲🇾', region: 'Asia Pacific', planCount: 4 },
+                { id: 'ph', name: 'Philippines', flag: '🇵🇭', region: 'Asia Pacific', planCount: 3 },
+                { id: 'id', name: 'Indonesia', flag: '🇮🇩', region: 'Asia Pacific', planCount: 3 },
+                { id: 'nl', name: 'Netherlands', flag: '🇳🇱', region: 'Europe', planCount: 6 }
+            ],
+            regions: [
+                { id: 'europe', name: 'Europe', flag: '🇪🇺', region: '30+ Countries', planCount: 12 },
+                { id: 'asia', name: 'Asia Pacific', flag: '🌏', region: '25+ Countries', planCount: 10 },
+                { id: 'americas', name: 'Americas', flag: '🌎', region: '15+ Countries', planCount: 8 },
+                { id: 'global', name: 'Global', flag: '🌍', region: '100+ Countries', planCount: 15 },
+                { id: 'middle-east', name: 'Middle East', flag: '🕌', region: '10+ Countries', planCount: 6 },
+                { id: 'africa', name: 'Africa', flag: '🦁', region: '20+ Countries', planCount: 7 }
+            ]
+        };
+        
+        let selectedDestination = null;
+        let currentDestinationTab = 'countries';
+        
+        // Sample data for available plans grouped by type and region
+        const availablePlans = {
+            payg: [
+                {
+                    id: 'payg-1gb',
+                    type: "PAYG",
+                    data: "1 GB",
+                    duration: "Pay as you go",
+                    price: "$3.00",
+                    regions: ['us', 'gb', 'de', 'sg', 'th', 'vn', 'kr', 'my', 'europe', 'asia', 'americas'],
+                    features: ["High-speed data", "No expiry", "Pay only for what you use"]
+                },
+                {
+                    id: 'payg-5gb',
+                    type: "PAYG",
+                    data: "5 GB",
+                    duration: "Pay as you go",
+                    price: "$12.00",
+                    regions: ['us', 'gb', 'de', 'fr', 'sg', 'th', 'vn', 'kr', 'my', 'ph', 'id', 'europe', 'asia', 'americas'],
+                    features: ["High-speed data", "No expiry", "Pay only for what you use", "Better value"]
+                }
+            ],
+            prepaid: [
+                {
+                    id: 1,
+                    type: "Prepaid",
+                    data: "5 GB",
+                    duration: "7 Days",
+                    price: "$10.00",
+                    regions: ['us', 'ca', 'americas'],
+                    features: ["High-speed data", "No activation fee", "Instant activation"]
+                },
+                {
+                    id: 2,
+                    type: "Prepaid",
+                    data: "10 GB",
+                    duration: "30 Days",
+                    price: "$15.00",
+                    regions: ['us', 'gb', 'de', 'sg', 'th', 'vn', 'kr', 'my', 'europe', 'asia', 'americas'],
+                    features: ["High-speed data", "Global coverage", "No activation fees", "24/7 support"]
+                },
+                {
+                    id: 3,
+                    type: "Prepaid",
+                    data: "25 GB",
+                    duration: "30 Days",
+                    price: "$25.00",
+                    regions: ['us', 'gb', 'de', 'fr', 'jp', 'au', 'sg', 'th', 'vn', 'kr', 'my', 'ph', 'id', 'europe', 'asia', 'americas'],
+                    features: ["High-speed data", "Global coverage", "No activation fees", "24/7 support", "Data rollover"]
+                },
+                {
+                    id: 4,
+                    type: "Prepaid",
+                    data: "50 GB",
+                    duration: "30 Days",
+                    price: "$40.00",
+                    regions: ['global', 'europe', 'asia', 'americas', 'middle-east', 'africa'],
+                    features: ["High-speed data", "Global coverage", "No activation fees", "24/7 support", "Data rollover", "International calling"]
+                }
+            ],
+            subscription: [
+                {
+                    id: 'sub-50gb',
+                    type: "Subscription",
+                    data: "50 GB",
+                    duration: "Monthly",
+                    price: "$35.00",
+                    regions: ['us', 'gb', 'de', 'fr', 'sg', 'th', 'vn', 'kr', 'my', 'europe', 'asia', 'americas'],
+                    features: ["High-speed data", "5G speeds", "24/7 support", "Data rollover"]
+                },
+                {
+                    id: 'sub-100gb',
+                    type: "Subscription",
+                    data: "100 GB",
+                    duration: "Monthly",
+                    price: "$45.00",
+                    regions: ['us', 'gb', 'de', 'fr', 'jp', 'au', 'europe', 'asia', 'americas'],
+                    features: ["High-speed data", "5G speeds", "International roaming", "24/7 support", "Data rollover"]
+                },
+                {
+                    id: 'sub-unlimited',
+                    type: "Subscription",
+                    data: "Unlimited",
+                    duration: "Monthly",
+                    price: "$60.00",
+                    regions: ['global', 'europe', 'asia', 'americas', 'middle-east', 'africa'],
+                    features: ["Unlimited data", "No throttling", "5G speeds", "International roaming", "24/7 priority support"]
+                }
+            ]
+        };
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            checkActivePlan();
+            setDefaultDestination();
+            renderDestinations();
+            renderPlans();
+            setupEventListeners();
+        });
+        
+        function setDefaultDestination() {
+            // Set United States as default selected destination
+            selectedDestination = destinationData.countries.find(country => country.id === 'us');
+            if (!selectedDestination) {
+                // Fallback to first country if US not found
+                selectedDestination = destinationData.countries[0];
+            }
+            console.log('Default destination set:', selectedDestination);
+        }
+        
+        function renderDestinations() {
+            renderCountriesList();
+            renderRegionsList();
+        }
+        
+        function renderCountriesList() {
+            const countriesList = document.getElementById('countriesList');
+            const countries = destinationData.countries;
+            
+            console.log('Rendering countries:', countries.length);
+            
+            countriesList.innerHTML = countries.map(country => `
+                <div class="destination-item" data-destination-id="${country.id}" onclick="selectDestination('countries', '${country.id}')">
+                    <div class="destination-flag">${country.flag}</div>
+                    <div class="destination-info">
+                        <div class="destination-name">${country.name}</div>
+                        <div class="destination-region">${country.region}</div>
+                    </div>
+                    <div class="plan-count">${country.planCount}</div>
+                </div>
+            `).join('');
+            
+            console.log('Countries list HTML:', countriesList.innerHTML.length, 'characters');
+        }
+        
+        function renderRegionsList() {
+            const regionsList = document.getElementById('regionsList');
+            const regions = destinationData.regions;
+            
+            regionsList.innerHTML = regions.map(region => `
+                <div class="destination-item" data-destination-id="${region.id}" onclick="selectDestination('regions', '${region.id}')">
+                    <div class="destination-flag">${region.flag}</div>
+                    <div class="destination-info">
+                        <div class="destination-name">${region.name}</div>
+                        <div class="destination-region">${region.region}</div>
+                    </div>
+                    <div class="plan-count">${region.planCount}</div>
+                </div>
+            `).join('');
+        }
+        
+        function switchDestinationTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.destination-tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Update destination lists
+            document.querySelectorAll('.destination-list').forEach(list => {
+                list.classList.remove('active');
+            });
+            document.getElementById(`${tabName}List`).classList.add('active');
+            
+            currentDestinationTab = tabName;
+        }
+        
+        function selectDestination(type, destinationId) {
+            // Clear previous selections
+            document.querySelectorAll('.destination-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Add selection to clicked item
+            document.querySelector(`[data-destination-id="${destinationId}"]`).classList.add('selected');
+            
+            // Find selected destination data
+            const destination = destinationData[type].find(dest => dest.id === destinationId);
+            
+            // Update current location display and hide search
+            updateCurrentLocation(destination, type);
+        }
+        
+        function searchDestinations() {
+            const searchTerm = document.getElementById('destinationSearch').value.toLowerCase();
+            const currentList = document.querySelector('.destination-list.active');
+            const items = currentList.querySelectorAll('.destination-item');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.destination-name').textContent.toLowerCase();
+                const region = item.querySelector('.destination-region').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || region.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = searchTerm === '' ? 'flex' : 'none';
+                }
+            });
+        }
+        
+        function toggleDestinationSearch() {
+            const currentLocationSection = document.getElementById('currentLocationSection');
+            const destinationSearchSection = document.getElementById('destinationSearchSection');
+            
+            if (destinationSearchSection.style.display === 'none' || !destinationSearchSection.style.display) {
+                // Show search, hide current location
+                destinationSearchSection.style.display = 'block';
+                currentLocationSection.style.display = 'none';
+                // Clear search input and reset filters
+                document.getElementById('destinationSearch').value = '';
+                searchDestinations();
+            } else {
+                // Hide search, show current location
+                destinationSearchSection.style.display = 'none';
+                currentLocationSection.style.display = 'block';
+            }
+        }
+        
+        function updateCurrentLocation(destination, type) {
+            const flag = document.getElementById('currentLocationFlag');
+            const name = document.getElementById('currentLocationName');
+            const region = document.getElementById('currentLocationRegion');
+            
+            flag.textContent = destination.flag;
+            name.textContent = destination.name;
+            region.textContent = destination.region || destination.name;
+            
+            // Store selection for persistence
+            selectedDestination = destination;
+            
+            // Hide search and show current location
+            toggleDestinationSearch();
+            
+            // Re-render plans
+            renderPlans();
+        }
+        
+        function loadUserData() {
+            // Load user data from localStorage or API
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const userData = {
+                firstName: localStorage.getItem('userFirstName') || userProfile.firstName || 'John',
+                balance: localStorage.getItem('userBalance') || userProfile.balance || '35.00',
+                accountType: userProfile.accountType || 'default'
+            };
+            
+            document.getElementById('userName').textContent = userData.firstName;
+            document.getElementById('currentBalance').textContent = `$${userData.balance}`;
+            
+            // Update UI based on account type
+            updateUIForAccountType(userData.accountType, parseFloat(userData.balance));
+        }
+        
+        function checkActivePlan() {
+            // Check if user has an active plan
+            const activePlan = localStorage.getItem('userActivePlan');
+            const activePlanSection = document.getElementById('activePlanSection');
+            const availablePlansSection = document.getElementById('availablePlansSection');
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            
+            if (activePlan) {
+                // User has active plan, show it
+                const planData = JSON.parse(activePlan);
+                renderActivePlan(planData);
+                activePlanSection.style.display = 'block';
+                availablePlansSection.querySelector('.section-title').textContent = 'Upgrade Your Plan';
+            } else if (userProfile.accountType === 'has-plan' || userProfile.accountType === 'default') {
+                // Show mock active plan for demo accounts with plan or default users
+                const mockActivePlan = {
+                    name: userProfile.accountType === 'has-plan' ? 'Euro Data Pass' : 'Global Traveler Prepaid',
+                    dataTotal: userProfile.accountType === 'has-plan' ? 20 : 10,
+                    dataUsed: userProfile.accountType === 'has-plan' ? 8.5 : 6.5,
+                    dataRemaining: userProfile.accountType === 'has-plan' ? 11.5 : 3.5,
+                    expiryDays: userProfile.accountType === 'has-plan' ? 18 : 22,
+                    renewalPrice: userProfile.accountType === 'has-plan' ? '$25.00' : '$15.00'
+                };
+                renderActivePlan(mockActivePlan);
+                activePlanSection.style.display = 'block';
+                availablePlansSection.querySelector('.section-title').textContent = 'Upgrade Your Plan';
+            } else {
+                // No active plan for new users or users without plans
+                activePlanSection.style.display = 'none';
+                availablePlansSection.querySelector('.section-title').textContent = 'Choose Your First Plan';
+            }
+        }
+        
+        function renderActivePlan(planData) {
+            const activePlanCard = document.getElementById('activePlanCard');
+            const dataUsedPercent = (planData.dataUsed / planData.dataTotal) * 100;
+            
+            activePlanCard.innerHTML = `
+                <div class="plan-name">${planData.name}</div>
+                
+                <div class="data-usage-container">
+                    <div class="data-usage-header">
+                        <span class="data-usage-label">Data Usage</span>
+                        <span class="data-usage-amount">${planData.dataUsed} GB / ${planData.dataTotal} GB</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${dataUsedPercent}%"></div>
+                    </div>
+                    <div class="data-remaining">${planData.dataRemaining} GB Remaining</div>
+                </div>
+                
+                <div class="plan-expiry">
+                    <div class="expiry-info">
+                        <i class="fas fa-clock expiry-icon"></i>
+                        <span class="expiry-text">Expires in <span class="expiry-days">${planData.expiryDays} days</span></span>
+                    </div>
+                </div>
+                
+                <div class="plan-actions">
+                    <button class="btn btn-renew" onclick="changePlan()">Change Plan</button>
+                    <button class="btn btn-manage" onclick="managePlan()">Manage</button>
+                </div>
+            `;
+        }
+        
+        function renderPlans() {
+            const plansGrid = document.getElementById('plansGrid');
+            
+            if (!selectedDestination) {
+                plansGrid.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--esimphony-gray);">
+                        <i class="fas fa-globe" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">Select a destination</div>
+                        <div style="font-size: 0.875rem;">Choose a country or region above to see available plans</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Filter plans based on selected destination
+            const filteredPlans = getFilteredPlans();
+            
+            if (Object.values(filteredPlans).every(planType => planType.length === 0)) {
+                plansGrid.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--esimphony-gray);">
+                        <i class="fas fa-mobile-alt" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <div style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;">No plans available</div>
+                        <div style="font-size: 0.875rem;">No plans found for ${selectedDestination.name}</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show loading skeleton
+            plansGrid.innerHTML = createLoadingSkeletons();
+            
+            // Simulate API delay
+            setTimeout(() => {
+                plansGrid.innerHTML = renderGroupedPlans(filteredPlans);
+            }, 500);
+        }
+        
+        function getFilteredPlans() {
+            if (!selectedDestination) return { payg: [], prepaid: [], subscription: [] };
+            
+            const filtered = { payg: [], prepaid: [], subscription: [] };
+            
+            Object.keys(availablePlans).forEach(planType => {
+                filtered[planType] = availablePlans[planType].filter(plan => 
+                    plan.regions.includes(selectedDestination.id)
+                );
+            });
+            
+            return filtered;
+        }
+        
+        function renderGroupedPlans(filteredPlans) {
+            let html = '';
+            
+            // Render PAYG plans
+            if (filteredPlans.payg.length > 0) {
+                html += `
+                    <div style="grid-column: 1 / -1; margin-bottom: 1rem;">
+                        <h3 style="color: var(--esimphony-white); font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: var(--esimphony-red); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">PAYG</span>
+                            Pay As You Go
+                        </h3>
+                        <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 2rem;">
+                            ${filteredPlans.payg.map(plan => createPlanCard(plan)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Render Prepaid plans
+            if (filteredPlans.prepaid.length > 0) {
+                html += `
+                    <div style="grid-column: 1 / -1; margin-bottom: 1rem;">
+                        <h3 style="color: var(--esimphony-white); font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: var(--esimphony-red); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">PREPAID</span>
+                            Fixed Data Plans
+                        </h3>
+                        <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 2rem;">
+                            ${filteredPlans.prepaid.map(plan => createPlanCard(plan)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Render Subscription plans
+            if (filteredPlans.subscription.length > 0) {
+                html += `
+                    <div style="grid-column: 1 / -1; margin-bottom: 1rem;">
+                        <h3 style="color: var(--esimphony-white); font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: var(--esimphony-red); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">SUBSCRIPTION</span>
+                            Monthly Plans
+                        </h3>
+                        <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 2rem;">
+                            ${filteredPlans.subscription.map(plan => createPlanCard(plan)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+        
+        function createLoadingSkeletons() {
+            return Array(3).fill(0).map(() => `
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <div class="loading-skeleton" style="width: 80px; height: 20px;"></div>
+                        <div class="loading-skeleton" style="width: 60px; height: 30px;"></div>
+                    </div>
+                    <div class="plan-details">
+                        <div class="loading-skeleton" style="width: 120px; height: 24px; margin-bottom: 8px;"></div>
+                        <div class="loading-skeleton" style="width: 80px; height: 16px;"></div>
+                    </div>
+                    <div class="plan-features">
+                        <div class="loading-skeleton" style="width: 100%; height: 16px; margin-bottom: 4px;"></div>
+                        <div class="loading-skeleton" style="width: 80%; height: 16px; margin-bottom: 4px;"></div>
+                        <div class="loading-skeleton" style="width: 90%; height: 16px;"></div>
+                    </div>
+                    <div class="loading-skeleton" style="width: 100%; height: 44px; margin-top: 16px;"></div>
+                </div>
+            `).join('');
+        }
+        
+        function createPlanCard(plan) {
+            return `
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <span class="plan-type">${plan.type}</span>
+                        <div class="plan-price">${plan.price}</div>
+                    </div>
+                    <div class="plan-details">
+                        <div class="plan-data">${plan.data}</div>
+                        <div class="plan-duration">${plan.duration}</div>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            ${plan.features.map(feature => `<li>${feature}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <button class="btn btn-select-plan" onclick="selectPlan('${plan.id}')">
+                        Select Plan
+                    </button>
+                </div>
+            `;
+        }
+        
+        function setupEventListeners() {
+            // Top-up button
+            document.querySelector('.btn-topup').addEventListener('click', function() {
+                // Set source for navigation tracking (Use Case 2)
+                localStorage.setItem('topUpSource', 'home-dashboard');
+                // Navigate to top-up screen
+                window.location.href = 'top-up.html';
+            });
+            
+            // Notification button
+            document.querySelector('.notification-btn').addEventListener('click', function() {
+                // Remove notification badge
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+                // Navigate to notifications page
+                window.location.href = 'notifications.html';
+            });
+            
+            // Bottom navigation - now uses real page navigation
+            // No need to prevent default behavior since we use actual page links
+        }
+        
+        function selectPlan(planId) {
+            // Find selected plan across all plan types
+            let selectedPlan = null;
+            Object.values(availablePlans).forEach(planType => {
+                const found = planType.find(plan => plan.id == planId);
+                if (found) selectedPlan = found;
+            });
+            
+            if (selectedPlan && selectedDestination) {
+                // Store selected plan data for next screen
+                localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
+                
+                // Navigate to tariff details screen with destination
+                const country = selectedDestination.name;
+                const region = selectedDestination.region;
+                const flag = selectedDestination.flag;
+                
+                window.location.href = `tariff-details.html?country=${encodeURIComponent(country)}&region=${encodeURIComponent(region)}&flag=${encodeURIComponent(flag)}`;
+            }
+        }
+        
+        // Handle navigation active state
+        function updateNavigationState() {
+            const currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href').includes(currentPage) || 
+                    (currentPage === 'home-dashboard.html' && item.querySelector('span').textContent === 'Home')) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        // Call on load
+        updateNavigationState();
+        
+        function updateUIForAccountType(accountType, balance) {
+            const topUpButton = document.querySelector('.btn-topup');
+            const balanceCard = document.querySelector('.balance-card');
+            
+            // Update UI based on account type
+            switch(accountType) {
+                case 'no-balance':
+                    // Highlight top-up for users with no balance
+                    topUpButton.style.animation = 'pulse 2s infinite';
+                    balanceCard.style.border = '2px solid var(--esimphony-warning)';
+                    break;
+                    
+                case 'has-balance':
+                    // Normal state for users with balance but no plan
+                    topUpButton.style.animation = 'none';
+                    balanceCard.style.border = 'none';
+                    break;
+                    
+                case 'has-plan':
+                    // Users with active plan - focus on plan management
+                    topUpButton.style.animation = 'none';
+                    balanceCard.style.border = 'none';
+                    break;
+                    
+                case 'new':
+                    // New registered users
+                    if (balance === 0) {
+                        topUpButton.style.animation = 'pulse 2s infinite';
+                        balanceCard.style.border = '2px solid var(--esimphony-warning)';
+                    }
+                    break;
+                    
+                default:
+                    topUpButton.style.animation = 'none';
+                    balanceCard.style.border = 'none';
+            }
+        }
+        
+        function changePlan() {
+            // Set source for Use Case 3 navigation
+            localStorage.setItem('planChangeSource', 'home-dashboard');
+            // Navigate to plan change flow (tariff-details will show destination search)
+            window.location.href = 'tariff-details.html?mode=change';
+        }
+        
+        function managePlan() {
+            // Show plan management options
+            alert('Plan management features:\n• View usage details\n• Change plan settings\n• Cancel plan\n• View billing history');
+        }
+        
+        // Simulate real-time balance updates
+        function simulateBalanceUpdate() {
+            const balanceElement = document.getElementById('currentBalance');
+            const currentBalance = parseFloat(balanceElement.textContent.replace('$', ''));
+            
+            // Simulate small random changes (for demo purposes)
+            if (Math.random() > 0.98) {
+                const newBalance = Math.max(0, currentBalance + (Math.random() - 0.5) * 10);
+                balanceElement.textContent = `$${newBalance.toFixed(2)}`;
+                localStorage.setItem('userBalance', newBalance.toFixed(2));
+            }
+        }
+        
+        // Update balance every 30 seconds (for demo)
+        setInterval(simulateBalanceUpdate, 30000);
+        
+        // eSIM Management Functions
+        function checkEsimStatus() {
+            // Get user profile to determine eSIM state
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const esimStatus = userProfile.esimStatus || 'none'; // none, available, active
+            
+            console.log('eSIM Status:', esimStatus);
+            
+            // Show/hide sections based on eSIM status
+            const usageSection = document.getElementById('usageSection');
+            const activateSection = document.getElementById('activateEsimSection');
+            const settingsSection = document.getElementById('esimSettingsSection');
+            
+            switch (esimStatus) {
+                case 'active':
+                    // Show usage section with data
+                    usageSection.style.display = 'block';
+                    activateSection.style.display = 'none';
+                    settingsSection.style.display = 'block';
+                    updateUsageData(userProfile);
+                    break;
+                    
+                case 'available':
+                    // Show activate section
+                    usageSection.style.display = 'none';
+                    activateSection.style.display = 'block';
+                    settingsSection.style.display = 'block';
+                    break;
+                    
+                default:
+                    // Hide both usage and activate, show only settings
+                    usageSection.style.display = 'none';
+                    activateSection.style.display = 'none';
+                    settingsSection.style.display = 'block';
+                    break;
+            }
+        }
+        
+        function updateUsageData(userProfile) {
+            // Update usage statistics from user profile
+            const usageData = userProfile.usageData || {
+                planName: 'US Prepaid Plan',
+                dataUsed: 2.3,
+                dataTotal: 10,
+                expirationDays: 23
+            };
+            
+            const usagePercentage = Math.round((usageData.dataUsed / usageData.dataTotal) * 100);
+            const dataRemaining = Math.max(0, usageData.dataTotal - usageData.dataUsed);
+            
+            // Update DOM elements
+            document.getElementById('usageEsimName').textContent = usageData.planName;
+            document.getElementById('dataUsed').textContent = `${usageData.dataUsed} GB`;
+            document.getElementById('dataRemaining').textContent = `${dataRemaining.toFixed(1)} GB`;
+            document.getElementById('dataExpiration').textContent = `${usageData.expirationDays} days`;
+            document.getElementById('usageProgressBar').style.width = `${usagePercentage}%`;
+            document.getElementById('usagePercentage').textContent = `${usagePercentage}%`;
+        }
+        
+        function openUsageScreen() {
+            // Navigate to usage/charges screen
+            window.location.href = 'charges-consumption.html';
+        }
+        
+        function activateEsim() {
+            // Navigate to eSIM activation screen
+            window.location.href = 'esim-settings.html?action=activate';
+        }
+        
+        function openEsimSettings() {
+            // Navigate to eSIM settings screen
+            window.location.href = 'esim-settings.html';
+        }
+        
+        // Initialize eSIM status check
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add small delay to ensure other initialization completes
+            setTimeout(checkEsimStatus, 100);
+        });
+    </script>
+</body>
+</html>
