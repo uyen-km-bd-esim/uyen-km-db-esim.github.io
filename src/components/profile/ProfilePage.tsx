@@ -216,7 +216,7 @@ export function ProfilePage() {
               </div>
             </Link>
             
-            <Link href="/top-up" className="block">
+            <Link href="/top-up-history" className="block">
               <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
                 <div className="flex items-center">
                   <i className="fas fa-credit-card text-esimphony-gray mr-3"></i>
