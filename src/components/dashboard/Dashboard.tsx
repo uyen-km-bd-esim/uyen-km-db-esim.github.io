@@ -186,7 +186,7 @@ export function Dashboard() {
       )}
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-4 mb-6">
         <Link href="/usage">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <div className="p-4 text-center">
@@ -210,15 +210,6 @@ export function Dashboard() {
             <div className="p-4 text-center">
               <i className="fas fa-bell text-2xl text-esimphony-gray mb-2"></i>
               <p className="text-sm font-medium">Notifications</p>
-            </div>
-          </Card>
-        </Link>
-        
-        <Link href="/demo-support">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <div className="p-4 text-center">
-              <i className="fas fa-flask text-2xl text-esimphony-gray mb-2"></i>
-              <p className="text-sm font-medium">Demo Reset</p>
             </div>
           </Card>
         </Link>

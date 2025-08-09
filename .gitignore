@@ -65,7 +65,7 @@ jspm_packages/
 .claude/
 .mcp.json
 claude-conversation/
-prompts/
+# prompts/
 
 # Project documentation and design files
 *.jpg

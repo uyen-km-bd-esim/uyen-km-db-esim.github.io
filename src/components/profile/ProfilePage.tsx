@@ -14,6 +14,10 @@ export function ProfilePage() {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
+  const [showChatSupport, setShowChatSupport] = useState(false)
+  const [showFAQ, setShowFAQ] = useState(false)
+  const [chatMessages, setChatMessages] = useState<Array<{id: string, text: string, sender: 'user' | 'support', timestamp: Date}>>([])  
+  const [newMessage, setNewMessage] = useState('')
   const [editForm, setEditForm] = useState({
     firstName: '',
     email: ''
@@ -69,6 +73,57 @@ export function ProfilePage() {
     router.push('/')
   }
 
+  const openChatSupport = () => {
+    setShowChatSupport(true)
+    setShowFAQ(false)
+    // Load previous chat messages from localStorage
+    const savedMessages = storage.get('chatMessages') || []
+    setChatMessages(savedMessages)
+  }
+
+  const openFAQSupport = () => {
+    setShowFAQ(true)
+    setShowChatSupport(false)
+  }
+
+  const closeSupportModals = () => {
+    setShowChatSupport(false)
+    setShowFAQ(false)
+  }
+
+  const sendMessage = () => {
+    if (!newMessage.trim()) return
+    
+    const message = {
+      id: Date.now().toString(),
+      text: newMessage,
+      sender: 'user' as const,
+      timestamp: new Date()
+    }
+    
+    const updatedMessages = [...chatMessages, message]
+    setChatMessages(updatedMessages)
+    storage.set('chatMessages', updatedMessages)
+    setNewMessage('')
+    
+    // Simulate support response after 2 seconds
+    setTimeout(() => {
+      const supportResponse = {
+        id: (Date.now() + 1).toString(),
+        text: "Thanks for reaching out! A support agent will respond to your message shortly. In the meantime, you can check our FAQ section for immediate help.",
+        sender: 'support' as const,
+        timestamp: new Date()
+      }
+      const finalMessages = [...updatedMessages, supportResponse]
+      setChatMessages(finalMessages)
+      storage.set('chatMessages', finalMessages)
+    }, 2000)
+  }
+
+  const getInitials = (firstName: string) => {
+    return firstName ? firstName.charAt(0).toUpperCase() : 'U'
+  }
+
   if (isLoading) {
     return (
       <div className="container-esimphony flex items-center justify-center">
@@ -84,225 +139,200 @@ export function ProfilePage() {
       <div className="container-esimphony pt-4">
         <div className="mb-6">
           <h1 className="text-xl font-semibold text-esimphony-white">
-            My Profile
+            Profile
           </h1>
-          <p className="text-esimphony-gray text-sm">Manage your account settings</p>
         </div>
 
-      {/* Profile Information */}
+      {/* 1. Profile Header - FIRST */}
+      <Card className="mb-6">
+        <div className="p-6 text-center">
+          <div className="w-20 h-20 bg-gradient-to-br from-esimphony-red to-red-400 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-bold">
+            {getInitials(user.firstName)}
+          </div>
+          <h3 className="text-xl font-semibold text-esimphony-black mb-1">{user.firstName}</h3>
+          <p className="text-esimphony-gray text-sm mb-3">{user.email}</p>
+          <div className="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+            <i className="fas fa-check-circle mr-2"></i>
+            Account Active
+          </div>
+        </div>
+      </Card>
+      
+      {/* 2. Account Settings */}
       <Card className="mb-6">
         <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold text-esimphony-black">
-              Personal Information
-            </h2>
-            <Button 
-              variant="secondary" 
-              size="sm"
+          <h2 className="text-lg font-semibold text-esimphony-black mb-4 flex items-center">
+            <i className="fas fa-user-cog text-esimphony-red mr-2"></i>
+            Account Settings
+          </h2>
+          
+          <div className="space-y-2">
+            <button 
               onClick={handleEditToggle}
+              className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer"
             >
-              {isEditing ? (
-                <>
-                  <i className="fas fa-times mr-2"></i>
-                  Cancel
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-edit mr-2"></i>
-                  Edit
-                </>
-              )}
-            </Button>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-esimphony-gray mb-1">
-                First Name
-              </label>
-              {isEditing ? (
-                <Input
-                  type="text"
-                  value={editForm.firstName}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, firstName: e.target.value }))}
-                />
-              ) : (
-                <div className="py-3 px-4 bg-gray-50 rounded-esim">
-                  {user.firstName}
+              <div className="flex items-center">
+                <i className="fas fa-edit text-esimphony-gray mr-3"></i>
+                <div className="text-left">
+                  <div className="font-medium">Edit Profile</div>
+                  <div className="text-xs text-esimphony-gray">Update your name and personal information</div>
                 </div>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-esimphony-gray mb-1">
-                Email Address
-              </label>
-              {isEditing ? (
-                <Input
-                  type="email"
-                  value={editForm.email}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
-                />
-              ) : (
-                <div className="py-3 px-4 bg-gray-50 rounded-esim">
-                  {user.email}
-                </div>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-esimphony-gray mb-1">
-                Account Type
-              </label>
-              <div className="py-3 px-4 bg-gray-50 rounded-esim">
-                <span className="capitalize">{user.accountType.replace('-', ' ')}</span>
-                {user.accountType.startsWith('exist') && (
-                  <span className="ml-2 text-xs bg-esimphony-success text-white px-2 py-1 rounded">
-                    Demo Account
-                  </span>
-                )}
               </div>
-            </div>
-
-            {isEditing && (
-              <Button 
-                variant="primary" 
-                onClick={handleSave}
-                className="w-full"
-              >
-                <i className="fas fa-save mr-2"></i>
-                Save Changes
-              </Button>
-            )}
+              <i className="fas fa-chevron-right text-esimphony-gray"></i>
+            </button>
+            
+            <button className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
+              <div className="flex items-center">
+                <i className="fas fa-lock text-esimphony-gray mr-3"></i>
+                <div className="text-left">
+                  <div className="font-medium">Change Password</div>
+                  <div className="text-xs text-esimphony-gray">Update your account password</div>
+                </div>
+              </div>
+              <i className="fas fa-chevron-right text-esimphony-gray"></i>
+            </button>
           </div>
         </div>
       </Card>
 
-      {/* Account Balance */}
+      {/* 3. Usage & History */}
       <Card className="mb-6">
         <div className="p-6">
-          <h2 className="text-lg font-semibold text-esimphony-black mb-4">
-            Account Balance
+          <h2 className="text-lg font-semibold text-esimphony-black mb-4 flex items-center">
+            <i className="fas fa-history text-esimphony-red mr-2"></i>
+            Usage & History
           </h2>
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="text-3xl font-bold text-esimphony-black">
-                ${user.balance.toFixed(2)}
+          <div className="space-y-2">
+            <Link href="/usage" className="block">
+              <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
+                <div className="flex items-center">
+                  <i className="fas fa-chart-bar text-esimphony-gray mr-3"></i>
+                  <div className="text-left">
+                    <div className="font-medium">Charges & Consumption</div>
+                    <div className="text-xs text-esimphony-gray">View your data usage and charges</div>
+                  </div>
+                </div>
+                <i className="fas fa-chevron-right text-esimphony-gray"></i>
               </div>
-              <p className="text-esimphony-gray text-sm">Available balance</p>
-            </div>
-            <Link href="/top-up">
-              <Button variant="topup" size="sm">
-                <i className="fas fa-plus mr-2"></i>
-                Add Funds
-              </Button>
+            </Link>
+            
+            <Link href="/top-up" className="block">
+              <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
+                <div className="flex items-center">
+                  <i className="fas fa-credit-card text-esimphony-gray mr-3"></i>
+                  <div className="text-left">
+                    <div className="font-medium">Top-Up History</div>
+                    <div className="text-xs text-esimphony-gray">Review your payment history</div>
+                  </div>
+                </div>
+                <i className="fas fa-chevron-right text-esimphony-gray"></i>
+              </div>
             </Link>
           </div>
         </div>
       </Card>
-
-      {/* Active Plan */}
+      
+      {/* 4. Settings */}
       <Card className="mb-6">
         <div className="p-6">
-          <h2 className="text-lg font-semibold text-esimphony-black mb-4">
-            Current Plan
+          <h2 className="text-lg font-semibold text-esimphony-black mb-4 flex items-center">
+            <i className="fas fa-cog text-esimphony-red mr-2"></i>
+            Settings
           </h2>
-          {user.activePlan ? (
-            <div className="space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-semibold text-esimphony-black">
-                    {user.activePlan.name}
-                  </h3>
-                  <p className="text-esimphony-gray text-sm">
-                    {user.activePlan.country} • {user.activePlan.data}
-                  </p>
+          <div className="space-y-2">
+            <button className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
+              <div className="flex items-center">
+                <i className="fas fa-globe text-esimphony-gray mr-3"></i>
+                <div className="text-left">
+                  <div className="font-medium">Language</div>
+                  <div className="text-xs text-esimphony-gray">English (US)</div>
                 </div>
-                <span className="text-esimphony-success text-sm font-medium">
-                  <i className="fas fa-circle mr-1"></i>Active
-                </span>
               </div>
-              
-              {user.activePlan.dataUsed !== undefined && user.activePlan.dataTotal !== undefined && (
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>Usage</span>
-                    <span>{user.activePlan.dataUsed}GB / {user.activePlan.dataTotal}GB</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-esimphony-success h-2 rounded-full"
-                      style={{ width: `${(user.activePlan.dataUsed / user.activePlan.dataTotal) * 100}%` }}
-                    />
-                  </div>
+              <i className="fas fa-chevron-right text-esimphony-gray"></i>
+            </button>
+            
+            <button className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
+              <div className="flex items-center">
+                <i className="fas fa-bell text-esimphony-gray mr-3"></i>
+                <div className="text-left">
+                  <div className="font-medium">Notifications</div>
+                  <div className="text-xs text-esimphony-gray">Manage your notification preferences</div>
                 </div>
-              )}
-              
-              <div className="flex justify-between items-center pt-4">
-                <div>
-                  {user.activePlan.daysLeft && (
-                    <p className="text-sm text-esimphony-gray">
-                      <i className="fas fa-calendar mr-1"></i>
-                      {user.activePlan.daysLeft} days remaining
-                    </p>
-                  )}
-                </div>
-                <Link href="/plans">
-                  <Button variant="secondary" size="sm">
-                    Change Plan
-                  </Button>
-                </Link>
               </div>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <i className="fas fa-sim-card text-4xl text-esimphony-gray mb-4"></i>
-              <h3 className="font-semibold text-esimphony-black mb-2">No Active Plan</h3>
-              <p className="text-esimphony-gray mb-4">Choose an eSIM plan to get started</p>
-              <Link href="/plans">
-                <Button variant="primary" size="sm">
-                  Browse Plans
-                </Button>
-              </Link>
-            </div>
-          )}
+              <i className="fas fa-chevron-right text-esimphony-gray"></i>
+            </button>
+          </div>
         </div>
       </Card>
-
-      {/* Account Actions */}
+      
+      {/* 5. Support */}
       <Card className="mb-6">
         <div className="p-6">
-          <h2 className="text-lg font-semibold text-esimphony-black mb-4">
+          <h2 className="text-lg font-semibold text-esimphony-black mb-4 flex items-center">
+            <i className="fas fa-life-ring text-esimphony-red mr-2"></i>
+            Support
+          </h2>
+          <div className="space-y-2">
+            <button 
+              onClick={openChatSupport}
+              className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer"
+            >
+              <div className="flex items-center">
+                <i className="fas fa-comments text-esimphony-gray mr-3"></i>
+                <div className="text-left">
+                  <div className="font-medium">Send Us a Message</div>
+                  <div className="text-xs text-esimphony-gray">Chat with support team</div>
+                </div>
+              </div>
+              <i className="fas fa-chevron-right text-esimphony-gray"></i>
+            </button>
+            
+            <button 
+              onClick={openFAQSupport}
+              className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer"
+            >
+              <div className="flex items-center">
+                <i className="fas fa-question-circle text-esimphony-gray mr-3"></i>
+                <div className="text-left">
+                  <div className="font-medium">Help & FAQ</div>
+                  <div className="text-xs text-esimphony-gray">Find answers instantly</div>
+                </div>
+              </div>
+              <i className="fas fa-chevron-right text-esimphony-gray"></i>
+            </button>
+          </div>
+        </div>
+      </Card>
+      
+      {/* 6. Account Actions - LAST */}
+      <Card className="mb-6">
+        <div className="p-6">
+          <h2 className="text-lg font-semibold text-esimphony-black mb-4 flex items-center">
+            <i className="fas fa-exclamation-triangle text-esimphony-red mr-2"></i>
             Account Actions
           </h2>
-          <div className="space-y-3">
-            <Link href="/demo-support" className="block">
-              <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
-                <div className="flex items-center">
-                  <i className="fas fa-flask text-esimphony-gray mr-3"></i>
-                  <span>Demo Reset</span>
-                </div>
-                <i className="fas fa-chevron-right text-esimphony-gray"></i>
-              </div>
-            </Link>
-
-            <Link href="/support" className="block">
-              <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-esim cursor-pointer">
-                <div className="flex items-center">
-                  <i className="fas fa-headset text-esimphony-gray mr-3"></i>
-                  <span>Support</span>
-                </div>
-                <i className="fas fa-chevron-right text-esimphony-gray"></i>
-              </div>
-            </Link>
-
+          <div className="space-y-2">
             <button 
               onClick={handleLogout}
               className="w-full flex items-center justify-between p-3 hover:bg-red-50 rounded-esim cursor-pointer text-red-600"
             >
               <div className="flex items-center">
                 <i className="fas fa-sign-out-alt mr-3"></i>
-                <span>Sign Out</span>
+                <div className="text-left">
+                  <div className="font-medium">Logout</div>
+                  <div className="text-xs text-esimphony-gray">Sign out of your account</div>
+                </div>
+              </div>
+              <i className="fas fa-chevron-right"></i>
+            </button>
+            
+            <button className="w-full flex items-center justify-between p-3 hover:bg-red-50 rounded-esim cursor-pointer text-red-600">
+              <div className="flex items-center">
+                <i className="fas fa-trash mr-3"></i>
+                <div className="text-left">
+                  <div className="font-medium">Delete Account</div>
+                  <div className="text-xs text-esimphony-gray">Permanently delete your account</div>
+                </div>
               </div>
               <i className="fas fa-chevron-right"></i>
             </button>
@@ -310,6 +340,242 @@ export function ProfilePage() {
         </div>
       </Card>
       </div>
+      
+      {/* Chat Support Modal */}
+      {showChatSupport && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-semibold text-esimphony-black flex items-center">
+                <i className="fas fa-comments text-esimphony-red mr-2"></i>
+                Live Support Chat
+              </h3>
+              <button onClick={closeSupportModals} className="text-esimphony-gray hover:text-esimphony-red">
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px]">
+              {chatMessages.length === 0 ? (
+                <div className="text-center py-8">
+                  <i className="fas fa-headset text-4xl text-esimphony-gray mb-4"></i>
+                  <h4 className="font-semibold text-esimphony-black mb-2">Start a conversation</h4>
+                  <p className="text-esimphony-gray text-sm">Our support team is here to help you with any questions.</p>
+                </div>
+              ) : (
+                chatMessages.map((message) => (
+                  <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[80%] p-3 rounded-2xl ${
+                      message.sender === 'user' 
+                        ? 'bg-esimphony-red text-white' 
+                        : 'bg-gray-100 text-esimphony-black'
+                    }`}>
+                      <p className="text-sm">{message.text}</p>
+                      <p className={`text-xs mt-1 ${
+                        message.sender === 'user' ? 'text-red-100' : 'text-esimphony-gray'
+                      }`}>
+                        {message.timestamp.toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            
+            <div className="border-t p-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                  placeholder="Type your message..."
+                  className="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:border-esimphony-red text-esimphony-black placeholder-gray-400"
+                />
+                <button 
+                  onClick={sendMessage}
+                  className="bg-esimphony-red text-white p-3 rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <i className="fas fa-paper-plane"></i>
+                </button>
+              </div>
+              <p className="text-xs text-esimphony-gray mt-2 text-center">
+                Our team typically responds within a few minutes during business hours.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* FAQ Modal */}
+      {showFAQ && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-semibold text-esimphony-black flex items-center">
+                <i className="fas fa-question-circle text-esimphony-red mr-2"></i>
+                Help & FAQ
+              </h3>
+              <button onClick={closeSupportModals} className="text-esimphony-gray hover:text-esimphony-red">
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div className="p-4 border-b">
+              <div className="relative">
+                <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-esimphony-gray"></i>
+                <input
+                  type="text"
+                  placeholder="Search for help..."
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-esimphony-red"
+                />
+              </div>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-esimphony-black mb-2 flex items-center">
+                    <i className="fas fa-rocket text-esimphony-red mr-2 text-sm"></i>
+                    Getting Started
+                  </h4>
+                  <div className="space-y-1 ml-6">
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">How to create an account</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">First time setup guide</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Understanding eSIM basics</button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-esimphony-black mb-2 flex items-center">
+                    <i className="fas fa-sim-card text-esimphony-red mr-2 text-sm"></i>
+                    eSIM Activation
+                  </h4>
+                  <div className="space-y-1 ml-6">
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">How to activate your eSIM</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">QR code activation steps</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Manual activation process</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Troubleshooting activation issues</button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-esimphony-black mb-2 flex items-center">
+                    <i className="fas fa-credit-card text-esimphony-red mr-2 text-sm"></i>
+                    Plans & Billing
+                  </h4>
+                  <div className="space-y-1 ml-6">
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Choosing the right plan</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">How to top-up your balance</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Understanding plan types</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Auto-renewal settings</button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-esimphony-black mb-2 flex items-center">
+                    <i className="fas fa-tools text-esimphony-red mr-2 text-sm"></i>
+                    Troubleshooting
+                  </h4>
+                  <div className="space-y-1 ml-6">
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Connection issues</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Data not working</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Plan not activating</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Network settings</button>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-esimphony-black mb-2 flex items-center">
+                    <i className="fas fa-user-cog text-esimphony-red mr-2 text-sm"></i>
+                    Account Management
+                  </h4>
+                  <div className="space-y-1 ml-6">
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Updating account information</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Changing password</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Managing notifications</button>
+                    <button className="block text-sm text-esimphony-gray hover:text-esimphony-red">Account security</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border-t p-4">
+              <p className="text-xs text-esimphony-gray text-center">
+                Can't find what you're looking for? 
+                <button 
+                  onClick={() => {closeSupportModals(); openChatSupport();}}
+                  className="text-esimphony-red hover:underline ml-1"
+                >
+                  Chat with support
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Edit Profile Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-semibold text-esimphony-black">
+                Edit Profile
+              </h3>
+              <button onClick={handleEditToggle} className="text-esimphony-gray hover:text-esimphony-red">
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-esimphony-gray mb-2">
+                    First Name
+                  </label>
+                  <Input
+                    type="text"
+                    value={editForm.firstName}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, firstName: e.target.value }))}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-esimphony-gray mb-2">
+                    Email Address
+                  </label>
+                  <Input
+                    type="email"
+                    value={editForm.email}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-3 mt-6">
+                <Button 
+                  variant="secondary" 
+                  onClick={handleEditToggle}
+                  className="flex-1 !border-gray-300 !text-esimphony-black hover:!bg-gray-100"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="primary" 
+                  onClick={handleSave}
+                  className="flex-1"
+                >
+                  <i className="fas fa-save mr-2"></i>
+                  Save
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AppLayout>
   )
 }
