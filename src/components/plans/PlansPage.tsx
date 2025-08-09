@@ -173,6 +173,13 @@ export function PlansPage() {
     
     setUser(userProfile)
     
+    // Check if we should show update plan view (from dashboard navigation)
+    const shouldShowUpdate = storage.get('showUpdatePlanView')
+    if (shouldShowUpdate && userProfile.activePlan) {
+      setShowBrowsePlans(true)
+      storage.remove('showUpdatePlanView') // Clear after using
+    }
+    
     // Set default destination to United States
     const defaultDestination = destinationData.countries.find(country => country.id === 'us') || destinationData.countries[0]
     setSelectedDestination(defaultDestination)

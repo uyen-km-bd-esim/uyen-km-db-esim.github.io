@@ -160,7 +160,7 @@ export function Dashboard() {
         )}
 
         {/* Available Tariffs / Popular Plans Section */}
-        <PopularPlansSection user={user} hasActivePlan={hasActivePlan} />
+        <PopularPlansSection user={user} hasActivePlan={hasActivePlan} onUserUpdate={handleUserUpdate} />
 
         {/* eSIM Status Section - Usage, Activation, or Settings */}
         <ESIMStatusSection user={user} />
