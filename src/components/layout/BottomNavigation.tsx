@@ -16,7 +16,7 @@ export function BottomNavigation() {
 
   const navItems: NavItem[] = [
     { path: '/dashboard', icon: 'fas fa-home', label: 'Home' },
-    { path: '/plans', icon: 'fas fa-sim-card', label: 'Plans' },
+    { path: '/plans', icon: 'fas fa-microchip', label: 'Plans' },
     { path: '/usage', icon: 'fas fa-chart-bar', label: 'Usage' },
     { path: '/profile', icon: 'fas fa-user', label: 'Profile' }
   ]

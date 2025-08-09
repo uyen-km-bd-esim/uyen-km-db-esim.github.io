@@ -38,6 +38,13 @@ export function PlansPage() {
   const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(null)
   const [selectedPlans, setSelectedPlans] = useState<Plan[]>([])
   const [showComparison, setShowComparison] = useState(false)
+  const [autoRenewStates, setAutoRenewStates] = useState<{ [planId: string]: boolean }>({})
+  const [showTooltip, setShowTooltip] = useState<string | null>(null)
+  const [showBrowsePlans, setShowBrowsePlans] = useState(false)
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [showSuccessView, setShowSuccessView] = useState(false)
+  const [pendingPlan, setPendingPlan] = useState<PlanOption | null>(null)
+  const [expandedFeatures, setExpandedFeatures] = useState<{ [planId: string]: boolean }>({})
   const router = useRouter()
 
   // Sample destination data
@@ -172,6 +179,15 @@ export function PlansPage() {
     
     setIsLoading(false)
   }, [router])
+
+  // Close tooltip when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setShowTooltip(null)
+    if (showTooltip) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [showTooltip])
   
   // Separate effect for auto-selecting first plan
   useEffect(() => {
@@ -200,16 +216,90 @@ export function PlansPage() {
       storage.set('topUpSource', 'tariff-details-balance')
       router.push('/top-up')
     } else {
-      // Sufficient balance - proceed with order
-      const confirmMessage = `Order ${plan.data} plan for ${plan.price}?\n\nDuration: ${plan.duration}\nCountry: ${selectedDestination?.name}`
-      if (confirm(confirmMessage)) {
-        // Update balance and simulate order
-        const updatedUser = { ...user, balance: user.balance - planPrice }
-        setUser(updatedUser)
-        storage.set('userProfile', updatedUser)
-        alert('Plan ordered successfully!')
-      }
+      // Show confirmation modal
+      setPendingPlan(plan)
+      setShowConfirmationModal(true)
     }
+  }
+
+  const handleConfirmOrder = () => {
+    if (!user || !pendingPlan) return
+    
+    const planPrice = parseFloat(pendingPlan.price.replace('$', ''))
+    
+    // Create active plan from purchased plan
+    const activePlan = {
+      id: pendingPlan.id,
+      name: `${pendingPlan.data} ${pendingPlan.type} Plan`,
+      region: selectedDestination?.name || 'Unknown',
+      dataUsed: 0,
+      dataTotal: parseInt(pendingPlan.data.replace(/[^\d]/g, '')), // Extract number from "5 GB"
+      daysLeft: pendingPlan.duration.includes('7') ? 7 : pendingPlan.duration.includes('30') ? 30 : 30,
+      status: 'active',
+      type: pendingPlan.type,
+      price: pendingPlan.price,
+      duration: pendingPlan.duration,
+      autoRenew: autoRenewStates[pendingPlan.id] || false
+    }
+    
+    // Update user with new balance and active plan
+    const updatedUser = { 
+      ...user, 
+      balance: user.balance - planPrice,
+      activePlan
+    }
+    setUser(updatedUser)
+    storage.set('userProfile', updatedUser)
+    
+    // Close confirmation modal and show success view
+    setShowConfirmationModal(false)
+    setShowSuccessView(true)
+  }
+
+  const handleCancelOrder = () => {
+    setShowConfirmationModal(false)
+    setPendingPlan(null)
+  }
+
+  const handleSuccessClose = () => {
+    setShowSuccessView(false)
+    setPendingPlan(null)
+    setSelectedPlan(null)
+    setShowBrowsePlans(false)  // This will show active plan view
+  }
+
+  const handleAutoRenewToggle = (planId: string, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setAutoRenewStates(prev => ({
+      ...prev,
+      [planId]: !prev[planId]
+    }))
+  }
+
+  const handleInfoIconClick = (planId: string, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setShowTooltip(showTooltip === planId ? null : planId)
+  }
+
+  const handleToggleFeatures = (planId: string, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setExpandedFeatures(prev => ({
+      ...prev,
+      [planId]: !prev[planId]
+    }))
+  }
+
+  const handleUpdatePlan = () => {
+    setShowBrowsePlans(true)
+  }
+
+  const handleViewUsage = () => {
+    router.push('/usage')
+  }
+
+  const handleBackToActivePlan = () => {
+    setShowBrowsePlans(false)
+    setSelectedPlan(null)
   }
 
   const selectDestination = (type: 'countries' | 'regions', destinationId: string) => {
@@ -263,22 +353,114 @@ export function PlansPage() {
     setShowComparison(false)
   }
 
+  // Determine what view to show
+  const shouldShowBrowsePlans = !user?.activePlan || showBrowsePlans
+
+  // Active Plan View Component
+  const renderActivePlanView = () => (
+    <div className="container-esimphony">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-esimphony-white">
+          Your Active Plan
+        </h3>
+      </div>
+
+      <Card className="mb-6 border-2 border-esimphony-success bg-green-50">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <i className="fas fa-check-circle text-esimphony-success text-2xl mr-4"></i>
+              <div>
+                <h3 className="text-xl font-semibold text-esimphony-black">
+                  {user.activePlan?.name}
+                </h3>
+                <p className="text-esimphony-gray text-sm">
+                  {selectedDestination?.name} • {user.activePlan?.region}
+                </p>
+              </div>
+            </div>
+            <span className="bg-esimphony-success text-esimphony-white px-4 py-2 rounded-full text-sm font-semibold">
+              ACTIVE
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="bg-white p-4 rounded-lg border">
+              <div className="text-esimphony-gray text-xs font-medium mb-1">Data Usage</div>
+              <div className="text-esimphony-black text-lg font-bold">
+                {user.activePlan?.dataUsed}GB / {user.activePlan?.dataTotal}GB
+              </div>
+            </div>
+            <div className="bg-white p-4 rounded-lg border">
+              <div className="text-esimphony-gray text-xs font-medium mb-1">Days Left</div>
+              <div className="text-esimphony-black text-lg font-bold">
+                {user.activePlan?.daysLeft || 'N/A'}
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+            <div 
+              className="bg-esimphony-success h-3 rounded-full"
+              style={{ width: `${(user.activePlan?.dataUsed! / user.activePlan?.dataTotal!) * 100}%` }}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Button
+              variant="primary"
+              onClick={handleUpdatePlan}
+              className="w-full py-3 bg-esimphony-red hover:bg-red-600 text-white"
+            >
+              <i className="fas fa-sync-alt mr-2"></i>
+              Update Plan
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={handleViewUsage}
+              className="w-full py-3 bg-gray-600 hover:bg-gray-700 text-white"
+            >
+              <i className="fas fa-chart-line mr-2"></i>
+              View Usage
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+
   return (
     <AppLayout>
       <div className="min-h-screen bg-esimphony-black">
-      {/* Header Section */}
-      <div className="bg-esimphony-white text-esimphony-black p-4 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-semibold">
-            Available Plans
-          </h1>
-          <div className="text-right">
-            <div className="text-lg font-bold text-esimphony-black">
-              ${user.balance.toFixed(2)}
-            </div>
-            <div className="text-esimphony-gray text-xs">Balance</div>
-          </div>
-        </div>
+        {/* Show Active Plan View if user has active plan and not browsing */}
+        {user.activePlan && !showBrowsePlans ? (
+          renderActivePlanView()
+        ) : (
+          <>
+            {/* Header Section */}
+            <div className="bg-esimphony-white text-esimphony-black p-4 mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center">
+                  {/* Back button when coming from active plan */}
+                  {user.activePlan && showBrowsePlans && (
+                    <button
+                      onClick={handleBackToActivePlan}
+                      className="mr-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      <i className="fas fa-arrow-left text-esimphony-gray"></i>
+                    </button>
+                  )}
+                  <h1 className="text-xl font-semibold">
+                    {user.activePlan && showBrowsePlans ? 'Update Plan' : 'Available Plans'}
+                  </h1>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-bold text-esimphony-black">
+                    ${user.balance.toFixed(2)}
+                  </div>
+                  <div className="text-esimphony-gray text-xs">Balance</div>
+                </div>
+              </div>
         
         {/* Current Location Display */}
         <Card className="mb-4">
@@ -420,43 +602,12 @@ export function PlansPage() {
           </div>
         </Card>
 
-        {/* Current Plan Highlight */}
-        {user.activePlan && (
-          <Card className="mb-6 border-2 border-esimphony-success bg-green-50">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center">
-                  <i className="fas fa-check-circle text-esimphony-success text-xl mr-3"></i>
-                  <div>
-                    <h3 className="text-lg font-semibold text-esimphony-black">
-                      Current Plan: {user.activePlan.name}
-                    </h3>
-                    <p className="text-esimphony-gray text-sm">
-                      {user.activePlan.dataUsed}GB used / {user.activePlan.dataTotal}GB total
-                    </p>
-                  </div>
-                </div>
-                <span className="bg-esimphony-success text-esimphony-white px-3 py-1 rounded-full text-sm font-semibold">
-                  ACTIVE
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-esimphony-success h-2 rounded-full"
-                  style={{ width: `${(user.activePlan.dataUsed! / user.activePlan.dataTotal!) * 100}%` }}
-                />
-              </div>
-            </div>
-          </Card>
-        )}
 
 
         {/* Plan Options */}
-        <div className="space-y-4 mb-32">
+        <div className="space-y-3 mb-32">
           {currentPlans.map((plan) => {
-            const planPrice = parseFloat(plan.price.replace('$', ''))
             const isSelected = selectedPlan?.id === plan.id
-            const canAfford = user.balance >= planPrice
             
             return (
               <Card 
@@ -473,40 +624,93 @@ export function PlansPage() {
                   }
                 }}
               >
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="text-2xl font-bold text-esimphony-black">
+                <div className="p-4">
+                  {/* Header: Data & Price */}
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="text-xl font-bold text-esimphony-black">
                       {plan.data}
                     </div>
-                    <div className="text-xl font-bold text-esimphony-red">
+                    <div className="text-lg font-bold text-esimphony-red">
                       {plan.price}
                     </div>
                   </div>
                   
-                  <div className="text-esimphony-gray text-sm mb-4 font-medium">
+                  {/* Duration */}
+                  <div className="text-esimphony-gray text-sm mb-3 font-medium">
                     {plan.duration}
                   </div>
                   
-                  <ul className="space-y-2 mb-6">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start text-sm text-esimphony-gray">
-                        <span className="text-esimphony-red mr-2 mt-0.5">•</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                  {/* Features - Expandable view */}
+                  <div className="mb-4">
+                    <div className="text-xs text-esimphony-gray font-medium mb-1">Includes:</div>
+                    <div className="flex flex-wrap gap-1">
+                      {expandedFeatures[plan.id] ? (
+                        // Show all features when expanded
+                        <>
+                          {plan.features.map((feature, index) => (
+                            <span key={index} className="bg-gray-100 text-esimphony-gray text-xs px-2 py-1 rounded">
+                              {feature}
+                            </span>
+                          ))}
+                          <button
+                            onClick={(e) => handleToggleFeatures(plan.id, e)}
+                            className="text-esimphony-red text-xs px-1 py-1 hover:underline cursor-pointer"
+                          >
+                            Show less
+                          </button>
+                        </>
+                      ) : (
+                        // Show compact view with expand button
+                        <>
+                          {plan.features.slice(0, 2).map((feature, index) => (
+                            <span key={index} className="bg-gray-100 text-esimphony-gray text-xs px-2 py-1 rounded">
+                              {feature}
+                            </span>
+                          ))}
+                          {plan.features.length > 2 && (
+                            <button
+                              onClick={(e) => handleToggleFeatures(plan.id, e)}
+                              className="text-esimphony-red text-xs px-1 py-1 hover:underline cursor-pointer"
+                            >
+                              +{plan.features.length - 2} more
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
                   
                   {planTypeTab === 'subscription' && (
-                    <div className="border-t pt-4 mt-4">
-                      <div className="flex justify-between items-center">
+                    <div className="border-t pt-3 mt-3">
+                      <div className="flex justify-between items-center relative">
                         <div className="flex items-center">
                           <span className="text-sm font-semibold text-esimphony-black">Auto-Renew</span>
-                          <div className="ml-2 w-5 h-5 bg-esimphony-gray rounded-full flex items-center justify-center text-white text-xs cursor-pointer" title="Your plan will be automatically renewed before it expires">
+                          <div 
+                            className="ml-2 w-6 h-6 bg-esimphony-gray rounded-full flex items-center justify-center text-white text-xs cursor-pointer hover:bg-gray-500 transition-colors"
+                            onClick={(e) => handleInfoIconClick(plan.id, e)}
+                          >
                             <i className="fas fa-info"></i>
                           </div>
+                          
+                          {/* Tooltip */}
+                          {showTooltip === plan.id && (
+                            <div className="absolute left-0 top-8 z-50 bg-esimphony-black text-white text-xs p-3 rounded-lg shadow-lg max-w-60 border border-gray-300">
+                              <div className="mb-1 font-semibold">Auto-Renewal</div>
+                              <div>Your plan will be automatically renewed before it expires using your available balance.</div>
+                              <div className="absolute -top-1 left-4 w-2 h-2 bg-esimphony-black transform rotate-45"></div>
+                            </div>
+                          )}
                         </div>
-                        <div className="w-10 h-5 bg-esimphony-gray rounded-full relative cursor-pointer">
-                          <div className="w-4 h-4 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform"></div>
+                        
+                        <div 
+                          className={`w-12 h-6 rounded-full relative cursor-pointer transition-colors ${
+                            autoRenewStates[plan.id] ? 'bg-esimphony-red' : 'bg-gray-300'
+                          }`}
+                          onClick={(e) => handleAutoRenewToggle(plan.id, e)}
+                        >
+                          <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform ${
+                            autoRenewStates[plan.id] ? 'translate-x-6' : 'translate-x-0.5'
+                          }`}></div>
                         </div>
                       </div>
                     </div>
@@ -556,7 +760,7 @@ export function PlansPage() {
                   className="w-full py-2 text-sm bg-esimphony-red hover:bg-red-600 text-white"
                 >
                   <i className="fas fa-credit-card mr-1"></i>
-                  Order eSIM
+                  Order
                 </Button>
               ) : (
                 <>
@@ -586,6 +790,102 @@ export function PlansPage() {
           </div>
         </div>
       )}
+          </>
+        )}
+
+        {/* Confirmation Modal */}
+        {showConfirmationModal && pendingPlan && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-esimphony-white rounded-lg max-w-sm w-full p-6">
+              <div className="text-center mb-6">
+                <i className="fas fa-credit-card text-esimphony-red text-4xl mb-4"></i>
+                <h3 className="text-xl font-semibold text-esimphony-black mb-2">
+                  Confirm Your Order
+                </h3>
+                <p className="text-esimphony-gray text-sm">
+                  You're about to purchase the following plan:
+                </p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-semibold text-esimphony-black">{pendingPlan.data}</span>
+                  <span className="text-esimphony-red font-bold">{pendingPlan.price}</span>
+                </div>
+                <div className="text-sm text-esimphony-gray mb-1">{pendingPlan.duration}</div>
+                <div className="text-sm text-esimphony-gray">
+                  {selectedDestination?.name}
+                </div>
+                {pendingPlan.type === 'subscription' && autoRenewStates[pendingPlan.id] && (
+                  <div className="mt-2 text-xs text-esimphony-gray bg-yellow-50 p-2 rounded">
+                    <i className="fas fa-info-circle mr-1"></i>
+                    Auto-renewal enabled
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  variant="secondary"
+                  onClick={handleCancelOrder}
+                  className="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-esimphony-black"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleConfirmOrder}
+                  className="flex-1 py-3 bg-esimphony-red hover:bg-red-600 text-white"
+                >
+                  Confirm Order
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Success Modal */}
+        {showSuccessView && pendingPlan && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-esimphony-white rounded-lg max-w-sm w-full p-6">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i className="fas fa-check text-green-600 text-2xl"></i>
+                </div>
+                <h3 className="text-xl font-semibold text-esimphony-black mb-2">
+                  Order Successful!
+                </h3>
+                <p className="text-esimphony-gray text-sm">
+                  Your plan has been activated successfully
+                </p>
+              </div>
+
+              <div className="bg-green-50 rounded-lg p-4 mb-6 border border-green-200">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-semibold text-esimphony-black">{pendingPlan.data}</span>
+                  <span className="text-green-600 font-bold">{pendingPlan.price}</span>
+                </div>
+                <div className="text-sm text-esimphony-gray mb-1">{pendingPlan.duration}</div>
+                <div className="text-sm text-esimphony-gray">
+                  {selectedDestination?.name}
+                </div>
+                <div className="mt-2 text-xs text-green-700 bg-green-100 p-2 rounded">
+                  <i className="fas fa-check-circle mr-1"></i>
+                  Plan activated and ready to use
+                </div>
+              </div>
+
+              <Button
+                variant="primary"
+                onClick={handleSuccessClose}
+                className="w-full py-3 bg-esimphony-red hover:bg-red-600 text-white"
+              >
+                <i className="fas fa-eye mr-2"></i>
+                View My Plan
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </AppLayout>
   )
