@@ -1,4 +1,4 @@
-import { DemoAccount, User, Plan } from '@/types'
+import { DemoAccount, User, Plan, Promotion } from '@/types'
 
 // Demo plans data
 export const DEMO_PLANS: Plan[] = [
@@ -58,6 +58,43 @@ export const DEMO_PLANS: Plan[] = [
   }
 ]
 
+// Demo promotions data
+export const DEMO_PROMOTIONS: Promotion[] = [
+  {
+    id: 'referral-2024',
+    title: 'Refer & Earn',
+    subtitle: 'Get $5 for each friend',
+    description: 'Invite friends to eSimphony and earn $5 credit for every successful referral!',
+    buttonText: 'Refer Now',
+    buttonAction: 'referral',
+    type: 'referral',
+    isActive: true,
+    validUntil: 'Dec 31, 2024'
+  },
+  {
+    id: 'winter-2024',
+    title: 'Winter Travel Sale',
+    subtitle: '25% off Europe plans',
+    description: 'Beat the winter blues with 25% off all European eSIM plans. Perfect for skiing trips!',
+    buttonText: 'Browse Plans',
+    buttonAction: 'plans',
+    type: 'seasonal',
+    isActive: true,
+    validUntil: 'Mar 15, 2024'
+  },
+  {
+    id: 'asia-special',
+    title: 'Asia Explorer',
+    subtitle: 'Free extra 5GB',
+    description: 'Book any Asia-Pacific plan and get an extra 5GB data bonus for your adventures.',
+    buttonText: 'Explore Asia',
+    buttonAction: 'plans',
+    type: 'regional',
+    isActive: true,
+    validUntil: 'Feb 28, 2024'
+  }
+]
+
 // Demo accounts
 export const DEMO_ACCOUNTS: DemoAccount[] = [
   {
@@ -82,7 +119,12 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
       email: 'exist-topup@esim.demo',
       balance: 25.00,
       activePlan: null,
-      accountType: 'has-balance'
+      accountType: 'has-balance',
+      promotions: {
+        hasReferralBonus: true,
+        seasonalOffers: ['winter-2024'],
+        regionalPromotions: ['asia-special']
+      }
     },
     description: 'User with existing balance but no active plans. Ideal for testing plan purchase flows without needing to top up first.'
   },
@@ -95,7 +137,12 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
       email: 'exist-plan@esim.demo',
       balance: 45.00,
       activePlan: DEMO_PLANS[0], // Euro Data Pass
-      accountType: 'has-plan'
+      accountType: 'has-plan',
+      autoRenewal: {
+        enabled: true,
+        renewalDate: 'Feb 15, 2024',
+        renewalAmount: 25
+      }
     },
     description: 'User with balance and an active plan. Perfect for testing plan management, plan changes, and renewal flows.'
   },
@@ -162,6 +209,20 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
       activationBehavior: 'success'
     },
     description: 'Test account that always succeeds in automatic eSIM activation. Ideal for testing successful activation flow and transition to active state.'
+  },
+  {
+    email: 'esim-installed@esim.demo',
+    password: '123456',
+    profile: {
+      firstName: 'Sofia',
+      lastName: 'Patel',
+      email: 'esim-installed@esim.demo',
+      balance: 28.00,
+      activePlan: null,
+      accountType: 'has-balance',
+      esimStatus: 'installed'
+    },
+    description: 'User with eSIM profile installed but needs configuration. Shows eSIM Settings section on dashboard for manual setup and activation guide.'
   }
 ]
 

@@ -14,6 +14,17 @@ export interface User {
     dataTotal: number
     expirationDays: number
   }
+  autoRenewal?: {
+    enabled: boolean
+    renewalDate?: string
+    renewalAmount?: number
+    preferredTopUpAmount?: number
+  }
+  promotions?: {
+    hasReferralBonus?: boolean
+    seasonalOffers?: string[]
+    regionalPromotions?: string[]
+  }
 }
 
 // eSIM Plan types
@@ -27,10 +38,24 @@ export interface Plan {
   price: number
   description?: string
   features: string[]
-  type: 'prepaid' | 'postpaid'
+  type: 'prepaid' | 'postpaid' | 'subscription' | 'payg'
   dataUsed?: number
   dataTotal?: number
   daysLeft?: number
+}
+
+// Promotion types
+export interface Promotion {
+  id: string
+  title: string
+  subtitle?: string
+  description: string
+  imageUrl?: string
+  buttonText: string
+  buttonAction: string
+  type: 'referral' | 'seasonal' | 'regional'
+  isActive: boolean
+  validUntil?: string
 }
 
 // Demo account types

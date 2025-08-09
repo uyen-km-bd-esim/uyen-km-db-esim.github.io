@@ -6,13 +6,23 @@ import { Card } from '@/components/ui/Card'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { storage } from '@/lib/utils'
-import { DEMO_ACCOUNTS } from '@/lib/demo-data'
+import { DEMO_ACCOUNTS, DEMO_PLANS, DEMO_PROMOTIONS } from '@/lib/demo-data'
 import { DemoAccount } from '@/types'
 
 export function DemoSupport() {
   const [isResetting, setIsResetting] = useState(false)
   const [resetComplete, setResetComplete] = useState(false)
   const [loggingInAccount, setLoggingInAccount] = useState<string | null>(null)
+  
+  // Custom account generator state
+  const [customAccountName, setCustomAccountName] = useState('TestUser')
+  const [customBalance, setCustomBalance] = useState(25.00)
+  const [customEsimStatus, setCustomEsimStatus] = useState<'none' | 'available' | 'installed' | 'active'>('none')
+  const [customHasPlan, setCustomHasPlan] = useState(false)
+  const [customHasPromotions, setCustomHasPromotions] = useState(false)
+  const [customActivationBehavior, setCustomActivationBehavior] = useState<'random' | 'success' | 'fail'>('random')
+  const [isGeneratingCustom, setIsGeneratingCustom] = useState(false)
+  
   const router = useRouter()
 
   const handleReset = async () => {
@@ -31,6 +41,48 @@ export function DemoSupport() {
     setTimeout(() => {
       router.push('/')
     }, 3000)
+  }
+
+  const generateCustomAccount = async () => {
+    setIsGeneratingCustom(true)
+    
+    // Create custom account based on selections
+    const customAccount: DemoAccount = {
+      email: 'custom@esim.demo',
+      password: '123456',
+      profile: {
+        firstName: customAccountName,
+        lastName: 'Custom',
+        email: 'custom@esim.demo',
+        balance: customBalance,
+        activePlan: customHasPlan ? DEMO_PLANS[0] : null,
+        accountType: customBalance > 0 ? (customHasPlan ? 'has-plan' : 'has-balance') : 'no-balance',
+        esimStatus: customEsimStatus === 'none' ? undefined : customEsimStatus,
+        activationBehavior: customActivationBehavior === 'random' ? undefined : customActivationBehavior,
+        promotions: customHasPromotions ? {
+          hasReferralBonus: true,
+          seasonalOffers: ['winter-2024'],
+          regionalPromotions: ['asia-special']
+        } : undefined,
+        usageData: customEsimStatus === 'active' ? {
+          planName: customHasPlan ? DEMO_PLANS[0].name : 'Custom Plan',
+          dataUsed: 3.2,
+          dataTotal: customHasPlan ? DEMO_PLANS[0].dataTotal || 10 : 10,
+          expirationDays: 15
+        } : undefined,
+        autoRenewal: customHasPlan ? {
+          enabled: true,
+          renewalDate: 'Mar 1, 2024',
+          renewalAmount: customHasPlan ? DEMO_PLANS[0].price : 25
+        } : undefined
+      }
+    }
+    
+    // Simulate generation process
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    
+    // Login with custom account
+    await loginAsAccount(customAccount)
   }
 
   const loginAsAccount = async (account: DemoAccount) => {
@@ -144,12 +196,150 @@ export function DemoSupport() {
             Complete testing guide for eSimphony platform
           </p>
 
+          {/* Custom Account Generator */}
+          <Card className="mb-6 border-2 border-esimphony-info">
+            <div className="p-6">
+              <h2 className="text-xl font-bold text-esimphony-black mb-4 flex items-center">
+                <i className="fas fa-magic text-esimphony-info mr-3"></i>
+                Custom Test Account Generator
+              </h2>
+              <p className="text-esimphony-gray mb-6">
+                Create a custom test account with specific conditions. Select your preferences below, then generate and auto-login with the custom account.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                {/* Account Name */}
+                <div>
+                  <label className="block text-sm font-semibold text-esimphony-black mb-2">
+                    <i className="fas fa-user text-esimphony-info mr-1"></i>
+                    Account Name
+                  </label>
+                  <input
+                    type="text"
+                    value={customAccountName}
+                    onChange={(e) => setCustomAccountName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-esimphony-red"
+                    placeholder="TestUser"
+                  />
+                </div>
+
+                {/* Balance */}
+                <div>
+                  <label className="block text-sm font-semibold text-esimphony-black mb-2">
+                    <i className="fas fa-dollar-sign text-green-600 mr-1"></i>
+                    Balance ($)
+                  </label>
+                  <input
+                    type="number"
+                    value={customBalance}
+                    onChange={(e) => setCustomBalance(parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-esimphony-red"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                {/* eSIM Status */}
+                <div>
+                  <label className="block text-sm font-semibold text-esimphony-black mb-2">
+                    <i className="fas fa-sim-card text-orange-600 mr-1"></i>
+                    eSIM Status
+                  </label>
+                  <select
+                    value={customEsimStatus}
+                    onChange={(e) => setCustomEsimStatus(e.target.value as any)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-esimphony-red"
+                  >
+                    <option value="none">None</option>
+                    <option value="available">Available (Ready to activate)</option>
+                    <option value="installed">Installed (Settings mode)</option>
+                    <option value="active">Active (Usage stats)</option>
+                  </select>
+                </div>
+
+                {/* Has Active Plan */}
+                <div>
+                  <label className="block text-sm font-semibold text-esimphony-black mb-2">
+                    <i className="fas fa-mobile-alt text-blue-600 mr-1"></i>
+                    Active Plan
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={customHasPlan}
+                      onChange={(e) => setCustomHasPlan(e.target.checked)}
+                      className="mr-2 text-esimphony-red focus:ring-esimphony-red"
+                    />
+                    <span className="text-sm">Has active plan (Euro Data Pass)</span>
+                  </label>
+                </div>
+
+                {/* Has Promotions */}
+                <div>
+                  <label className="block text-sm font-semibold text-esimphony-black mb-2">
+                    <i className="fas fa-star text-yellow-600 mr-1"></i>
+                    Promotions
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={customHasPromotions}
+                      onChange={(e) => setCustomHasPromotions(e.target.checked)}
+                      className="mr-2 text-esimphony-red focus:ring-esimphony-red"
+                    />
+                    <span className="text-sm">Show promotions carousel</span>
+                  </label>
+                </div>
+
+                {/* Activation Behavior */}
+                <div>
+                  <label className="block text-sm font-semibold text-esimphony-black mb-2">
+                    <i className="fas fa-cog text-purple-600 mr-1"></i>
+                    Activation Test
+                  </label>
+                  <select
+                    value={customActivationBehavior}
+                    onChange={(e) => setCustomActivationBehavior(e.target.value as any)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-esimphony-red"
+                  >
+                    <option value="random">Random (80% success)</option>
+                    <option value="success">Always succeed</option>
+                    <option value="fail">Always fail</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Generate Button */}
+              <div className="text-center">
+                <Button
+                  variant="primary"
+                  onClick={generateCustomAccount}
+                  disabled={isGeneratingCustom}
+                  isLoading={isGeneratingCustom}
+                  className="px-8 py-3 text-lg bg-gradient-to-r from-esimphony-info to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                >
+                  {isGeneratingCustom ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin mr-2"></i>
+                      Generating & Logging in...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-magic mr-2"></i>
+                      Generate & Login Custom Account
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </Card>
+
           {/* Demo Accounts Section */}
           <Card className="mb-6">
             <div className="p-6">
               <h2 className="text-xl font-bold text-esimphony-black mb-4 flex items-center">
                 <i className="fas fa-users text-esimphony-red mr-3"></i>
-                Demo Test Accounts
+                Pre-configured Demo Accounts
               </h2>
               <p className="text-esimphony-gray mb-6">
                 Use these pre-configured accounts to test different user scenarios. Click the <strong>"Login as [Name]"</strong> button to instantly log in with that account's settings and be redirected to the home dashboard. Traditional login with password <strong>123456</strong> is also available.
@@ -317,6 +507,15 @@ export function DemoSupport() {
                           <strong>eSIM Available:</strong> esim-available@esim.demo → 
                           <Link href="/dashboard" className="bg-esimphony-black text-esimphony-white px-2 py-1 rounded text-xs ml-2 hover:bg-gray-800">
                             dashboard (Activate Button)
+                          </Link>
+                        </p>
+                        <p>
+                          <strong>eSIM Installed:</strong> esim-installed@esim.demo → 
+                          <Link href="/dashboard" className="bg-esimphony-black text-esimphony-white px-2 py-1 rounded text-xs ml-2 hover:bg-gray-800">
+                            dashboard (Settings Mode)
+                          </Link>
+                          <Link href="/esim-settings" className="bg-esimphony-black text-esimphony-white px-2 py-1 rounded text-xs ml-2 hover:bg-gray-800">
+                            esim settings
                           </Link>
                         </p>
                         <p>
